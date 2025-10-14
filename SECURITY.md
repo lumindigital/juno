@@ -1,5 +1,5 @@
 # Reporting a Vulnerability
-If you find a security related bug in Juno, please send an email with details to security-disclosure@lumindigital.com
+If you find a security related bug in Juno, please see https://lumindigital.com/security/ for details on submitting a report
 
 All reports will be kept confidential
 
