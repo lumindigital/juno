@@ -1,0 +1,15 @@
+{
+    "git.ignoreLimitWarning": true,
+    "typescript.preferences.quoteStyle": "single",
+    "mochaExplorer.files": [
+        "test/**/*.ts"
+    ],
+    "mochaExplorer.nodeArgv": [
+        "--es-module-specifier-resolution=node",
+        "--loader=ts-node/esm"
+    ],
+    "mochaExplorer.require": [
+        "ts-node/register"
+    ],
+    "prettier.configPath": ""
+}
