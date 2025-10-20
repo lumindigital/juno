@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        args:
+          - --markdown-linebreak-ext=md
+      - id: check-yaml
+        args:
+          - --allow-multiple-documents
+      - id: check-json
+      - id: check-added-large-files
+        args:
+          - --enforce-all
+        exclude: ^package-lock.json
+      - id: detect-private-key
+      - id: check-case-conflict
+      - id: check-merge-conflict
+        args:
+          - --assume-in-merge
+      - id: mixed-line-ending
+      - id: check-symlinks
+      - id: destroyed-symlinks
+      - id: check-docstring-first
+      - id: check-executables-have-shebangs
+      - id: forbid-submodules
+  - repo: local
+    hooks:
+      - id: eslint
+        name: Eslint
+        entry: npm run lint
+        language: system
+        files: ""
+        always_run: true
+        pass_filenames: false
+      - id: prettier
+        name: Prettier
+        entry: npm run pretty
+        language: system
+        files: ""
+        always_run: true
+        pass_filenames: false

@@ -1,0 +1,41 @@
+# Example of loops using DAGs
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: loops-dag-
+spec:
+  entrypoint: loops-dag
+  templates:
+  - name: loops-dag
+    dag:
+      tasks:
+      - name: A
+        template: print-message
+        arguments:
+          parameters:
+          - {name: message, value: A}
+      - name: B
+        depends: "A"
+        template: print-message
+        arguments:
+          parameters:
+          - {name: message, value: "{{item}}"}
+        withItems:
+        - foo
+        - bar
+        - baz
+      - name: C
+        depends: "B"
+        template: print-message
+        arguments:
+          parameters:
+          - {name: message, value: C}
+
+  - name: print-message
+    inputs:
+      parameters:
+      - name: message
+    container:
+      image: busybox
+      command: [echo]
+      args: ["{{inputs.parameters.message}}"]
