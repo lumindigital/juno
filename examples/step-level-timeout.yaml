@@ -1,0 +1,32 @@
+# This template demonstrates a steps level timeout.
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: steps-tmpl-timeout-
+spec:
+  entrypoint: sleep-sleep
+  templates:
+  - name: sleep-sleep
+    steps:
+    - - name: sleep1
+        continueOn:
+          error: true
+        template: sleep
+        arguments:
+          parameters: [{name: timeout, value: "10s"}]
+      - name: sleep2
+        continueOn:
+          failed: true
+        template: sleep
+        arguments:
+          parameters: [{name: timeout, value: "10s"}]
+
+  - name: sleep
+    timeout: "{{inputs.parameters.timeout}}"
+    inputs:
+      parameters:
+      - name: timeout
+    container:
+      image: alpine:latest
+      command: [sh, -c]
+      args: ["sleep 30s"]
