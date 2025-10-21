@@ -23,7 +23,7 @@ jobs:
       - name: setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: ${{ matrix.node_version }}
+          node-version: latest
       - name: install dependencies
         run: npm clean-install
       - name: verify the integrity of provenance attestations and registry signatures for installed dependencies
@@ -35,7 +35,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
-    strategy:
-      matrix:
-        node_version: [lts/*, latest]
-      fail-fast: true
