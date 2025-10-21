@@ -34,6 +34,7 @@
     "oclif": "4",
     "prettier": "3",
     "shx": "0.4.0",
+    "semantic-release": "25.0.1",
     "swagger-typescript-api": "13",
     "ts-node": "10",
     "typescript": "5",
