@@ -6,11 +6,10 @@ Juno makes it easy to define Argo Workflows with Typescript.
 
 
 ###  Juno - Stats
-[![Pre-Commit Hooks](https://github.com/lumindigital/juno/actions/workflows/pre-commit.yml/badge.svg)](https://github.com/lumindigital/juno/actions/workflows/pre-commit.yml)
-
 [![Dependabot Updates](https://github.com/lumindigital/juno/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/lumindigital/juno/actions/workflows/dependabot/dependabot-updates)
-
-
+[![release](https://github.com/lumindigital/juno/actions/workflows/release.yml/badge.svg)](https://github.com/lumindigital/juno/actions/workflows/release.yml)
+[![Release Version](https://img.shields.io/github/v/release/lumindigital/juno)](https://github.com/lumindigital/juno/releases/latest)
+[![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/@lumindigital/juno)
 ### Getting Started
 This project is packaged with npm. In order to use this project, create a new typescript project and import this package.
 
