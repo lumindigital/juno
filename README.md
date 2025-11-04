@@ -99,3 +99,4 @@ In order to regenerate the workflow-interfaces you need to do the following
 2. Clone the argo-workflows project
 3. Switch to the release branch you wish to generate from
 4. Run the npm command `npm interfaces`
+5. Do a compare of the previous version with the new version, modify any custom objects so they match the new spec

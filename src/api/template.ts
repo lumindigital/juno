@@ -33,8 +33,8 @@ import { randomUUID } from 'crypto';
 export class BaseTemplate {
     readonly id: string;
     activeDeadlineSeconds?: IoK8SApimachineryPkgUtilIntstrIntOrString;
-
     affinity?: IoK8SApiCoreV1Affinity;
+    annotations?: Record<string, string>;
     archiveLocation?: IoArgoprojWorkflowV1Alpha1ArtifactLocation;
     automountServiceAccountToken?: boolean;
     container?: Container;
@@ -57,7 +57,6 @@ export class BaseTemplate {
     parallelism?: number;
     plugin?: IoArgoprojWorkflowV1Alpha1Plugin;
     podSpecPatch?: string;
-    priority?: number;
     priorityClassName?: string;
     resource?: IoArgoprojWorkflowV1Alpha1ResourceTemplate;
     retryStrategy?: IoArgoprojWorkflowV1Alpha1RetryStrategy;
@@ -107,7 +106,6 @@ export class BaseTemplate {
             parallelism: this.parallelism,
             plugin: this.plugin,
             podSpecPatch: this.podSpecPatch,
-            priority: this.priority,
             priorityClassName: this.priorityClassName,
             resource: this.resource,
             retryStrategy: this.retryStrategy,
