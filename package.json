@@ -16,7 +16,6 @@
   },
   "devDependencies": {
     "@commitlint/cli": "20",
-    "@commitlint/config-angular": "20",
     "@eslint/eslintrc": "3",
     "@eslint/js": "9",
     "@oclif/prettier-config": "0",
@@ -87,7 +86,7 @@
     "pretest": "npm run lint && npm run build",
     "test": "c8 --reporter=lcov --report-dir ./test-output/coverage mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md",
-    "interfaces": "sta -p ../argo-workflows/api/openapi-spec/swagger.json -o ./src/workflow-interfaces --modular --sort-types --clean-output --no-client",
+    "interfaces": "swagger-typescript-api -p ../argo-workflows/api/openapi-spec/swagger.json -o ./src/workflow-interfaces --modular --sort-types --clean-output --no-client --patch",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "precommit": "pre-commit run --all-files"
   },

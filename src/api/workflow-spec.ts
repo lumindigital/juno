@@ -71,10 +71,8 @@ export class WorkflowSpec {
     podDisruptionBudget?: IoK8SApiPolicyV1PodDisruptionBudgetSpec;
     podGC?: IoArgoprojWorkflowV1Alpha1PodGC;
     podMetadata?: IoArgoprojWorkflowV1Alpha1Metadata;
-    podPriority?: number;
     podPriorityClassName?: string;
     podSpecPatch?: string;
-    priority?: number;
     retryStrategy?: IoArgoprojWorkflowV1Alpha1RetryStrategy;
     schedulerName?: string;
     securityContext?: IoK8SApiCoreV1PodSecurityContext;
@@ -410,10 +408,8 @@ export class WorkflowSpec {
             podDisruptionBudget: this.podDisruptionBudget,
             podGC: this.podGC,
             podMetadata: this.podMetadata,
-            podPriority: this.podPriority,
             podPriorityClassName: this.podPriorityClassName,
             podSpecPatch: this.podSpecPatch,
-            priority: this.priority,
             retryStrategy: this.retryStrategy,
             schedulerName: this.schedulerName,
             securityContext: this.securityContext,

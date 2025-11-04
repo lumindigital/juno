@@ -1,5 +1,6 @@
-/* tslint:disable */
 /* eslint-disable */
+/* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -10,14 +11,14 @@
  */
 
 export interface EventsourceCreateEventSourceRequest {
-    eventSource?: IoArgoprojEventsV1Alpha1EventSource;
+    eventSource?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSource;
     namespace?: string;
 }
 
 export type EventsourceEventSourceDeletedResponse = object;
 
 export interface EventsourceEventSourceWatchEvent {
-    object?: IoArgoprojEventsV1Alpha1EventSource;
+    object?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSource;
     type?: string;
 }
 
@@ -36,37 +37,16 @@ export interface EventsourceLogEntry {
 }
 
 export interface EventsourceUpdateEventSourceRequest {
-    eventSource?: IoArgoprojEventsV1Alpha1EventSource;
+    eventSource?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSource;
     name?: string;
     namespace?: string;
-}
-
-export interface GoogleProtobufAny {
-    type_url?: string;
-    /** @format byte */
-    value?: string;
-}
-
-export interface GrpcGatewayRuntimeError {
-    code?: number;
-    details?: GoogleProtobufAny[];
-    error?: string;
-    message?: string;
-}
-
-export interface GrpcGatewayRuntimeStreamError {
-    details?: GoogleProtobufAny[];
-    grpc_code?: number;
-    http_code?: number;
-    http_status?: string;
-    message?: string;
 }
 
 /**
  * AMQPConsumeConfig holds the configuration to immediately starts delivering queued messages
  * +k8s:openapi-gen=true
  */
-export interface IoArgoprojEventsV1Alpha1AMQPConsumeConfig {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPConsumeConfig {
     /**
      * AutoAck when true, the server will acknowledge deliveries to this consumer prior to writing
      * the delivery to the network
@@ -96,29 +76,29 @@ export interface IoArgoprojEventsV1Alpha1AMQPConsumeConfig {
 }
 
 /** AMQPEventSource refers to an event-source for AMQP stream events */
-export interface IoArgoprojEventsV1Alpha1AMQPEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPEventSource {
     /**
      * Auth hosts secret selectors for username and password
      * +optional
      */
-    auth?: IoArgoprojEventsV1Alpha1BasicAuth;
+    auth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BasicAuth;
     /**
      * Backoff holds parameters applied to connection.
      * +optional
      */
-    connectionBackoff?: IoArgoprojEventsV1Alpha1Backoff;
+    connectionBackoff?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /**
      * Consume holds the configuration to immediately starts delivering queued messages
      * For more information, visit https://pkg.go.dev/github.com/rabbitmq/amqp091-go#Channel.Consume
      * +optional
      */
-    consume?: IoArgoprojEventsV1Alpha1AMQPConsumeConfig;
+    consume?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPConsumeConfig;
     /**
      * ExchangeDeclare holds the configuration for the exchange on the server
      * For more information, visit https://pkg.go.dev/github.com/rabbitmq/amqp091-go#Channel.ExchangeDeclare
      * +optional
      */
-    exchangeDeclare?: IoArgoprojEventsV1Alpha1AMQPExchangeDeclareConfig;
+    exchangeDeclare?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPExchangeDeclareConfig;
     /**
      * ExchangeName is the exchange name
      * For more information, visit https://www.rabbitmq.com/tutorials/amqp-concepts.html
@@ -130,7 +110,7 @@ export interface IoArgoprojEventsV1Alpha1AMQPEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * JSONBody specifies that all event body payload coming from this
      * source will be JSON
@@ -148,7 +128,7 @@ export interface IoArgoprojEventsV1Alpha1AMQPEventSource {
      * For more information, visit https://pkg.go.dev/github.com/rabbitmq/amqp091-go#Channel.QueueBind
      * +optional
      */
-    queueBind?: IoArgoprojEventsV1Alpha1AMQPQueueBindConfig;
+    queueBind?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPQueueBindConfig;
     /**
      * QueueDeclare holds the configuration of a queue to hold messages and deliver to consumers.
      * Declaring creates a queue if it doesn't already exist, or ensures that an existing queue matches
@@ -156,7 +136,7 @@ export interface IoArgoprojEventsV1Alpha1AMQPEventSource {
      * For more information, visit https://pkg.go.dev/github.com/rabbitmq/amqp091-go#Channel.QueueDeclare
      * +optional
      */
-    queueDeclare?: IoArgoprojEventsV1Alpha1AMQPQueueDeclareConfig;
+    queueDeclare?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPQueueDeclareConfig;
     /** Routing key for bindings */
     routingKey?: string;
     /**
@@ -164,7 +144,7 @@ export interface IoArgoprojEventsV1Alpha1AMQPEventSource {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** URL for rabbitmq service */
     url?: string;
     /**
@@ -178,7 +158,7 @@ export interface IoArgoprojEventsV1Alpha1AMQPEventSource {
  * AMQPExchangeDeclareConfig holds the configuration for the exchange on the server
  * +k8s:openapi-gen=true
  */
-export interface IoArgoprojEventsV1Alpha1AMQPExchangeDeclareConfig {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPExchangeDeclareConfig {
     /**
      * AutoDelete removes the exchange when no bindings are active
      * +optional
@@ -206,7 +186,7 @@ export interface IoArgoprojEventsV1Alpha1AMQPExchangeDeclareConfig {
  * exchange will be routed to the queue when the publishing routing key matches the binding routing key
  * +k8s:openapi-gen=true
  */
-export interface IoArgoprojEventsV1Alpha1AMQPQueueBindConfig {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPQueueBindConfig {
     /**
      * NowWait false and the queue could not be bound, the channel will be closed with an error
      * +optional
@@ -220,7 +200,7 @@ export interface IoArgoprojEventsV1Alpha1AMQPQueueBindConfig {
  * the same parameters
  * +k8s:openapi-gen=true
  */
-export interface IoArgoprojEventsV1Alpha1AMQPQueueDeclareConfig {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPQueueDeclareConfig {
     /**
      * Arguments of a queue (also known as "x-arguments") used for optional features and plugins
      * +optional
@@ -255,7 +235,7 @@ export interface IoArgoprojEventsV1Alpha1AMQPQueueDeclareConfig {
 }
 
 /** AWSLambdaTrigger refers to specification of the trigger to invoke an AWS Lambda function */
-export interface IoArgoprojEventsV1Alpha1AWSLambdaTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AWSLambdaTrigger {
     /**
      * AccessKey refers K8s secret containing aws access key
      * +optional
@@ -285,9 +265,9 @@ export interface IoArgoprojEventsV1Alpha1AWSLambdaTrigger {
      * the trigger resource.
      * +optional
      */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Payload is the list of key-value extracted from an event payload to construct the request payload. */
-    payload?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    payload?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Region is AWS region */
     region?: string;
     /**
@@ -304,13 +284,13 @@ export interface IoArgoprojEventsV1Alpha1AWSLambdaTrigger {
 }
 
 /** Amount represent a numeric amount. */
-export interface IoArgoprojEventsV1Alpha1Amount {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Amount {
     /** @format byte */
     value?: string;
 }
 
 /** ArgoWorkflowTrigger is the trigger for the Argo Workflow */
-export interface IoArgoprojEventsV1Alpha1ArgoWorkflowTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ArgoWorkflowTrigger {
     /** Args is the list of arguments to pass to the argo CLI */
     args?: string[];
     /**
@@ -320,40 +300,40 @@ export interface IoArgoprojEventsV1Alpha1ArgoWorkflowTrigger {
      */
     operation?: string;
     /** Parameters is the list of parameters to pass to resolved Argo Workflow object */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Source of the K8s resource file(s) */
-    source?: IoArgoprojEventsV1Alpha1ArtifactLocation;
+    source?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ArtifactLocation;
 }
 
 /** ArtifactLocation describes the source location for an external artifact */
-export interface IoArgoprojEventsV1Alpha1ArtifactLocation {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ArtifactLocation {
+    /** S3 compliant artifact */
+    s3?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1S3Artifact;
     /**
      * Configmap that stores the artifact
      * Selects a key from a ConfigMap.
      */
     configmap?: IoK8SApiCoreV1ConfigMapKeySelector;
     /** File artifact is artifact stored in a file */
-    file?: IoArgoprojEventsV1Alpha1FileArtifact;
+    file?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1FileArtifact;
     /** Git repository hosting the artifact */
-    git?: IoArgoprojEventsV1Alpha1GitArtifact;
+    git?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GitArtifact;
     /** Inline artifact is embedded in sensor spec as a string */
     inline?: string;
     /**
      * Resource is generic template for K8s resource
-     * Resource represent arbitrary structured data.
+     * K8SResource represent arbitrary structured data.
      */
-    resource?: IoArgoprojEventsV1Alpha1Resource;
-    /** S3 compliant artifact */
-    s3?: IoArgoprojEventsV1Alpha1S3Artifact;
+    resource?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1K8SResource;
     /**
      * URL to fetch the artifact from
      * URLArtifact contains information about an artifact at an http endpoint.
      */
-    url?: IoArgoprojEventsV1Alpha1URLArtifact;
+    url?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1URLArtifact;
 }
 
 /** AzureEventHubsTrigger refers to specification of the Azure Event Hubs Trigger */
-export interface IoArgoprojEventsV1Alpha1AzureEventHubsTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureEventHubsTrigger {
     /** FQDN refers to the namespace dns of Azure Event Hubs to be used i.e. <namespace>.servicebus.windows.net */
     fqdn?: string;
     /** HubName refers to the Azure Event Hub to send events to */
@@ -363,9 +343,9 @@ export interface IoArgoprojEventsV1Alpha1AzureEventHubsTrigger {
      * the trigger resource.
      * +optional
      */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Payload is the list of key-value extracted from an event payload to construct the request payload. */
-    payload?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    payload?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * SharedAccessKey refers to a K8s secret containing the primary key for the
      * SecretKeySelector selects a key of a Secret.
@@ -382,12 +362,12 @@ export interface IoArgoprojEventsV1Alpha1AzureEventHubsTrigger {
  * AzureEventsHubEventSource describes the event source for azure events hub
  * More info at https://docs.microsoft.com/en-us/azure/event-hubs/
  */
-export interface IoArgoprojEventsV1Alpha1AzureEventsHubEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureEventsHubEventSource {
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * FQDN of the EventHubs namespace you created
      * More info at https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-get-connection-string
@@ -401,12 +381,16 @@ export interface IoArgoprojEventsV1Alpha1AzureEventsHubEventSource {
      */
     metadata?: Record<string, string>;
     /**
-     * SharedAccessKey is the generated value of the key
+     * SharedAccessKey is the generated value of the key. If both this field and SharedAccessKeyName are not provided
+     * it will try to access via Azure AD with DefaultAzureCredential, FQDN and HubName.
+     * +optional
      * SecretKeySelector selects a key of a Secret.
      */
     sharedAccessKey?: IoK8SApiCoreV1SecretKeySelector;
     /**
-     * SharedAccessKeyName is the name you chose for your application's SAS keys
+     * SharedAccessKeyName is the name you chose for your application's SAS keys. If both this field and SharedAccessKey are not provided
+     * it will try to access via Azure AD with DefaultAzureCredential, FQDN and HubName.
+     * +optional
      * SecretKeySelector selects a key of a Secret.
      */
     sharedAccessKeyName?: IoK8SApiCoreV1SecretKeySelector;
@@ -416,7 +400,7 @@ export interface IoArgoprojEventsV1Alpha1AzureEventsHubEventSource {
  * AzureQueueStorageEventSource describes the event source for azure queue storage
  * more info at https://learn.microsoft.com/en-us/azure/storage/queues/
  */
-export interface IoArgoprojEventsV1Alpha1AzureQueueStorageEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureQueueStorageEventSource {
     /**
      * ConnectionString is the connection string to access Azure Queue Storage. If this fields is not provided
      * it will try to access via Azure AD with StorageAccountName.
@@ -441,7 +425,7 @@ export interface IoArgoprojEventsV1Alpha1AzureQueueStorageEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * JSONBody specifies that all event body payload coming from this
      * source will be JSON
@@ -473,7 +457,7 @@ export interface IoArgoprojEventsV1Alpha1AzureQueueStorageEventSource {
  * AzureServiceBusEventSource describes the event source for azure service bus
  * More info at https://docs.microsoft.com/en-us/azure/service-bus-messaging/
  */
-export interface IoArgoprojEventsV1Alpha1AzureServiceBusEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureServiceBusEventSource {
     /**
      * ConnectionString is the connection string for the Azure Service Bus. If this fields is not provided
      * it will try to access via Azure AD with DefaultAzureCredential and FullyQualifiedNamespace.
@@ -485,7 +469,7 @@ export interface IoArgoprojEventsV1Alpha1AzureServiceBusEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * FullyQualifiedNamespace is the Service Bus namespace name (ex: myservicebus.servicebus.windows.net). This field is necessary to
      * access via Azure AD (managed identity) and it is ignored if ConnectionString is set.
@@ -512,12 +496,12 @@ export interface IoArgoprojEventsV1Alpha1AzureServiceBusEventSource {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** TopicName is the name of the Azure Service Bus Topic */
     topicName?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1AzureServiceBusTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureServiceBusTrigger {
     /**
      * ConnectionString is the connection string for the Azure Service Bus
      * SecretKeySelector selects a key of a Secret.
@@ -528,9 +512,9 @@ export interface IoArgoprojEventsV1Alpha1AzureServiceBusTrigger {
      * the trigger resource.
      * +optional
      */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Payload is the list of key-value extracted from an event payload to construct the request payload. */
-    payload?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    payload?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** QueueName is the name of the Azure Service Bus Queue */
     queueName?: string;
     /** SubscriptionName is the name of the Azure Service Bus Topic Subscription */
@@ -540,30 +524,30 @@ export interface IoArgoprojEventsV1Alpha1AzureServiceBusTrigger {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** TopicName is the name of the Azure Service Bus Topic */
     topicName?: string;
 }
 
 /** Backoff for an operation */
-export interface IoArgoprojEventsV1Alpha1Backoff {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff {
     /**
      * The initial duration in nanoseconds or strings like "1s", "3m"
      * +optional
      */
-    duration?: IoArgoprojEventsV1Alpha1Int64OrString;
+    duration?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Int64OrString;
     /**
      * Duration is multiplied by factor each iteration
      * +optional
      * Amount represent a numeric amount.
      */
-    factor?: IoArgoprojEventsV1Alpha1Amount;
+    factor?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Amount;
     /**
      * The amount of jitter applied each iteration
      * +optional
      * Amount represent a numeric amount.
      */
-    jitter?: IoArgoprojEventsV1Alpha1Amount;
+    jitter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Amount;
     /**
      * Exit with error after this many steps
      * +optional
@@ -572,7 +556,7 @@ export interface IoArgoprojEventsV1Alpha1Backoff {
 }
 
 /** BasicAuth contains the reference to K8s secrets that holds the username and password */
-export interface IoArgoprojEventsV1Alpha1BasicAuth {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BasicAuth {
     /** Password refers to the Kubernetes secret that holds the password required for basic auth. */
     password?: IoK8SApiCoreV1SecretKeySelector;
     /** Username refers to the Kubernetes secret that holds the username required for basic auth. */
@@ -580,12 +564,12 @@ export interface IoArgoprojEventsV1Alpha1BasicAuth {
 }
 
 /** BitbucketAuth holds the different auth strategies for connecting to Bitbucket */
-export interface IoArgoprojEventsV1Alpha1BitbucketAuth {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketAuth {
     /**
      * Basic is BasicAuth auth strategy.
      * +optional
      */
-    basic?: IoArgoprojEventsV1Alpha1BitbucketBasicAuth;
+    basic?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketBasicAuth;
     /**
      * OAuthToken refers to the K8s secret that holds the OAuth Bearer token.
      * +optional
@@ -594,8 +578,8 @@ export interface IoArgoprojEventsV1Alpha1BitbucketAuth {
     oauthToken?: IoK8SApiCoreV1SecretKeySelector;
 }
 
-/** BasicAuth holds the information required to authenticate user via basic auth mechanism */
-export interface IoArgoprojEventsV1Alpha1BitbucketBasicAuth {
+/** BitbucketBasicAuth holds the information required to authenticate user via basic auth mechanism */
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketBasicAuth {
     /** Password refers to the K8s secret that holds the password. */
     password?: IoK8SApiCoreV1SecretKeySelector;
     /** Username refers to the K8s secret that holds the username. */
@@ -603,9 +587,9 @@ export interface IoArgoprojEventsV1Alpha1BitbucketBasicAuth {
 }
 
 /** BitbucketEventSource describes the event source for Bitbucket */
-export interface IoArgoprojEventsV1Alpha1BitbucketEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketEventSource {
     /** Auth information required to connect to Bitbucket. */
-    auth?: IoArgoprojEventsV1Alpha1BitbucketAuth;
+    auth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketAuth;
     /**
      * DeleteHookOnFinish determines whether to delete the defined Bitbucket hook once the event source is stopped.
      * +optional
@@ -617,7 +601,7 @@ export interface IoArgoprojEventsV1Alpha1BitbucketEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * Metadata holds the user defined metadata which will be passed along the event payload.
      * +optional
@@ -639,7 +623,7 @@ export interface IoArgoprojEventsV1Alpha1BitbucketEventSource {
      * Repositories holds a list of repositories for which integration needs to set up
      * +optional
      */
-    repositories?: IoArgoprojEventsV1Alpha1BitbucketRepository[];
+    repositories?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketRepository[];
     /**
      * DeprecatedRepositorySlug is a URL-friendly version of a repository name, automatically generated by Bitbucket for use in the URL
      * Deprecated: use Repositories instead. Will be unsupported in v1.9
@@ -647,10 +631,10 @@ export interface IoArgoprojEventsV1Alpha1BitbucketEventSource {
      */
     repositorySlug?: string;
     /** Webhook refers to the configuration required to run an http server */
-    webhook?: IoArgoprojEventsV1Alpha1WebhookContext;
+    webhook?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
 }
 
-export interface IoArgoprojEventsV1Alpha1BitbucketRepository {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketRepository {
     /** Owner is the owner of the repository */
     owner?: string;
     /** RepositorySlug is a URL-friendly version of a repository name, automatically generated by Bitbucket for use in the URL */
@@ -658,14 +642,20 @@ export interface IoArgoprojEventsV1Alpha1BitbucketRepository {
 }
 
 /** BitbucketServerEventSource refers to event-source related to Bitbucket Server events */
-export interface IoArgoprojEventsV1Alpha1BitbucketServerEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketServerEventSource {
     /**
-     * AccessToken is reference to K8s secret which holds the bitbucket api access information
+     * AccessToken is reference to K8s secret which holds the bitbucket api access information.
+     * +optional
      * SecretKeySelector selects a key of a Secret.
      */
     accessToken?: IoK8SApiCoreV1SecretKeySelector;
-    /** BitbucketServerBaseURL is the base URL for API requests to a custom endpoint */
+    /** BitbucketServerBaseURL is the base URL for API requests to a custom endpoint. */
     bitbucketserverBaseURL?: string;
+    /**
+     * CheckInterval is a duration in which to wait before checking that the webhooks exist, e.g. 1s, 30m, 2h... (defaults to 1m)
+     * +optional
+     */
+    checkInterval?: string;
     /**
      * DeleteHookOnFinish determines whether to delete the Bitbucket Server hook for the project once the event source is stopped.
      * +optional
@@ -674,54 +664,75 @@ export interface IoArgoprojEventsV1Alpha1BitbucketServerEventSource {
     /**
      * Events are bitbucket event to listen to.
      * Refer https://confluence.atlassian.com/bitbucketserver/event-payload-938025882.html
+     * +optional
      */
     events?: string[];
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * Metadata holds the user defined metadata which will passed along the event payload.
      * +optional
      */
     metadata?: Record<string, string>;
     /**
-     * DeprecatedProjectKey is the key of project for which integration needs to set up
-     * Deprecated: use Repositories instead. Will be unsupported in v1.8
+     * OneEventPerChange controls whether to process each change in a repo:refs_changed webhook event as a separate io.argoproj.workflow.v1alpha1. This setting is useful when multiple tags are
+     * pushed simultaneously for the same commit, and each tag needs to independently trigger an action, such as a distinct workflow in Argo Workflows. When enabled, the
+     * BitbucketServerEventSource publishes an individual BitbucketServerEventData for each change, ensuring independent processing of each tag or reference update in a
+     * single webhook event.
+     * +optional
+     */
+    oneEventPerChange?: boolean;
+    /**
+     * DeprecatedProjectKey is the key of project for which integration needs to set up.
+     * Deprecated: use Repositories instead. Will be unsupported in v1.8.
      * +optional
      */
     projectKey?: string;
     /**
-     * Repositories holds a list of repositories for which integration needs to set up
+     * Projects holds a list of projects for which integration needs to set up, this will add the webhook to all repositories in the project.
      * +optional
      */
-    repositories?: IoArgoprojEventsV1Alpha1BitbucketServerRepository[];
+    projects?: string[];
     /**
-     * DeprecatedRepositorySlug is the slug of the repository for which integration needs to set up
-     * Deprecated: use Repositories instead. Will be unsupported in v1.8
+     * Repositories holds a list of repositories for which integration needs to set up.
+     * +optional
+     */
+    repositories?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketServerRepository[];
+    /**
+     * DeprecatedRepositorySlug is the slug of the repository for which integration needs to set up.
+     * Deprecated: use Repositories instead. Will be unsupported in v1.8.
      * +optional
      */
     repositorySlug?: string;
+    /**
+     * SkipBranchRefsChangedOnOpenPR bypasses the event repo:refs_changed for branches whenever there's an associated open pull request.
+     * This helps in optimizing the event handling process by avoiding unnecessary triggers for branch reference changes that are already part of a pull request under review.
+     * +optional
+     */
+    skipBranchRefsChangedOnOpenPR?: boolean;
     /**
      * TLS configuration for the bitbucketserver client.
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
-    /** Webhook holds configuration to run a http server */
-    webhook?: IoArgoprojEventsV1Alpha1WebhookContext;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
+    /** Webhook holds configuration to run a http server. */
+    webhook?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
     /**
-     * WebhookSecret is reference to K8s secret which holds the bitbucket webhook secret (for HMAC validation)
+     * WebhookSecret is reference to K8s secret which holds the bitbucket webhook secret (for HMAC validation).
+     * +optional
      * SecretKeySelector selects a key of a Secret.
      */
     webhookSecret?: IoK8SApiCoreV1SecretKeySelector;
 }
 
-export interface IoArgoprojEventsV1Alpha1BitbucketServerRepository {
-    /** ProjectKey is the key of project for which integration needs to set up */
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketServerRepository {
+    /** ProjectKey is the key of project for which integration needs to set up. */
     projectKey?: string;
-    /** RepositorySlug is the slug of the repository for which integration needs to set up */
+    /** RepositorySlug is the slug of the repository for which integration needs to set up. */
     repositorySlug?: string;
 }
 
@@ -729,14 +740,14 @@ export interface IoArgoprojEventsV1Alpha1BitbucketServerRepository {
  * CalendarEventSource describes a time based dependency. One of the fields (schedule, interval, or recurrence) must be passed.
  * Schedule takes precedence over interval; interval takes precedence over recurrence
  */
-export interface IoArgoprojEventsV1Alpha1CalendarEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1CalendarEventSource {
     /** ExclusionDates defines the list of DATE-TIME exceptions for recurring events. */
     exclusionDates?: string[];
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * Interval is a string that describes an interval duration, e.g. 1s, 30m, 2h...
      * +optional
@@ -748,7 +759,7 @@ export interface IoArgoprojEventsV1Alpha1CalendarEventSource {
      */
     metadata?: Record<string, string>;
     /** Persistence hold the configuration for event persistence */
-    persistence?: IoArgoprojEventsV1Alpha1EventPersistence;
+    persistence?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventPersistence;
     /**
      * Schedule is a cron-like expression. For reference, see: https://en.wikipedia.org/wiki/Cron
      * +optional
@@ -761,7 +772,7 @@ export interface IoArgoprojEventsV1Alpha1CalendarEventSource {
     timezone?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1CatchupConfiguration {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1CatchupConfiguration {
     /** Enabled enables to triggered the missed schedule when eventsource restarts */
     enabled?: boolean;
     /** MaxDuration holds max catchup duration */
@@ -769,7 +780,7 @@ export interface IoArgoprojEventsV1Alpha1CatchupConfiguration {
 }
 
 /** Condition contains details about resource state */
-export interface IoArgoprojEventsV1Alpha1Condition {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Condition {
     /**
      * Last time the condition transitioned from one status to another.
      * +optional
@@ -799,33 +810,55 @@ export interface IoArgoprojEventsV1Alpha1Condition {
     type?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1ConditionsResetByTime {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ConditionsResetByTime {
     /** Cron is a cron-like expression. For reference, see: https://en.wikipedia.org/wiki/Cron */
     cron?: string;
     /** +optional */
     timezone?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1ConditionsResetCriteria {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ConditionsResetCriteria {
     /** Schedule is a cron-like expression. For reference, see: https://en.wikipedia.org/wiki/Cron */
-    byTime?: IoArgoprojEventsV1Alpha1ConditionsResetByTime;
+    byTime?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ConditionsResetByTime;
 }
 
-export interface IoArgoprojEventsV1Alpha1ConfigMapPersistence {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ConfigMapPersistence {
     /** CreateIfNotExist will create configmap if it doesn't exists */
     createIfNotExist?: boolean;
     /** Name of the configmap */
     name?: string;
 }
 
+/** Container defines customized spec for a container */
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Container {
+    /** +optional */
+    env?: IoK8SApiCoreV1EnvVar[];
+    /** +optional */
+    envFrom?: IoK8SApiCoreV1EnvFromSource[];
+    /** +optional */
+    imagePullPolicy?: string;
+    /**
+     * +optional
+     * ResourceRequirements describes the compute resource requirements.
+     */
+    resources?: IoK8SApiCoreV1ResourceRequirements;
+    /**
+     * +optional
+     * SecurityContext holds security configuration that will be applied to a container. Some fields are present in both SecurityContext and PodSecurityContext.  When both are set, the values in SecurityContext take precedence.
+     */
+    securityContext?: IoK8SApiCoreV1SecurityContext;
+    /** +optional */
+    volumeMounts?: IoK8SApiCoreV1VolumeMount[];
+}
+
 /** CustomTrigger refers to the specification of the custom trigger. */
-export interface IoArgoprojEventsV1Alpha1CustomTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1CustomTrigger {
     /** CertSecret refers to the secret that contains cert for secure connection between sensor and custom trigger gRPC server. */
     certSecret?: IoK8SApiCoreV1SecretKeySelector;
     /** Parameters is the list of parameters that is applied to resolved custom trigger trigger object. */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Payload is the list of key-value extracted from an event payload to construct the request payload. */
-    payload?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    payload?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Secure refers to type of the connection between sensor to custom trigger gRPC */
     secure?: boolean;
     /** ServerNameOverride for the secure connection between sensor and custom trigger gRPC server. */
@@ -841,7 +874,7 @@ export interface IoArgoprojEventsV1Alpha1CustomTrigger {
  * Regular Expressions are purposefully not a feature as they are overkill for our uses here
  * See Rob Pike's Post: https://commandcenter.blogspot.com/2011/08/regular-expressions-in-lexing-and.html
  */
-export interface IoArgoprojEventsV1Alpha1DataFilter {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1DataFilter {
     /**
      * Comparator compares the event data with a user given value.
      * Can be ">=", ">", "=", "!=", "<", or "<=".
@@ -875,7 +908,7 @@ export interface IoArgoprojEventsV1Alpha1DataFilter {
 }
 
 /** EmailTrigger refers to the specification of the email notification trigger. */
-export interface IoArgoprojEventsV1Alpha1EmailTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EmailTrigger {
     /**
      * Body refers to the body/content of the email send.
      * +optional
@@ -893,7 +926,7 @@ export interface IoArgoprojEventsV1Alpha1EmailTrigger {
      * the trigger resource.
      * +optional
      */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * Port refers to the smtp server port to which email is send.
      * Defaults to 0.
@@ -927,7 +960,7 @@ export interface IoArgoprojEventsV1Alpha1EmailTrigger {
  * EmitterEventSource describes the event source for emitter
  * More info at https://emitter.io/develop/getting-started/
  */
-export interface IoArgoprojEventsV1Alpha1EmitterEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EmitterEventSource {
     /** Broker URI to connect to. */
     broker?: string;
     /** ChannelKey refers to the channel key */
@@ -938,12 +971,12 @@ export interface IoArgoprojEventsV1Alpha1EmitterEventSource {
      * Backoff holds parameters applied to connection.
      * +optional
      */
-    connectionBackoff?: IoArgoprojEventsV1Alpha1Backoff;
+    connectionBackoff?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * JSONBody specifies that all event body payload coming from this
      * source will be JSON
@@ -966,7 +999,7 @@ export interface IoArgoprojEventsV1Alpha1EmitterEventSource {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /**
      * Username to use to connect to broker
      * +optional
@@ -979,7 +1012,7 @@ export interface IoArgoprojEventsV1Alpha1EmitterEventSource {
  * EventContext holds the context of the cloudevent received from an event source.
  * +protobuf.options.(gogoproto.goproto_stringer)=false
  */
-export interface IoArgoprojEventsV1Alpha1EventContext {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventContext {
     /** DataContentType - A MIME (RFC2046) string describing the media type of `data`. */
     datacontenttype?: string;
     /** ID of the event; must be non-empty and unique within the scope of the producer. */
@@ -997,7 +1030,7 @@ export interface IoArgoprojEventsV1Alpha1EventContext {
 }
 
 /** EventDependency describes a dependency */
-export interface IoArgoprojEventsV1Alpha1EventDependency {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventDependency {
     /** EventName is the name of the event */
     eventName?: string;
     /** EventSourceName is the name of EventSource that Sensor depends on */
@@ -1006,7 +1039,7 @@ export interface IoArgoprojEventsV1Alpha1EventDependency {
      * Filters and rules governing toleration of success and constraints on the context and data of an event
      * EventDependencyFilter defines filters and constraints for a io.argoproj.workflow.v1alpha1.
      */
-    filters?: IoArgoprojEventsV1Alpha1EventDependencyFilter;
+    filters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventDependencyFilter;
     /**
      * FiltersLogicalOperator defines how different filters are evaluated together.
      * Available values: and (&&), or (||)
@@ -1016,15 +1049,15 @@ export interface IoArgoprojEventsV1Alpha1EventDependency {
     /** Name is a unique name of this dependency */
     name?: string;
     /** Transform transforms the event data */
-    transform?: IoArgoprojEventsV1Alpha1EventDependencyTransformer;
+    transform?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventDependencyTransformer;
 }
 
 /** EventDependencyFilter defines filters and constraints for a io.argoproj.workflow.v1alpha1. */
-export interface IoArgoprojEventsV1Alpha1EventDependencyFilter {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventDependencyFilter {
     /** Context filter constraints */
-    context?: IoArgoprojEventsV1Alpha1EventContext;
+    context?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventContext;
     /** Data filter constraints with escalation */
-    data?: IoArgoprojEventsV1Alpha1DataFilter[];
+    data?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1DataFilter[];
     /**
      * DataLogicalOperator defines how multiple Data filters (if defined) are evaluated together.
      * Available values: and (&&), or (||)
@@ -1038,7 +1071,7 @@ export interface IoArgoprojEventsV1Alpha1EventDependencyFilter {
      */
     exprLogicalOperator?: string;
     /** Exprs contains the list of expressions evaluated against the event payload. */
-    exprs?: IoArgoprojEventsV1Alpha1ExprFilter[];
+    exprs?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ExprFilter[];
     /** Script refers to a Lua script evaluated to determine the validity of an io.argoproj.workflow.v1alpha1. */
     script?: string;
     /**
@@ -1048,11 +1081,11 @@ export interface IoArgoprojEventsV1Alpha1EventDependencyFilter {
      * In other words, only events that occur after Start and before Stop
      * will pass this filter.
      */
-    time?: IoArgoprojEventsV1Alpha1TimeFilter;
+    time?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TimeFilter;
 }
 
 /** EventDependencyTransformer transforms the event */
-export interface IoArgoprojEventsV1Alpha1EventDependencyTransformer {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventDependencyTransformer {
     /**
      * JQ holds the jq command applied for transformation
      * +optional
@@ -1065,11 +1098,11 @@ export interface IoArgoprojEventsV1Alpha1EventDependencyTransformer {
     script?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1EventPersistence {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventPersistence {
     /** Catchup enables to triggered the missed schedule when eventsource restarts */
-    catchup?: IoArgoprojEventsV1Alpha1CatchupConfiguration;
+    catchup?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1CatchupConfiguration;
     /** ConfigMap holds configmap details for persistence */
-    configMap?: IoArgoprojEventsV1Alpha1ConfigMapPersistence;
+    configMap?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ConfigMapPersistence;
 }
 
 /**
@@ -1080,15 +1113,15 @@ export interface IoArgoprojEventsV1Alpha1EventPersistence {
  * +k8s:deepcopy-gen:interfaces=io.k8s.apimachinery/pkg/runtime.Object
  * +k8s:openapi-gen=true
  */
-export interface IoArgoprojEventsV1Alpha1EventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSource {
     /** ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create. */
     metadata?: IoK8SApimachineryPkgApisMetaV1ObjectMeta;
-    spec?: IoArgoprojEventsV1Alpha1EventSourceSpec;
+    spec?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceSpec;
     /** +optional */
-    status?: IoArgoprojEventsV1Alpha1EventSourceStatus;
+    status?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceStatus;
 }
 
-export interface IoArgoprojEventsV1Alpha1EventSourceFilter {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter {
     expression?: string;
 }
 
@@ -1096,112 +1129,112 @@ export interface IoArgoprojEventsV1Alpha1EventSourceFilter {
  * EventSourceList is the list of eventsource resources
  * +k8s:deepcopy-gen:interfaces=io.k8s.apimachinery/pkg/runtime.Object
  */
-export interface IoArgoprojEventsV1Alpha1EventSourceList {
-    items?: IoArgoprojEventsV1Alpha1EventSource[];
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceList {
+    items?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSource[];
     /** ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}. */
     metadata?: IoK8SApimachineryPkgApisMetaV1ListMeta;
 }
 
 /** EventSourceSpec refers to specification of event-source resource */
-export interface IoArgoprojEventsV1Alpha1EventSourceSpec {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceSpec {
     /** AMQP event sources */
-    amqp?: Record<string, IoArgoprojEventsV1Alpha1AMQPEventSource>;
+    amqp?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AMQPEventSource>;
     /** AzureEventsHub event sources */
-    azureEventsHub?: Record<string, IoArgoprojEventsV1Alpha1AzureEventsHubEventSource>;
+    azureEventsHub?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureEventsHubEventSource>;
     /** AzureQueueStorage event source */
-    azureQueueStorage?: Record<string, IoArgoprojEventsV1Alpha1AzureQueueStorageEventSource>;
+    azureQueueStorage?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureQueueStorageEventSource>;
     /** Azure Service Bus event source */
-    azureServiceBus?: Record<string, IoArgoprojEventsV1Alpha1AzureServiceBusEventSource>;
+    azureServiceBus?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureServiceBusEventSource>;
     /** Bitbucket event sources */
-    bitbucket?: Record<string, IoArgoprojEventsV1Alpha1BitbucketEventSource>;
+    bitbucket?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketEventSource>;
     /** Bitbucket Server event sources */
-    bitbucketserver?: Record<string, IoArgoprojEventsV1Alpha1BitbucketServerEventSource>;
+    bitbucketserver?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BitbucketServerEventSource>;
     /** Calendar event sources */
-    calendar?: Record<string, IoArgoprojEventsV1Alpha1CalendarEventSource>;
+    calendar?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1CalendarEventSource>;
     /** Emitter event source */
-    emitter?: Record<string, IoArgoprojEventsV1Alpha1EmitterEventSource>;
+    emitter?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EmitterEventSource>;
     /** EventBusName references to a EventBus name. By default the value is "default" */
     eventBusName?: string;
     /** File event sources */
-    file?: Record<string, IoArgoprojEventsV1Alpha1FileEventSource>;
+    file?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1FileEventSource>;
     /** Generic event source */
-    generic?: Record<string, IoArgoprojEventsV1Alpha1GenericEventSource>;
+    generic?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GenericEventSource>;
     /** Gerrit event source */
-    gerrit?: Record<string, IoArgoprojEventsV1Alpha1GerritEventSource>;
+    gerrit?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GerritEventSource>;
     /** Github event sources */
-    github?: Record<string, IoArgoprojEventsV1Alpha1GithubEventSource>;
+    github?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GithubEventSource>;
     /** Gitlab event sources */
-    gitlab?: Record<string, IoArgoprojEventsV1Alpha1GitlabEventSource>;
+    gitlab?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GitlabEventSource>;
     /** HDFS event sources */
-    hdfs?: Record<string, IoArgoprojEventsV1Alpha1HDFSEventSource>;
+    hdfs?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1HDFSEventSource>;
     /** Kafka event sources */
-    kafka?: Record<string, IoArgoprojEventsV1Alpha1KafkaEventSource>;
+    kafka?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1KafkaEventSource>;
     /** Minio event sources */
-    minio?: Record<string, IoArgoprojEventsV1Alpha1S3Artifact>;
+    minio?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1S3Artifact>;
     /** MQTT event sources */
-    mqtt?: Record<string, IoArgoprojEventsV1Alpha1MQTTEventSource>;
+    mqtt?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1MQTTEventSource>;
     /** NATS event sources */
-    nats?: Record<string, IoArgoprojEventsV1Alpha1NATSEventsSource>;
+    nats?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1NATSEventsSource>;
     /** NSQ event source */
-    nsq?: Record<string, IoArgoprojEventsV1Alpha1NSQEventSource>;
+    nsq?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1NSQEventSource>;
     /** PubSub event sources */
-    pubSub?: Record<string, IoArgoprojEventsV1Alpha1PubSubEventSource>;
+    pubSub?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1PubSubEventSource>;
     /** Pulsar event source */
-    pulsar?: Record<string, IoArgoprojEventsV1Alpha1PulsarEventSource>;
+    pulsar?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1PulsarEventSource>;
     /** Redis event source */
-    redis?: Record<string, IoArgoprojEventsV1Alpha1RedisEventSource>;
+    redis?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1RedisEventSource>;
     /** Redis stream source */
-    redisStream?: Record<string, IoArgoprojEventsV1Alpha1RedisStreamEventSource>;
+    redisStream?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1RedisStreamEventSource>;
     /** Replicas is the event source deployment replicas */
     replicas?: number;
     /** Resource event sources */
-    resource?: Record<string, IoArgoprojEventsV1Alpha1ResourceEventSource>;
+    resource?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ResourceEventSource>;
     /**
      * Service is the specifications of the service to expose the event source
      * +optional
      */
-    service?: IoArgoprojEventsV1Alpha1Service;
+    service?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Service;
     /** SFTP event sources */
-    sftp?: Record<string, IoArgoprojEventsV1Alpha1SFTPEventSource>;
+    sftp?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SFTPEventSource>;
     /** Slack event sources */
-    slack?: Record<string, IoArgoprojEventsV1Alpha1SlackEventSource>;
+    slack?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SlackEventSource>;
     /** SNS event sources */
-    sns?: Record<string, IoArgoprojEventsV1Alpha1SNSEventSource>;
+    sns?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SNSEventSource>;
     /** SQS event sources */
-    sqs?: Record<string, IoArgoprojEventsV1Alpha1SQSEventSource>;
+    sqs?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SQSEventSource>;
     /** StorageGrid event sources */
-    storageGrid?: Record<string, IoArgoprojEventsV1Alpha1StorageGridEventSource>;
+    storageGrid?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StorageGridEventSource>;
     /** Stripe event sources */
-    stripe?: Record<string, IoArgoprojEventsV1Alpha1StripeEventSource>;
+    stripe?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StripeEventSource>;
     /**
      * Template is the pod specification for the event source
      * +optional
      */
-    template?: IoArgoprojEventsV1Alpha1Template;
+    template?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Template;
     /** Webhook event sources */
-    webhook?: Record<string, IoArgoprojEventsV1Alpha1WebhookEventSource>;
+    webhook?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookEventSource>;
 }
 
 /** EventSourceStatus holds the status of the event-source resource */
-export interface IoArgoprojEventsV1Alpha1EventSourceStatus {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceStatus {
     /** Status is a common structure which can be used for Status field. */
-    status?: IoArgoprojEventsV1Alpha1Status;
+    status?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Status;
 }
 
-export interface IoArgoprojEventsV1Alpha1ExprFilter {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ExprFilter {
     /** Expr refers to the expression that determines the outcome of the filter. */
     expr?: string;
     /** Fields refers to set of keys that refer to the paths within event payload. */
-    fields?: IoArgoprojEventsV1Alpha1PayloadField[];
+    fields?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1PayloadField[];
 }
 
 /** FileArtifact contains information about an artifact in a filesystem */
-export interface IoArgoprojEventsV1Alpha1FileArtifact {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1FileArtifact {
     path?: string;
 }
 
 /** FileEventSource describes an event-source for file related events. */
-export interface IoArgoprojEventsV1Alpha1FileEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1FileEventSource {
     /**
      * Type of file operations to watch
      * Refer https://github.com/fsnotify/fsnotify/blob/master/fsnotify.go for more information
@@ -1211,7 +1244,7 @@ export interface IoArgoprojEventsV1Alpha1FileEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * Metadata holds the user defined metadata which will passed along the event payload.
      * +optional
@@ -1220,11 +1253,11 @@ export interface IoArgoprojEventsV1Alpha1FileEventSource {
     /** Use polling instead of inotify */
     polling?: boolean;
     /** WatchPathConfig contains configuration about the file path to watch */
-    watchPathConfig?: IoArgoprojEventsV1Alpha1WatchPathConfig;
+    watchPathConfig?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WatchPathConfig;
 }
 
 /** GenericEventSource refers to a generic event source. It can be used to implement a custom event source. */
-export interface IoArgoprojEventsV1Alpha1GenericEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GenericEventSource {
     /**
      * AuthSecret holds a secret selector that contains a bearer token for authentication
      * +optional
@@ -1237,7 +1270,7 @@ export interface IoArgoprojEventsV1Alpha1GenericEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /** Insecure determines the type of connection. */
     insecure?: boolean;
     /**
@@ -1256,12 +1289,12 @@ export interface IoArgoprojEventsV1Alpha1GenericEventSource {
 }
 
 /** GerritEventSource refers to event-source related to gerrit events */
-export interface IoArgoprojEventsV1Alpha1GerritEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GerritEventSource {
     /**
      * Auth hosts secret selectors for username and password
      * +optional
      */
-    auth?: IoArgoprojEventsV1Alpha1BasicAuth;
+    auth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BasicAuth;
     /**
      * DeleteHookOnFinish determines whether to delete the Gerrit hook for the project once the event source is stopped.
      * +optional
@@ -1276,7 +1309,7 @@ export interface IoArgoprojEventsV1Alpha1GerritEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /** GerritBaseURL is the base URL for API requests to a custom endpoint */
     gerritBaseURL?: string;
     /** HookName is the name of the webhook */
@@ -1294,11 +1327,11 @@ export interface IoArgoprojEventsV1Alpha1GerritEventSource {
      */
     sslVerify?: boolean;
     /** Webhook holds configuration to run a http server */
-    webhook?: IoArgoprojEventsV1Alpha1WebhookContext;
+    webhook?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
 }
 
 /** GitArtifact contains information about an artifact stored in git */
-export interface IoArgoprojEventsV1Alpha1GitArtifact {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GitArtifact {
     /**
      * Branch to use to pull trigger resource
      * +optional
@@ -1313,7 +1346,7 @@ export interface IoArgoprojEventsV1Alpha1GitArtifact {
      * Creds contain reference to git username and password
      * +optional
      */
-    creds?: IoArgoprojEventsV1Alpha1GitCreds;
+    creds?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GitCreds;
     /** Path to file that contains trigger resource definition */
     filePath?: string;
     /**
@@ -1332,7 +1365,7 @@ export interface IoArgoprojEventsV1Alpha1GitArtifact {
      * Refer https://git-scm.com/docs/git-remote
      * +optional
      */
-    remote?: IoArgoprojEventsV1Alpha1GitRemoteConfig;
+    remote?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GitRemoteConfig;
     /**
      * SSHKeySecret refers to the secret that contains SSH key
      * SecretKeySelector selects a key of a Secret.
@@ -1348,7 +1381,7 @@ export interface IoArgoprojEventsV1Alpha1GitArtifact {
 }
 
 /** GitCreds contain reference to git username and password */
-export interface IoArgoprojEventsV1Alpha1GitCreds {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GitCreds {
     /** SecretKeySelector selects a key of a Secret. */
     password?: IoK8SApiCoreV1SecretKeySelector;
     /** SecretKeySelector selects a key of a Secret. */
@@ -1356,7 +1389,7 @@ export interface IoArgoprojEventsV1Alpha1GitCreds {
 }
 
 /** GitRemoteConfig contains the configuration of a Git remote */
-export interface IoArgoprojEventsV1Alpha1GitRemoteConfig {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GitRemoteConfig {
     /** Name of the remote to fetch from. */
     name?: string;
     /**
@@ -1366,7 +1399,7 @@ export interface IoArgoprojEventsV1Alpha1GitRemoteConfig {
     urls?: string[];
 }
 
-export interface IoArgoprojEventsV1Alpha1GithubAppCreds {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GithubAppCreds {
     /** AppID refers to the GitHub App ID for the application you created */
     appID?: string;
     /** InstallationID refers to the Installation ID of the GitHub app you created and installed */
@@ -1379,7 +1412,7 @@ export interface IoArgoprojEventsV1Alpha1GithubAppCreds {
 }
 
 /** GithubEventSource refers to event-source for github related events */
-export interface IoArgoprojEventsV1Alpha1GithubEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GithubEventSource {
     /**
      * Active refers to status of the webhook for event deliveries.
      * https://developer.github.com/webhooks/creating/#active
@@ -1405,12 +1438,12 @@ export interface IoArgoprojEventsV1Alpha1GithubEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * GitHubApp holds the GitHub app credentials
      * +optional
      */
-    githubApp?: IoArgoprojEventsV1Alpha1GithubAppCreds;
+    githubApp?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GithubAppCreds;
     /**
      * GitHub base URL (for GitHub Enterprise)
      * +optional
@@ -1446,7 +1479,7 @@ export interface IoArgoprojEventsV1Alpha1GithubEventSource {
      * Repositories holds the information of repositories, which uses repo owner as the key,
      * and list of repo names as the value. Not required if Organizations is set.
      */
-    repositories?: IoArgoprojEventsV1Alpha1OwnedRepositories[];
+    repositories?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1OwnedRepositories[];
     /**
      * DeprecatedRepository refers to GitHub repo name i.e. argo-events
      * Deprecated: use Repositories instead. Will be unsupported in v 1.6
@@ -1454,7 +1487,7 @@ export interface IoArgoprojEventsV1Alpha1GithubEventSource {
      */
     repository?: string;
     /** Webhook refers to the configuration required to run a http server */
-    webhook?: IoArgoprojEventsV1Alpha1WebhookContext;
+    webhook?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
     /**
      * WebhookSecret refers to K8s secret containing GitHub webhook secret
      * https://developer.github.com/webhooks/securing/
@@ -1465,7 +1498,7 @@ export interface IoArgoprojEventsV1Alpha1GithubEventSource {
 }
 
 /** GitlabEventSource refers to event-source related to Gitlab events */
-export interface IoArgoprojEventsV1Alpha1GitlabEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GitlabEventSource {
     /**
      * AccessToken references to k8 secret which holds the gitlab api access information
      * SecretKeySelector selects a key of a Secret.
@@ -1490,7 +1523,7 @@ export interface IoArgoprojEventsV1Alpha1GitlabEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /** GitlabBaseURL is the base URL for API requests to a custom endpoint */
     gitlabBaseURL?: string;
     /**
@@ -1511,7 +1544,8 @@ export interface IoArgoprojEventsV1Alpha1GitlabEventSource {
      */
     projectID?: string;
     /**
-     * List of project IDs or project namespace paths like "whynowy/test". Projects and groups cannot be empty at the same time.
+     * List of project IDs or project namespace paths like "whynowy/test".
+     * If neither a project nor a group is defined, the EventSource will not manage webhooks.
      * +optional
      */
     projects?: string[];
@@ -1521,11 +1555,11 @@ export interface IoArgoprojEventsV1Alpha1GitlabEventSource {
      */
     secretToken?: IoK8SApiCoreV1SecretKeySelector;
     /** Webhook holds configuration to run a http server */
-    webhook?: IoArgoprojEventsV1Alpha1WebhookContext;
+    webhook?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
 }
 
 /** HDFSEventSource refers to event-source for HDFS related events */
-export interface IoArgoprojEventsV1Alpha1HDFSEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1HDFSEventSource {
     addresses?: string[];
     /** CheckInterval is a string that describes an interval duration to check the directory state, e.g. 1s, 30m, 2h... (defaults to 1m) */
     checkInterval?: string;
@@ -1533,7 +1567,7 @@ export interface IoArgoprojEventsV1Alpha1HDFSEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * HDFSUser is the user to access HDFS file system.
      * It is ignored if either ccache or keytab is used.
@@ -1576,16 +1610,16 @@ export interface IoArgoprojEventsV1Alpha1HDFSEventSource {
     metadata?: Record<string, string>;
     /** Type of file operations to watch */
     type?: string;
-    watchPathConfig?: IoArgoprojEventsV1Alpha1WatchPathConfig;
+    watchPathConfig?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WatchPathConfig;
 }
 
 /** HTTPTrigger is the trigger for the HTTP request */
-export interface IoArgoprojEventsV1Alpha1HTTPTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1HTTPTrigger {
     /**
      * BasicAuth configuration for the http request.
      * +optional
      */
-    basicAuth?: IoArgoprojEventsV1Alpha1BasicAuth;
+    basicAuth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BasicAuth;
     /**
      * Headers for the HTTP request.
      * +optional
@@ -1602,13 +1636,13 @@ export interface IoArgoprojEventsV1Alpha1HTTPTrigger {
      * Parameters is the list of key-value extracted from event's payload that are applied to
      * the HTTP trigger resource.
      */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
-    payload?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
+    payload?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * Secure Headers stored in Kubernetes Secrets for the HTTP requests.
      * +optional
      */
-    secureHeaders?: IoArgoprojEventsV1Alpha1SecureHeader[];
+    secureHeaders?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SecureHeader[];
     /**
      * Timeout refers to the HTTP request timeout in seconds.
      * Default value is 60 seconds.
@@ -1620,21 +1654,27 @@ export interface IoArgoprojEventsV1Alpha1HTTPTrigger {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** URL refers to the URL to send HTTP request to. */
     url?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1Int64OrString {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Int64OrString {
     int64Val?: string;
     strVal?: string;
     type?: string;
 }
 
+/** K8SResource represent arbitrary structured data. */
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1K8SResource {
+    /** @format byte */
+    value?: string;
+}
+
 /** K8SResourcePolicy refers to the policy used to check the state of K8s based triggers using labels */
-export interface IoArgoprojEventsV1Alpha1K8SResourcePolicy {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1K8SResourcePolicy {
     /** Backoff before checking resource state */
-    backoff?: IoArgoprojEventsV1Alpha1Backoff;
+    backoff?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /**
      * ErrorOnBackoffTimeout determines whether sensor should transition to error state if the trigger policy is unable to determine
      * the state of the resource
@@ -1644,7 +1684,7 @@ export interface IoArgoprojEventsV1Alpha1K8SResourcePolicy {
     labels?: Record<string, string>;
 }
 
-export interface IoArgoprojEventsV1Alpha1KafkaConsumerGroup {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1KafkaConsumerGroup {
     /** The name for the consumer group to use */
     groupName?: string;
     /**
@@ -1660,7 +1700,7 @@ export interface IoArgoprojEventsV1Alpha1KafkaConsumerGroup {
 }
 
 /** KafkaEventSource refers to event-source for Kafka related events */
-export interface IoArgoprojEventsV1Alpha1KafkaEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1KafkaEventSource {
     /**
      * Yaml format Sarama config for Kafka connection.
      * It follows the struct of sarama.Config. See https://github.com/IBM/sarama/blob/main/config.go
@@ -1676,17 +1716,17 @@ export interface IoArgoprojEventsV1Alpha1KafkaEventSource {
      */
     config?: string;
     /** Backoff holds parameters applied to connection. */
-    connectionBackoff?: IoArgoprojEventsV1Alpha1Backoff;
+    connectionBackoff?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /**
      * Consumer group for kafka client
      * +optional
      */
-    consumerGroup?: IoArgoprojEventsV1Alpha1KafkaConsumerGroup;
+    consumerGroup?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1KafkaConsumerGroup;
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * JSONBody specifies that all event body payload coming from this
      * source will be JSON
@@ -1712,13 +1752,13 @@ export interface IoArgoprojEventsV1Alpha1KafkaEventSource {
      * SASL configuration for the kafka client
      * +optional
      */
-    sasl?: IoArgoprojEventsV1Alpha1SASLConfig;
+    sasl?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SASLConfig;
     /**
      * TLS configuration for the kafka client.
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** Topic name */
     topic?: string;
     /** URL to kafka cluster, multiple URLs separated by comma */
@@ -1731,7 +1771,7 @@ export interface IoArgoprojEventsV1Alpha1KafkaEventSource {
 }
 
 /** KafkaTrigger refers to the specification of the Kafka trigger. */
-export interface IoArgoprojEventsV1Alpha1KafkaTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1KafkaTrigger {
     /**
      * Compress determines whether to compress message or not.
      * Defaults to false.
@@ -1745,8 +1785,13 @@ export interface IoArgoprojEventsV1Alpha1KafkaTrigger {
      * +optional
      */
     flushFrequency?: number;
+    /**
+     * Headers for the Kafka Messages.
+     * +optional
+     */
+    headers?: Record<string, string>;
     /** Parameters is the list of parameters that is applied to resolved Kafka trigger object. */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * +optional
      * DEPRECATED
@@ -1758,7 +1803,7 @@ export interface IoArgoprojEventsV1Alpha1KafkaTrigger {
      */
     partitioningKey?: string;
     /** Payload is the list of key-value extracted from an event payload to construct the request payload. */
-    payload?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    payload?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * RequiredAcks used in producer to tell the broker how many replica acknowledgements
      * Defaults to 1 (Only wait for the leader to ack).
@@ -1769,18 +1814,23 @@ export interface IoArgoprojEventsV1Alpha1KafkaTrigger {
      * SASL configuration for the kafka client
      * +optional
      */
-    sasl?: IoArgoprojEventsV1Alpha1SASLConfig;
+    sasl?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SASLConfig;
     /**
      * Schema Registry configuration to producer message with avro format
      * +optional
      */
-    schemaRegistry?: IoArgoprojEventsV1Alpha1SchemaRegistryConfig;
+    schemaRegistry?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SchemaRegistryConfig;
+    /**
+     * Secure Headers stored in Kubernetes Secrets for the Kafka messages.
+     * +optional
+     */
+    secureHeaders?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SecureHeader[];
     /**
      * TLS configuration for the Kafka producer.
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /**
      * Name of the topic.
      * More info at https://kafka.apache.org/documentation/#intro_topics
@@ -1795,7 +1845,7 @@ export interface IoArgoprojEventsV1Alpha1KafkaTrigger {
     version?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1LogTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1LogTrigger {
     /**
      * Only print messages every interval. Useful to prevent logging too much data for busy events.
      * +optional
@@ -1805,21 +1855,21 @@ export interface IoArgoprojEventsV1Alpha1LogTrigger {
 }
 
 /** MQTTEventSource refers to event-source for MQTT related events */
-export interface IoArgoprojEventsV1Alpha1MQTTEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1MQTTEventSource {
     /**
      * Auth hosts secret selectors for username and password
      * +optional
      */
-    auth?: IoArgoprojEventsV1Alpha1BasicAuth;
+    auth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BasicAuth;
     /** ClientID is the id of the client */
     clientId?: string;
     /** ConnectionBackoff holds backoff applied to connection. */
-    connectionBackoff?: IoArgoprojEventsV1Alpha1Backoff;
+    connectionBackoff?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * JSONBody specifies that all event body payload coming from this
      * source will be JSON
@@ -1836,7 +1886,7 @@ export interface IoArgoprojEventsV1Alpha1MQTTEventSource {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** Topic name */
     topic?: string;
     /** URL to connect to broker */
@@ -1844,18 +1894,18 @@ export interface IoArgoprojEventsV1Alpha1MQTTEventSource {
 }
 
 /** Metadata holds the annotations and labels of an event source pod */
-export interface IoArgoprojEventsV1Alpha1Metadata {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Metadata {
     annotations?: Record<string, string>;
     labels?: Record<string, string>;
 }
 
 /** NATSAuth refers to the auth info for NATS EventSource */
-export interface IoArgoprojEventsV1Alpha1NATSAuth {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1NATSAuth {
     /**
      * Baisc auth with username and password
      * +optional
      */
-    basic?: IoArgoprojEventsV1Alpha1BasicAuth;
+    basic?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BasicAuth;
     /**
      * credential used to connect
      * +optional
@@ -1877,19 +1927,19 @@ export interface IoArgoprojEventsV1Alpha1NATSAuth {
 }
 
 /** NATSEventsSource refers to event-source for NATS related events */
-export interface IoArgoprojEventsV1Alpha1NATSEventsSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1NATSEventsSource {
     /**
      * Auth information
      * +optional
      */
-    auth?: IoArgoprojEventsV1Alpha1NATSAuth;
+    auth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1NATSAuth;
     /** ConnectionBackoff holds backoff applied to connection. */
-    connectionBackoff?: IoArgoprojEventsV1Alpha1Backoff;
+    connectionBackoff?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * JSONBody specifies that all event body payload coming from this
      * source will be JSON
@@ -1901,6 +1951,12 @@ export interface IoArgoprojEventsV1Alpha1NATSEventsSource {
      * +optional
      */
     metadata?: Record<string, string>;
+    /**
+     * Queue is the name of the queue group to subscribe as if specified. Uses QueueSubscribe
+     * logic to subscribe as queue group. If the queue is empty, uses default Subscribe logic.
+     * +optional
+     */
+    queue?: string;
     /** Subject holds the name of the subject onto which messages are published */
     subject?: string;
     /**
@@ -1908,15 +1964,20 @@ export interface IoArgoprojEventsV1Alpha1NATSEventsSource {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** URL to connect to NATS cluster */
     url?: string;
 }
 
 /** NATSTrigger refers to the specification of the NATS trigger. */
-export interface IoArgoprojEventsV1Alpha1NATSTrigger {
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
-    payload?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1NATSTrigger {
+    /**
+     * AuthInformation
+     * +optional
+     */
+    auth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1NATSAuth;
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
+    payload?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Name of the subject to put message on. */
     subject?: string;
     /**
@@ -1924,7 +1985,7 @@ export interface IoArgoprojEventsV1Alpha1NATSTrigger {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** URL of the NATS cluster. */
     url?: string;
 }
@@ -1933,19 +1994,19 @@ export interface IoArgoprojEventsV1Alpha1NATSTrigger {
  * NSQEventSource describes the event source for NSQ PubSub
  * More info at https://godoc.org/github.com/nsqio/go-nsq
  */
-export interface IoArgoprojEventsV1Alpha1NSQEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1NSQEventSource {
     /** Channel used for subscription */
     channel?: string;
     /**
      * Backoff holds parameters applied to connection.
      * +optional
      */
-    connectionBackoff?: IoArgoprojEventsV1Alpha1Backoff;
+    connectionBackoff?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /** HostAddress is the address of the host for NSQ lookup */
     hostAddress?: string;
     /**
@@ -1964,13 +2025,13 @@ export interface IoArgoprojEventsV1Alpha1NSQEventSource {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** Topic to subscribe to. */
     topic?: string;
 }
 
 /** OpenWhiskTrigger refers to the specification of the OpenWhisk trigger. */
-export interface IoArgoprojEventsV1Alpha1OpenWhiskTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1OpenWhiskTrigger {
     /** Name of the action/function. */
     actionName?: string;
     /**
@@ -1992,9 +2053,9 @@ export interface IoArgoprojEventsV1Alpha1OpenWhiskTrigger {
      * the trigger resource.
      * +optional
      */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Payload is the list of key-value extracted from an event payload to construct the request payload. */
-    payload?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    payload?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * Version for the API.
      * Defaults to v1.
@@ -2003,7 +2064,7 @@ export interface IoArgoprojEventsV1Alpha1OpenWhiskTrigger {
     version?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1OwnedRepositories {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1OwnedRepositories {
     /** Repository names */
     names?: string[];
     /** Organization or user name */
@@ -2011,7 +2072,7 @@ export interface IoArgoprojEventsV1Alpha1OwnedRepositories {
 }
 
 /** PayloadField binds a value at path within the event payload against a name. */
-export interface IoArgoprojEventsV1Alpha1PayloadField {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1PayloadField {
     /** Name acts as key that holds the value at the path. */
     name?: string;
     /**
@@ -2024,7 +2085,7 @@ export interface IoArgoprojEventsV1Alpha1PayloadField {
 }
 
 /** PubSubEventSource refers to event-source for GCP PubSub related events. */
-export interface IoArgoprojEventsV1Alpha1PubSubEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1PubSubEventSource {
     /**
      * CredentialSecret references to the secret that contains JSON credentials to access GCP.
      * If it is missing, it implicitly uses Workload Identity to access.
@@ -2042,7 +2103,7 @@ export interface IoArgoprojEventsV1Alpha1PubSubEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * JSONBody specifies that all event body payload coming from this
      * source will be JSON
@@ -2086,7 +2147,7 @@ export interface IoArgoprojEventsV1Alpha1PubSubEventSource {
 }
 
 /** PulsarEventSource describes the event source for Apache Pulsar */
-export interface IoArgoprojEventsV1Alpha1PulsarEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1PulsarEventSource {
     /**
      * Authentication athenz parameters for the pulsar client.
      * Refer https://github.com/apache/pulsar-client-go/blob/master/pulsar/auth/athenz.go
@@ -2112,12 +2173,12 @@ export interface IoArgoprojEventsV1Alpha1PulsarEventSource {
      * Backoff holds parameters applied to connection.
      * +optional
      */
-    connectionBackoff?: IoArgoprojEventsV1Alpha1Backoff;
+    connectionBackoff?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * JSONBody specifies that all event body payload coming from this
      * source will be JSON
@@ -2134,7 +2195,7 @@ export interface IoArgoprojEventsV1Alpha1PulsarEventSource {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /**
      * Whether the Pulsar client accept untrusted TLS certificate from broker.
      * +optional
@@ -2171,7 +2232,7 @@ export interface IoArgoprojEventsV1Alpha1PulsarEventSource {
 }
 
 /** PulsarTrigger refers to the specification of the Pulsar trigger. */
-export interface IoArgoprojEventsV1Alpha1PulsarTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1PulsarTrigger {
     /**
      * Authentication athenz parameters for the pulsar client.
      * Refer https://github.com/apache/pulsar-client-go/blob/master/pulsar/auth/athenz.go
@@ -2197,17 +2258,17 @@ export interface IoArgoprojEventsV1Alpha1PulsarTrigger {
      * Backoff holds parameters applied to connection.
      * +optional
      */
-    connectionBackoff?: IoArgoprojEventsV1Alpha1Backoff;
+    connectionBackoff?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /** Parameters is the list of parameters that is applied to resolved Kafka trigger object. */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /** Payload is the list of key-value extracted from an event payload to construct the request payload. */
-    payload?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    payload?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * TLS configuration for the pulsar client.
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /**
      * Whether the Pulsar client accept untrusted TLS certificate from broker.
      * +optional
@@ -2236,7 +2297,7 @@ export interface IoArgoprojEventsV1Alpha1PulsarTrigger {
     url?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1RateLimit {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1RateLimit {
     requestsPerUnit?: number;
     /** Defaults to Second */
     unit?: string;
@@ -2246,7 +2307,7 @@ export interface IoArgoprojEventsV1Alpha1RateLimit {
  * RedisEventSource describes an event source for the Redis PubSub.
  * More info at https://godoc.org/github.com/go-redis/redis#example-PubSub
  */
-export interface IoArgoprojEventsV1Alpha1RedisEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1RedisEventSource {
     channels?: string[];
     /**
      * DB to use. If not specified, default DB 0 will be used.
@@ -2257,7 +2318,7 @@ export interface IoArgoprojEventsV1Alpha1RedisEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /** HostAddress refers to the address of the Redis host/server */
     hostAddress?: string;
     /**
@@ -2287,7 +2348,7 @@ export interface IoArgoprojEventsV1Alpha1RedisEventSource {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /**
      * Username required for ACL style authentication if any.
      * +optional
@@ -2299,7 +2360,7 @@ export interface IoArgoprojEventsV1Alpha1RedisEventSource {
  * RedisStreamEventSource describes an event source for
  * Redis streams (https://redis.io/topics/streams-intro)
  */
-export interface IoArgoprojEventsV1Alpha1RedisStreamEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1RedisStreamEventSource {
     /**
      * ConsumerGroup refers to the Redis stream consumer group that will be
      * created on all redis streams. Messages are read through this group. Defaults to 'argo-events-cg'
@@ -2315,7 +2376,7 @@ export interface IoArgoprojEventsV1Alpha1RedisStreamEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /** HostAddress refers to the address of the Redis host/server (master instance) */
     hostAddress?: string;
     /**
@@ -2343,7 +2404,7 @@ export interface IoArgoprojEventsV1Alpha1RedisStreamEventSource {
      * +optional
      * TLSConfig refers to TLS configuration for a client.
      */
-    tls?: IoArgoprojEventsV1Alpha1TLSConfig;
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /**
      * Username required for ACL style authentication if any.
      * +optional
@@ -2351,14 +2412,8 @@ export interface IoArgoprojEventsV1Alpha1RedisStreamEventSource {
     username?: string;
 }
 
-/** Resource represent arbitrary structured data. */
-export interface IoArgoprojEventsV1Alpha1Resource {
-    /** @format byte */
-    value?: string;
-}
-
 /** ResourceEventSource refers to a event-source for K8s resource related events. */
-export interface IoArgoprojEventsV1Alpha1ResourceEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ResourceEventSource {
     /**
      * EventTypes is the list of event type to watch.
      * Possible values are - ADD, UPDATE and DELETE.
@@ -2369,7 +2424,7 @@ export interface IoArgoprojEventsV1Alpha1ResourceEventSource {
      * If you apply filter, then the internal event informer will only monitor objects that pass the filter.
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1ResourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ResourceFilter;
     /**
      * Group of the resource
      * +protobuf.options.(gogoproto.goproto_stringer)=false
@@ -2385,7 +2440,7 @@ export interface IoArgoprojEventsV1Alpha1ResourceEventSource {
 }
 
 /** ResourceFilter contains K8s ObjectMeta information to further filter resource event objects */
-export interface IoArgoprojEventsV1Alpha1ResourceFilter {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ResourceFilter {
     /**
      * If the resource is created after the start time then the event is treated as valid.
      * +optional
@@ -2405,7 +2460,7 @@ export interface IoArgoprojEventsV1Alpha1ResourceFilter {
      * Same as K8s field selector, operator "=", "==" and "!=" are supported.
      * +optional
      */
-    fields?: IoArgoprojEventsV1Alpha1Selector[];
+    fields?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Selector[];
     /**
      * Labels provide listing options to K8s API to watch resource/s.
      * Refer https://kubernetes.io/docs/concepts/overview/working-with-objects/label-selectors/ for more io.argoproj.workflow.v1alpha1.
@@ -2415,7 +2470,7 @@ export interface IoArgoprojEventsV1Alpha1ResourceFilter {
      * are supported
      * +optional
      */
-    labels?: IoArgoprojEventsV1Alpha1Selector[];
+    labels?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Selector[];
     /**
      * Prefix filter is applied on the resource name.
      * +optional
@@ -2424,15 +2479,15 @@ export interface IoArgoprojEventsV1Alpha1ResourceFilter {
 }
 
 /** S3Artifact contains information about an S3 connection and bucket */
-export interface IoArgoprojEventsV1Alpha1S3Artifact {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1S3Artifact {
     /** SecretKeySelector selects a key of a Secret. */
     accessKey?: IoK8SApiCoreV1SecretKeySelector;
-    bucket?: IoArgoprojEventsV1Alpha1S3Bucket;
+    bucket?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1S3Bucket;
     /** SecretKeySelector selects a key of a Secret. */
     caCertificate?: IoK8SApiCoreV1SecretKeySelector;
     endpoint?: string;
     events?: string[];
-    filter?: IoArgoprojEventsV1Alpha1S3Filter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1S3Filter;
     insecure?: boolean;
     metadata?: Record<string, string>;
     region?: string;
@@ -2441,19 +2496,19 @@ export interface IoArgoprojEventsV1Alpha1S3Artifact {
 }
 
 /** S3Bucket contains information to describe an S3 Bucket */
-export interface IoArgoprojEventsV1Alpha1S3Bucket {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1S3Bucket {
     key?: string;
     name?: string;
 }
 
 /** S3Filter represents filters to apply to bucket notifications for specifying constraints on objects */
-export interface IoArgoprojEventsV1Alpha1S3Filter {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1S3Filter {
     prefix?: string;
     suffix?: string;
 }
 
 /** SASLConfig refers to SASL configuration for a client */
-export interface IoArgoprojEventsV1Alpha1SASLConfig {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SASLConfig {
     /**
      * SASLMechanism is the name of the enabled SASL mechanism.
      * Possible values: OAUTHBEARER, PLAIN (defaults to PLAIN).
@@ -2474,7 +2529,7 @@ export interface IoArgoprojEventsV1Alpha1SASLConfig {
 }
 
 /** SFTPEventSource describes an event-source for sftp related events. */
-export interface IoArgoprojEventsV1Alpha1SFTPEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SFTPEventSource {
     /** Address sftp address. */
     address?: IoK8SApiCoreV1SecretKeySelector;
     /**
@@ -2486,7 +2541,7 @@ export interface IoArgoprojEventsV1Alpha1SFTPEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * Metadata holds the user defined metadata which will passed along the event payload.
      * +optional
@@ -2500,19 +2555,16 @@ export interface IoArgoprojEventsV1Alpha1SFTPEventSource {
      * +optional
      */
     pollIntervalDuration?: string;
-    /**
-     * SSHKeySecret refers to the secret that contains SSH key
-     * SecretKeySelector selects a key of a Secret.
-     */
+    /** SSHKeySecret refers to the secret that contains SSH key. Key needs to contain private key and public key. */
     sshKeySecret?: IoK8SApiCoreV1SecretKeySelector;
     /** Username required for authentication if any. */
     username?: IoK8SApiCoreV1SecretKeySelector;
     /** WatchPathConfig contains configuration about the file path to watch */
-    watchPathConfig?: IoArgoprojEventsV1Alpha1WatchPathConfig;
+    watchPathConfig?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WatchPathConfig;
 }
 
 /** SNSEventSource refers to event-source for AWS SNS related events */
-export interface IoArgoprojEventsV1Alpha1SNSEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SNSEventSource {
     /**
      * AccessKey refers K8s secret containing aws access key
      * SecretKeySelector selects a key of a Secret.
@@ -2527,7 +2579,7 @@ export interface IoArgoprojEventsV1Alpha1SNSEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * Metadata holds the user defined metadata which will passed along the event payload.
      * +optional
@@ -2553,11 +2605,11 @@ export interface IoArgoprojEventsV1Alpha1SNSEventSource {
      */
     validateSignature?: boolean;
     /** Webhook configuration for http server */
-    webhook?: IoArgoprojEventsV1Alpha1WebhookContext;
+    webhook?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
 }
 
 /** SQSEventSource refers to event-source for AWS SQS related events */
-export interface IoArgoprojEventsV1Alpha1SQSEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SQSEventSource {
     /**
      * AccessKey refers K8s secret containing aws access key
      * SecretKeySelector selects a key of a Secret.
@@ -2579,7 +2631,7 @@ export interface IoArgoprojEventsV1Alpha1SQSEventSource {
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * JSONBody specifies that all event body payload coming from this
      * source will be JSON
@@ -2624,12 +2676,12 @@ export interface IoArgoprojEventsV1Alpha1SQSEventSource {
 }
 
 /** SchemaRegistryConfig refers to configuration for a client */
-export interface IoArgoprojEventsV1Alpha1SchemaRegistryConfig {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SchemaRegistryConfig {
     /**
      * +optional
      * SchemaRegistry - basic authentication
      */
-    auth?: IoArgoprojEventsV1Alpha1BasicAuth;
+    auth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BasicAuth;
     /** Schema ID */
     schemaId?: number;
     /** Schema Registry URL. */
@@ -2637,14 +2689,14 @@ export interface IoArgoprojEventsV1Alpha1SchemaRegistryConfig {
 }
 
 /** SecureHeader refers to HTTP Headers with auth tokens as values */
-export interface IoArgoprojEventsV1Alpha1SecureHeader {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SecureHeader {
     name?: string;
     /** Values can be read from either secrets or configmaps */
-    valueFrom?: IoArgoprojEventsV1Alpha1ValueFromSource;
+    valueFrom?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ValueFromSource;
 }
 
 /** Selector represents conditional operation to select K8s objects. */
-export interface IoArgoprojEventsV1Alpha1Selector {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Selector {
     /** Key name */
     key?: string;
     /**
@@ -2667,31 +2719,31 @@ export interface IoArgoprojEventsV1Alpha1Selector {
  * +k8s:deepcopy-gen:interfaces=io.k8s.apimachinery/pkg/runtime.Object
  * +k8s:openapi-gen=true
  */
-export interface IoArgoprojEventsV1Alpha1Sensor {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Sensor {
     /** ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create. */
     metadata?: IoK8SApimachineryPkgApisMetaV1ObjectMeta;
-    spec?: IoArgoprojEventsV1Alpha1SensorSpec;
+    spec?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SensorSpec;
     /**
      * +optional
      * SensorStatus contains information about the status of a sensor.
      */
-    status?: IoArgoprojEventsV1Alpha1SensorStatus;
+    status?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SensorStatus;
 }
 
 /**
  * SensorList is the list of Sensor resources
  * +k8s:deepcopy-gen:interfaces=io.k8s.apimachinery/pkg/runtime.Object
  */
-export interface IoArgoprojEventsV1Alpha1SensorList {
-    items?: IoArgoprojEventsV1Alpha1Sensor[];
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SensorList {
+    items?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Sensor[];
     /** ListMeta describes metadata that synthetic resources must have, including lists and various status objects. A resource may have only one of {ObjectMeta, ListMeta}. */
     metadata?: IoK8SApimachineryPkgApisMetaV1ListMeta;
 }
 
 /** SensorSpec represents desired sensor state */
-export interface IoArgoprojEventsV1Alpha1SensorSpec {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SensorSpec {
     /** Dependencies is a list of the events that this sensor is dependent on. */
-    dependencies?: IoArgoprojEventsV1Alpha1EventDependency[];
+    dependencies?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventDependency[];
     /**
      * ErrorOnFailedRound if set to true, marks sensor state as `error` if the previous trigger round fails.
      * Once sensor state is set to `error`, no further triggers will be processed.
@@ -2715,19 +2767,19 @@ export interface IoArgoprojEventsV1Alpha1SensorSpec {
      * Template is the pod specification for the sensor
      * +optional
      */
-    template?: IoArgoprojEventsV1Alpha1Template;
+    template?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Template;
     /** Triggers is a list of the things that this sensor evokes. These are the outputs from this sensor. */
-    triggers?: IoArgoprojEventsV1Alpha1Trigger[];
+    triggers?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Trigger[];
 }
 
 /** SensorStatus contains information about the status of a sensor. */
-export interface IoArgoprojEventsV1Alpha1SensorStatus {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SensorStatus {
     /** Status is a common structure which can be used for Status field. */
-    status?: IoArgoprojEventsV1Alpha1Status;
+    status?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Status;
 }
 
 /** Service holds the service information eventsource exposes */
-export interface IoArgoprojEventsV1Alpha1Service {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Service {
     /**
      * clusterIP is the IP address of the service and is usually assigned
      * randomly by the master. If an address is specified manually and is not in
@@ -2740,6 +2792,11 @@ export interface IoArgoprojEventsV1Alpha1Service {
      */
     clusterIP?: string;
     /**
+     * Metadata sets the pods's metadata, i.e. annotations and labels
+     * default={annotations: {}, labels: {}}
+     */
+    metadata?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Metadata;
+    /**
      * The list of ports that are exposed by this ClusterIP service.
      * +patchMergeKey=port
      * +patchStrategy=merge
@@ -2751,12 +2808,12 @@ export interface IoArgoprojEventsV1Alpha1Service {
 }
 
 /** SlackEventSource refers to event-source for Slack related events */
-export interface IoArgoprojEventsV1Alpha1SlackEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SlackEventSource {
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
     /**
      * Metadata holds the user defined metadata which will passed along the event payload.
      * +optional
@@ -2773,10 +2830,10 @@ export interface IoArgoprojEventsV1Alpha1SlackEventSource {
      */
     token?: IoK8SApiCoreV1SecretKeySelector;
     /** Webhook holds configuration for a REST endpoint */
-    webhook?: IoArgoprojEventsV1Alpha1WebhookContext;
+    webhook?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
 }
 
-export interface IoArgoprojEventsV1Alpha1SlackSender {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SlackSender {
     /**
      * Icon is the Slack application's icon, e.g. :robot_face: or https://example.com/image.png
      * +optional
@@ -2789,7 +2846,7 @@ export interface IoArgoprojEventsV1Alpha1SlackSender {
     username?: string;
 }
 
-export interface IoArgoprojEventsV1Alpha1SlackThread {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SlackThread {
     /**
      * BroadcastMessageToChannel allows to also broadcast the message from the thread to the channel
      * +optional
@@ -2803,7 +2860,7 @@ export interface IoArgoprojEventsV1Alpha1SlackThread {
 }
 
 /** SlackTrigger refers to the specification of the slack notification trigger. */
-export interface IoArgoprojEventsV1Alpha1SlackTrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SlackTrigger {
     /**
      * Attachments is a JSON format string that represents an array of Slack attachments according to the attachments API: https://api.slack.com/reference/messaging/attachments .
      * +optional
@@ -2829,23 +2886,23 @@ export interface IoArgoprojEventsV1Alpha1SlackTrigger {
      * the trigger resource.
      * +optional
      */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * Sender refers to additional configuration of the Slack application that sends the message.
      * +optional
      */
-    sender?: IoArgoprojEventsV1Alpha1SlackSender;
+    sender?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SlackSender;
     /** SlackToken refers to the Kubernetes secret that holds the slack token required to send messages. */
     slackToken?: IoK8SApiCoreV1SecretKeySelector;
     /**
      * Thread refers to additional options for sending messages to a Slack thread.
      * +optional
      */
-    thread?: IoArgoprojEventsV1Alpha1SlackThread;
+    thread?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SlackThread;
 }
 
 /** StandardK8STrigger is the standard Kubernetes resource trigger */
-export interface IoArgoprojEventsV1Alpha1StandardK8STrigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StandardK8STrigger {
     /**
      * LiveObject specifies whether the resource should be directly fetched from K8s instead
      * of being marshaled from the resource artifact. If set to true, the resource artifact
@@ -2863,7 +2920,7 @@ export interface IoArgoprojEventsV1Alpha1StandardK8STrigger {
      */
     operation?: string;
     /** Parameters is the list of parameters that is applied to resolved K8s trigger object. */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * PatchStrategy controls the K8s object patching strategy when the trigger operation is specified as patch.
      * possible values:
@@ -2876,27 +2933,27 @@ export interface IoArgoprojEventsV1Alpha1StandardK8STrigger {
      */
     patchStrategy?: string;
     /** Source of the K8s resource file(s) */
-    source?: IoArgoprojEventsV1Alpha1ArtifactLocation;
+    source?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ArtifactLocation;
 }
 
 /** Status is a common structure which can be used for Status field. */
-export interface IoArgoprojEventsV1Alpha1Status {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Status {
     /**
      * Conditions are the latest available observations of a resource's current state.
      * +optional
      * +patchMergeKey=type
      * +patchStrategy=merge
      */
-    conditions?: IoArgoprojEventsV1Alpha1Condition[];
+    conditions?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Condition[];
 }
 
 /** StatusPolicy refers to the policy used to check the state of the trigger using response status */
-export interface IoArgoprojEventsV1Alpha1StatusPolicy {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StatusPolicy {
     allow?: number[];
 }
 
 /** StorageGridEventSource refers to event-source for StorageGrid related events */
-export interface IoArgoprojEventsV1Alpha1StorageGridEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StorageGridEventSource {
     /** APIURL is the url of the storagegrid api. */
     apiURL?: string;
     /**
@@ -2908,7 +2965,7 @@ export interface IoArgoprojEventsV1Alpha1StorageGridEventSource {
     bucket?: string;
     events?: string[];
     /** Filter on object key which caused the notification. */
-    filter?: IoArgoprojEventsV1Alpha1StorageGridFilter;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StorageGridFilter;
     /**
      * Metadata holds the user defined metadata which will passed along the event payload.
      * +optional
@@ -2923,14 +2980,14 @@ export interface IoArgoprojEventsV1Alpha1StorageGridEventSource {
     /** TopicArn */
     topicArn?: string;
     /** Webhook holds configuration for a REST endpoint */
-    webhook?: IoArgoprojEventsV1Alpha1WebhookContext;
+    webhook?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
 }
 
 /**
  * StorageGridFilter represents filters to apply to bucket notifications for specifying constraints on objects
  * +k8s:openapi-gen=true
  */
-export interface IoArgoprojEventsV1Alpha1StorageGridFilter {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StorageGridFilter {
     prefix?: string;
     suffix?: string;
 }
@@ -2939,7 +2996,7 @@ export interface IoArgoprojEventsV1Alpha1StorageGridFilter {
  * StripeEventSource describes the event source for stripe webhook notifications
  * More info at https://stripe.com/docs/webhooks
  */
-export interface IoArgoprojEventsV1Alpha1StripeEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StripeEventSource {
     /**
      * APIKey refers to K8s secret that holds Stripe API key. Used only if CreateWebhook is enabled.
      * +optional
@@ -2963,11 +3020,11 @@ export interface IoArgoprojEventsV1Alpha1StripeEventSource {
      */
     metadata?: Record<string, string>;
     /** Webhook holds configuration for a REST endpoint */
-    webhook?: IoArgoprojEventsV1Alpha1WebhookContext;
+    webhook?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
 }
 
 /** TLSConfig refers to TLS configuration for a client. */
-export interface IoArgoprojEventsV1Alpha1TLSConfig {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig {
     /**
      * CACertSecret refers to the secret that contains the CA cert
      * SecretKeySelector selects a key of a Secret.
@@ -2990,8 +3047,8 @@ export interface IoArgoprojEventsV1Alpha1TLSConfig {
     insecureSkipVerify?: boolean;
 }
 
-/** Template holds the information of a sensor deployment template */
-export interface IoArgoprojEventsV1Alpha1Template {
+/** Template holds the information of a deployment template */
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Template {
     /**
      * If specified, the pod's scheduling constraints
      * +optional
@@ -3001,9 +3058,8 @@ export interface IoArgoprojEventsV1Alpha1Template {
     /**
      * Container is the main container image to run in the sensor pod
      * +optional
-     * A single application container that you want to run within a pod.
      */
-    container?: IoK8SApiCoreV1Container;
+    container?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Container;
     /**
      * ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
      * If specified, these secrets will be passed to individual puller implementations for them to use. For example,
@@ -3015,7 +3071,7 @@ export interface IoArgoprojEventsV1Alpha1Template {
      */
     imagePullSecrets?: IoK8SApiCoreV1LocalObjectReference[];
     /** Metadata sets the pods's metadata, i.e. annotations and labels */
-    metadata?: IoArgoprojEventsV1Alpha1Metadata;
+    metadata?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Metadata;
     /**
      * NodeSelector is a selector which must be true for the pod to fit on a node.
      * Selector which must match a node's labels for the pod to be scheduled on that node.
@@ -3077,7 +3133,7 @@ export interface IoArgoprojEventsV1Alpha1Template {
  * In other words, only events that occur after Start and before Stop
  * will pass this filter.
  */
-export interface IoArgoprojEventsV1Alpha1TimeFilter {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TimeFilter {
     /**
      * Start is the beginning of a time window in UTC.
      * Before this time, events for this dependency are ignored.
@@ -3095,7 +3151,7 @@ export interface IoArgoprojEventsV1Alpha1TimeFilter {
 }
 
 /** Trigger is an action taken, output produced, an event created, a message sent */
-export interface IoArgoprojEventsV1Alpha1Trigger {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Trigger {
     /**
      * AtLeastOnce determines the trigger execution semantics.
      * Defaults to false. Trigger execution will use at-most-once semantics.
@@ -3104,29 +3160,38 @@ export interface IoArgoprojEventsV1Alpha1Trigger {
      * +optional
      */
     atLeastOnce?: boolean;
+    /**
+     * If the trigger fails, it will retry up to the configured number of
+     * retries. If the maximum retries are reached and the trigger is set to
+     * execute atLeastOnce, the dead letter queue (DLQ) trigger will be invoked if
+     * specified.  Invoking the dead letter queue trigger helps prevent data
+     * loss.
+     * +optional
+     */
+    dlqTrigger?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Trigger;
     /** Parameters is the list of parameters applied to the trigger template definition */
-    parameters?: IoArgoprojEventsV1Alpha1TriggerParameter[];
+    parameters?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
     /**
      * Policy to configure backoff and execution criteria for the trigger
      * +optional
      */
-    policy?: IoArgoprojEventsV1Alpha1TriggerPolicy;
+    policy?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerPolicy;
     /**
      * Rate limit, default unit is Second
      * +optional
      */
-    rateLimit?: IoArgoprojEventsV1Alpha1RateLimit;
+    rateLimit?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1RateLimit;
     /**
      * Retry strategy, defaults to no retry
      * +optional
      */
-    retryStrategy?: IoArgoprojEventsV1Alpha1Backoff;
+    retryStrategy?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Backoff;
     /** Template describes the trigger specification. */
-    template?: IoArgoprojEventsV1Alpha1TriggerTemplate;
+    template?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerTemplate;
 }
 
 /** TriggerParameter indicates a passed parameter to a service template */
-export interface IoArgoprojEventsV1Alpha1TriggerParameter {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter {
     /**
      * Dest is the JSONPath of a resource key.
      * A path is a series of keys separated by a dot. The colon character can be escaped with '.'
@@ -3140,11 +3205,11 @@ export interface IoArgoprojEventsV1Alpha1TriggerParameter {
      */
     operation?: string;
     /** Src contains a source reference to the value of the parameter from a dependency */
-    src?: IoArgoprojEventsV1Alpha1TriggerParameterSource;
+    src?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameterSource;
 }
 
 /** TriggerParameterSource defines the source for a parameter from a event event */
-export interface IoArgoprojEventsV1Alpha1TriggerParameterSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameterSource {
     /**
      * ContextKey is the JSONPath of the event's (JSON decoded) context key
      * ContextKey is a series of keys separated by a dot. A key may contain wildcard characters '*' and '?'.
@@ -3195,35 +3260,40 @@ export interface IoArgoprojEventsV1Alpha1TriggerParameterSource {
 }
 
 /** TriggerPolicy dictates the policy for the trigger retries */
-export interface IoArgoprojEventsV1Alpha1TriggerPolicy {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerPolicy {
     /** K8SResourcePolicy refers to the policy used to check the state of K8s based triggers using using labels */
-    k8s?: IoArgoprojEventsV1Alpha1K8SResourcePolicy;
+    k8s?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1K8SResourcePolicy;
     /** Status refers to the policy used to check the state of the trigger using response status */
-    status?: IoArgoprojEventsV1Alpha1StatusPolicy;
+    status?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StatusPolicy;
 }
 
 /** TriggerTemplate is the template that describes trigger specification. */
-export interface IoArgoprojEventsV1Alpha1TriggerTemplate {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerTemplate {
+    /**
+     * StandardK8STrigger refers to the trigger designed to create or update a generic Kubernetes resource.
+     * +optional
+     */
+    k8s?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StandardK8STrigger;
     /**
      * ArgoWorkflow refers to the trigger that can perform various operations on an Argo io.argoproj.workflow.v1alpha1.
      * +optional
      */
-    argoWorkflow?: IoArgoprojEventsV1Alpha1ArgoWorkflowTrigger;
+    argoWorkflow?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ArgoWorkflowTrigger;
     /**
      * AWSLambda refers to the trigger designed to invoke AWS Lambda function with with on-the-fly constructable payload.
      * +optional
      */
-    awsLambda?: IoArgoprojEventsV1Alpha1AWSLambdaTrigger;
+    awsLambda?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AWSLambdaTrigger;
     /**
      * AzureEventHubs refers to the trigger send an event to an Azure Event Hub.
      * +optional
      */
-    azureEventHubs?: IoArgoprojEventsV1Alpha1AzureEventHubsTrigger;
+    azureEventHubs?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureEventHubsTrigger;
     /**
      * AzureServiceBus refers to the trigger designed to place messages on Azure Service Bus
      * +optional
      */
-    azureServiceBus?: IoArgoprojEventsV1Alpha1AzureServiceBusTrigger;
+    azureServiceBus?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureServiceBusTrigger;
     /**
      * Conditions is the conditions to execute the trigger.
      * For example: "(dep01 || dep02) && dep04"
@@ -3234,68 +3304,63 @@ export interface IoArgoprojEventsV1Alpha1TriggerTemplate {
      * Criteria to reset the conditons
      * +optional
      */
-    conditionsReset?: IoArgoprojEventsV1Alpha1ConditionsResetCriteria[];
+    conditionsReset?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ConditionsResetCriteria[];
     /**
      * CustomTrigger refers to the trigger designed to connect to a gRPC trigger server and execute a custom trigger.
      * +optional
      * CustomTrigger refers to the specification of the custom trigger.
      */
-    custom?: IoArgoprojEventsV1Alpha1CustomTrigger;
+    custom?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1CustomTrigger;
     /**
      * Email refers to the trigger designed to send an email notification
      * +optional
      * EmailTrigger refers to the specification of the email notification trigger.
      */
-    email?: IoArgoprojEventsV1Alpha1EmailTrigger;
+    email?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EmailTrigger;
     /**
      * HTTP refers to the trigger designed to dispatch a HTTP request with on-the-fly constructable payload.
      * +optional
      */
-    http?: IoArgoprojEventsV1Alpha1HTTPTrigger;
-    /**
-     * StandardK8STrigger refers to the trigger designed to create or update a generic Kubernetes resource.
-     * +optional
-     */
-    k8s?: IoArgoprojEventsV1Alpha1StandardK8STrigger;
+    http?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1HTTPTrigger;
     /**
      * Kafka refers to the trigger designed to place messages on Kafka topic.
      * +optional.
      */
-    kafka?: IoArgoprojEventsV1Alpha1KafkaTrigger;
+    kafka?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1KafkaTrigger;
     /**
      * Log refers to the trigger designed to invoke log the io.argoproj.workflow.v1alpha1.
      * +optional
      */
-    log?: IoArgoprojEventsV1Alpha1LogTrigger;
+    log?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1LogTrigger;
     /** Name is a unique name of the action to take. */
     name?: string;
     /**
      * NATS refers to the trigger designed to place message on NATS subject.
      * +optional.
      */
-    nats?: IoArgoprojEventsV1Alpha1NATSTrigger;
+    nats?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1NATSTrigger;
     /**
      * OpenWhisk refers to the trigger designed to invoke OpenWhisk action.
      * +optional
      * OpenWhiskTrigger refers to the specification of the OpenWhisk trigger.
      */
-    openWhisk?: IoArgoprojEventsV1Alpha1OpenWhiskTrigger;
+    openWhisk?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1OpenWhiskTrigger;
     /**
      * Pulsar refers to the trigger designed to place messages on Pulsar topic.
      * +optional
      * PulsarTrigger refers to the specification of the Pulsar trigger.
      */
-    pulsar?: IoArgoprojEventsV1Alpha1PulsarTrigger;
+    pulsar?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1PulsarTrigger;
     /**
      * Slack refers to the trigger designed to send slack notification message.
      * +optional
      * SlackTrigger refers to the specification of the slack notification trigger.
      */
-    slack?: IoArgoprojEventsV1Alpha1SlackTrigger;
+    slack?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SlackTrigger;
 }
 
 /** URLArtifact contains information about an artifact at an http endpoint. */
-export interface IoArgoprojEventsV1Alpha1URLArtifact {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1URLArtifact {
     /** Path is the complete URL */
     path?: string;
     /** VerifyCert decides whether the connection is secure or not */
@@ -3303,14 +3368,14 @@ export interface IoArgoprojEventsV1Alpha1URLArtifact {
 }
 
 /** ValueFromSource allows you to reference keys from either a Configmap or Secret */
-export interface IoArgoprojEventsV1Alpha1ValueFromSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ValueFromSource {
     /** Selects a key from a ConfigMap. */
     configMapKeyRef?: IoK8SApiCoreV1ConfigMapKeySelector;
     /** SecretKeySelector selects a key of a Secret. */
     secretKeyRef?: IoK8SApiCoreV1SecretKeySelector;
 }
 
-export interface IoArgoprojEventsV1Alpha1WatchPathConfig {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WatchPathConfig {
     /** Directory to watch for events */
     directory?: string;
     /** Path is relative path of object to watch with respect to the directory */
@@ -3320,7 +3385,7 @@ export interface IoArgoprojEventsV1Alpha1WatchPathConfig {
 }
 
 /** WebhookContext holds a general purpose REST API context */
-export interface IoArgoprojEventsV1Alpha1WebhookContext {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext {
     /**
      * AuthSecret holds a secret selector that contains a bearer token for authentication
      * +optional
@@ -3360,13 +3425,34 @@ export interface IoArgoprojEventsV1Alpha1WebhookContext {
 }
 
 /** CalendarEventSource describes an HTTP based EventSource */
-export interface IoArgoprojEventsV1Alpha1WebhookEventSource {
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookEventSource {
     /**
      * Filter
      * +optional
      */
-    filter?: IoArgoprojEventsV1Alpha1EventSourceFilter;
-    webhookContext?: IoArgoprojEventsV1Alpha1WebhookContext;
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
+    webhookContext?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1WebhookContext;
+}
+
+export interface GoogleProtobufAny {
+    type_url?: string;
+    /** @format byte */
+    value?: string;
+}
+
+export interface GrpcGatewayRuntimeError {
+    code?: number;
+    details?: GoogleProtobufAny[];
+    error?: string;
+    message?: string;
+}
+
+export interface GrpcGatewayRuntimeStreamError {
+    details?: GoogleProtobufAny[];
+    grpc_code?: number;
+    http_code?: number;
+    http_status?: string;
+    message?: string;
 }
 
 /** Amount represent a numeric amount. */
@@ -3404,6 +3490,8 @@ export interface IoArgoprojWorkflowV1Alpha1ArtGCStatus {
 
 /** Artifact indicates an artifact to place at a specified path */
 export interface IoArgoprojWorkflowV1Alpha1Artifact {
+    /** S3 contains S3 artifact location details */
+    s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
     /** Archive controls how the artifact will be saved to the artifact repository. */
     archive?: IoArgoprojWorkflowV1Alpha1ArchiveStrategy;
     /** ArchiveLogs indicates if the container logs should be archived */
@@ -3444,8 +3532,6 @@ export interface IoArgoprojWorkflowV1Alpha1Artifact {
     raw?: IoArgoprojWorkflowV1Alpha1RawArtifact;
     /** If mode is set, apply the permission recursively into the artifact if it is a folder */
     recurseMode?: boolean;
-    /** S3 contains S3 artifact location details */
-    s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
     /** SubPath allows an artifact to be sourced from a subpath within the specified source */
     subPath?: string;
 }
@@ -3462,6 +3548,8 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactGC {
 
 /** ArtifactLocation describes a location for a single or multiple artifacts. It is used as single artifact in the context of inputs/outputs (e.g. outputs.artifacts.artname). It is also used to describe the location of multiple artifacts such as the archive location of a single workflow step, which the executor will use as a default location to store its files. */
 export interface IoArgoprojWorkflowV1Alpha1ArtifactLocation {
+    /** S3 contains S3 artifact location details */
+    s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
     /** ArchiveLogs indicates if the container logs should be archived */
     archiveLogs?: boolean;
     /** Artifactory contains artifactory artifact location details */
@@ -3480,12 +3568,12 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactLocation {
     oss?: IoArgoprojWorkflowV1Alpha1OSSArtifact;
     /** Raw contains raw artifact location details */
     raw?: IoArgoprojWorkflowV1Alpha1RawArtifact;
-    /** S3 contains S3 artifact location details */
-    s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
 }
 
 /** ArtifactPaths expands a step from a collection of artifacts */
 export interface IoArgoprojWorkflowV1Alpha1ArtifactPaths {
+    /** S3 contains S3 artifact location details */
+    s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
     /** Archive controls how the artifact will be saved to the artifact repository. */
     archive?: IoArgoprojWorkflowV1Alpha1ArchiveStrategy;
     /** ArchiveLogs indicates if the container logs should be archived */
@@ -3526,14 +3614,14 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactPaths {
     raw?: IoArgoprojWorkflowV1Alpha1RawArtifact;
     /** If mode is set, apply the permission recursively into the artifact if it is a folder */
     recurseMode?: boolean;
-    /** S3 contains S3 artifact location details */
-    s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
     /** SubPath allows an artifact to be sourced from a subpath within the specified source */
     subPath?: string;
 }
 
 /** ArtifactRepository represents an artifact repository in which a controller will store its artifacts */
 export interface IoArgoprojWorkflowV1Alpha1ArtifactRepository {
+    /** S3 stores artifact in a S3-compliant object store */
+    s3?: IoArgoprojWorkflowV1Alpha1S3ArtifactRepository;
     /** ArchiveLogs enables log archiving */
     archiveLogs?: boolean;
     /** Artifactory stores artifacts to JFrog Artifactory */
@@ -3546,8 +3634,6 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactRepository {
     hdfs?: IoArgoprojWorkflowV1Alpha1HDFSArtifactRepository;
     /** OSS stores artifact in a OSS-compliant object store */
     oss?: IoArgoprojWorkflowV1Alpha1OSSArtifactRepository;
-    /** S3 stores artifact in a S3-compliant object store */
-    s3?: IoArgoprojWorkflowV1Alpha1S3ArtifactRepository;
 }
 
 export interface IoArgoprojWorkflowV1Alpha1ArtifactRepositoryRef {
@@ -3622,6 +3708,8 @@ export interface IoArgoprojWorkflowV1Alpha1AzureArtifactRepository {
 
 /** Backoff is a backoff strategy to use within retryStrategy */
 export interface IoArgoprojWorkflowV1Alpha1Backoff {
+    /** Cap is a limit on revised values of the duration parameter. If a multiplication by the factor parameter would make the duration exceed the cap then the duration is set to the cap */
+    cap?: string;
     /** Duration is the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h") */
     duration?: string;
     /** Factor is a factor to multiply the base duration after each failed retry */
@@ -3879,17 +3967,17 @@ export interface IoArgoprojWorkflowV1Alpha1CronWorkflowSpec {
 /** CronWorkflowStatus is the status of a CronWorkflow */
 export interface IoArgoprojWorkflowV1Alpha1CronWorkflowStatus {
     /** Active is a list of active workflows stemming from this CronWorkflow */
-    active: IoK8SApiCoreV1ObjectReference[];
+    active?: IoK8SApiCoreV1ObjectReference[];
     /** Conditions is a list of conditions the CronWorkflow may have */
-    conditions: IoArgoprojWorkflowV1Alpha1Condition[];
+    conditions?: IoArgoprojWorkflowV1Alpha1Condition[];
     /** v3.6 and after: Failed counts how many times child workflows failed */
-    failed: number;
+    failed?: number;
     /** LastScheduleTime is the last time the CronWorkflow was scheduled */
-    lastScheduledTime: IoK8SApimachineryPkgApisMetaV1Time;
+    lastScheduledTime?: IoK8SApimachineryPkgApisMetaV1Time;
     /** v3.6 and after: Phase is an enum of Active or Stopped. It changes to Stopped when stopStrategy.expression is true */
-    phase: string;
+    phase?: string;
     /** v3.6 and after: Succeeded counts how many times child workflows succeeded */
-    succeeded: number;
+    succeeded?: number;
 }
 
 export interface IoArgoprojWorkflowV1Alpha1CronWorkflowSuspendRequest {
@@ -3909,7 +3997,7 @@ export interface IoArgoprojWorkflowV1Alpha1DAGTask {
     depends?: string;
     /** Hooks hold the lifecycle hook which is invoked at lifecycle of task, irrespective of the success, failure, or error status of the primary task */
     hooks?: Record<string, IoArgoprojWorkflowV1Alpha1LifecycleHook>;
-    /** Inline is the template. Template must be empty if this is declared (and vice-versa). */
+    /** Inline is the template. Template must be empty if this is declared (and vice-versa). Note: As mentioned in the corresponding definition in WorkflowStep, this struct is defined recursively, so we need "x-kubernetes-preserve-unknown-fields: true" in the validation schema. */
     inline?: IoArgoprojWorkflowV1Alpha1Template;
     /** Name is the name of the target */
     name: string;
@@ -3921,7 +4009,7 @@ export interface IoArgoprojWorkflowV1Alpha1DAGTask {
     templateRef?: IoArgoprojWorkflowV1Alpha1TemplateRef;
     /** When is an expression in which the task should conditionally execute */
     when?: string;
-    /** WithItems expands a task into multiple parallel tasks from the items in the list */
+    /** WithItems expands a task into multiple parallel tasks from the items in the list Note: The structure of WithItems is free-form, so we need "x-kubernetes-preserve-unknown-fields: true" in the validation schema. */
     withItems?: IoArgoprojWorkflowV1Alpha1Item[];
     /** WithParam expands a task into multiple parallel tasks from the value in the parameter, which is expected to be a JSON list. */
     withParam?: string;
@@ -4117,12 +4205,12 @@ export interface IoArgoprojWorkflowV1Alpha1HTTPArtifact {
 }
 
 export interface IoArgoprojWorkflowV1Alpha1HTTPAuth {
+    /** OAuth2Auth holds all information for client authentication via OAuth2 tokens */
+    oauth2?: IoArgoprojWorkflowV1Alpha1OAuth2Auth;
     /** BasicAuth describes the secret selectors required for basic authentication */
     basicAuth?: IoArgoprojWorkflowV1Alpha1BasicAuth;
     /** ClientCertAuth holds necessary information for client authentication via certificates */
     clientCert?: IoArgoprojWorkflowV1Alpha1ClientCertAuth;
-    /** OAuth2Auth holds all information for client authentication via OAuth2 tokens */
-    oauth2?: IoArgoprojWorkflowV1Alpha1OAuth2Auth;
 }
 
 /** HTTPBodySource contains the source of the HTTP body. */
@@ -4269,6 +4357,8 @@ export interface IoArgoprojWorkflowV1Alpha1Metrics {
 
 /** Mutex holds Mutex configuration */
 export interface IoArgoprojWorkflowV1Alpha1Mutex {
+    /** Database specifies this is database controlled if this is set true */
+    database?: boolean;
     /** name of the mutex */
     name?: string;
     /** Namespace is the namespace of the mutex, default: [namespace of workflow] */
@@ -4353,6 +4443,8 @@ export interface IoArgoprojWorkflowV1Alpha1NodeStatus {
     startedAt?: IoK8SApimachineryPkgApisMetaV1Time;
     /** SynchronizationStatus is the synchronization status of the node */
     synchronizationStatus?: IoArgoprojWorkflowV1Alpha1NodeSynchronizationStatus;
+    /** TaskResultSynced is used to determine if the node's output has been received */
+    taskResultSynced?: boolean;
     /** TemplateName is the template name which this node corresponds to. Not applicable to virtual nodes (e.g. Retry, StepGroup) */
     templateName?: string;
     /** TemplateRef is the reference to the template resource which this node corresponds to. Not applicable to virtual nodes (e.g. Retry, StepGroup) */
@@ -4452,7 +4544,7 @@ export interface IoArgoprojWorkflowV1Alpha1Outputs {
     exitCode?: string;
     /** Parameters holds the list of output parameters produced by a step */
     parameters?: IoArgoprojWorkflowV1Alpha1Parameter[];
-    /** Result holds the result (stdout) of a script template */
+    /** Result holds the result (stdout) of a script or container template, or the response body of an HTTP template */
     result?: string;
 }
 
@@ -4470,7 +4562,7 @@ export interface IoArgoprojWorkflowV1Alpha1Parameter {
     globalName?: string;
     /** Name is the parameter name */
     name: string;
-    /** Value is the literal value to use for the parameter. If specified in the context of an input parameter, the value takes precedence over any passed values */
+    /** Value is the literal value to use for the parameter. If specified in the context of an input parameter, any passed values take precedence over the specified value */
     value?: string;
     /** ValueFrom is the source for the output parameter's value */
     valueFrom?: IoArgoprojWorkflowV1Alpha1ValueFrom;
@@ -4714,8 +4806,10 @@ export interface IoArgoprojWorkflowV1Alpha1SemaphoreHolding {
 
 /** SemaphoreRef is a reference of Semaphore */
 export interface IoArgoprojWorkflowV1Alpha1SemaphoreRef {
-    /** ConfigMapKeyRef is configmap selector for Semaphore configuration */
+    /** ConfigMapKeyRef is a configmap selector for Semaphore configuration */
     configMapKeyRef?: IoK8SApiCoreV1ConfigMapKeySelector;
+    /** SyncDatabaseRef is a database reference for Semaphore configuration */
+    database?: IoArgoprojWorkflowV1Alpha1SyncDatabaseRef;
     /** Namespace is the namespace of the configmap, default: [namespace of workflow] */
     namespace?: string;
 }
@@ -4791,6 +4885,10 @@ export interface IoArgoprojWorkflowV1Alpha1SuspendTemplate {
     duration?: string;
 }
 
+export interface IoArgoprojWorkflowV1Alpha1SyncDatabaseRef {
+    key: string;
+}
+
 /** Synchronization holds synchronization lock configuration */
 export interface IoArgoprojWorkflowV1Alpha1Synchronization {
     /** Mutex holds the Mutex lock details - deprecated, use mutexes instead */
@@ -4833,6 +4931,8 @@ export interface IoArgoprojWorkflowV1Alpha1Template {
     activeDeadlineSeconds?: IoK8SApimachineryPkgUtilIntstrIntOrString;
     /** Affinity sets the pod's scheduling constraints Overrides the affinity set at the workflow level (if any) */
     affinity?: IoK8SApiCoreV1Affinity;
+    /** Annotations is a list of annotations to add to the template at runtime */
+    annotations?: Record<string, string>;
     /** Location in which all files related to the step will be stored (logs, artifacts, etc...). Can be overridden by individual items in Outputs. If omitted, will use the default artifact repository location configured in the controller, appended with the <workflowname>/<nodename> in the key. */
     archiveLocation?: IoArgoprojWorkflowV1Alpha1ArtifactLocation;
     /** AutomountServiceAccountToken indicates whether a service account token should be automatically mounted in pods. ServiceAccountName of ExecutorConfig must be specified if this value is false. */
@@ -4873,12 +4973,10 @@ export interface IoArgoprojWorkflowV1Alpha1Template {
     outputs?: IoArgoprojWorkflowV1Alpha1Outputs;
     /** Parallelism limits the max total parallel pods that can execute at the same time within the boundaries of this template invocation. If additional steps/dag templates are invoked, the pods created by those templates will not be counted towards this total. */
     parallelism?: number;
-    /** Plugin is a plugin template */
+    /** Plugin is a plugin template Note: the structure of a plugin template is free-form, so we need to have "x-kubernetes-preserve-unknown-fields: true" in the validation schema. */
     plugin?: IoArgoprojWorkflowV1Alpha1Plugin;
     /** PodSpecPatch holds strategic merge patch to apply against the pod spec. Allows parameterization of container fields which are not strings (e.g. resource limits). */
     podSpecPatch?: string;
-    /** Priority to apply to workflow pods. */
-    priority?: number;
     /** PriorityClassName to apply to workflow pods. */
     priorityClassName?: string;
     /** Resource template subtype which can run k8s resources */
@@ -5193,8 +5291,6 @@ export interface IoArgoprojWorkflowV1Alpha1WorkflowSpec {
     podGC?: IoArgoprojWorkflowV1Alpha1PodGC;
     /** PodMetadata defines additional metadata that should be applied to workflow pods */
     podMetadata?: IoArgoprojWorkflowV1Alpha1Metadata;
-    /** Priority to apply to workflow pods. DEPRECATED: Use PodPriorityClassName instead. */
-    podPriority?: number;
     /** PriorityClassName to apply to workflow pods. */
     podPriorityClassName?: string;
     /** PodSpecPatch holds strategic merge patch to apply against the pod spec. Allows parameterization of container fields which are not strings (e.g. resource limits). */
@@ -5285,7 +5381,7 @@ export interface IoArgoprojWorkflowV1Alpha1WorkflowStep {
     continueOn?: IoArgoprojWorkflowV1Alpha1ContinueOn;
     /** Hooks holds the lifecycle hook which is invoked at lifecycle of step, irrespective of the success, failure, or error status of the primary step */
     hooks?: Record<string, IoArgoprojWorkflowV1Alpha1LifecycleHook>;
-    /** Inline is the template. Template must be empty if this is declared (and vice-versa). */
+    /** Inline is the template. Template must be empty if this is declared (and vice-versa). Note: This struct is defined recursively, since the inline template can potentially contain steps/DAGs that also has an "inline" field. Kubernetes doesn't allow recursive types, so we need "x-kubernetes-preserve-unknown-fields: true" in the validation schema. */
     inline?: IoArgoprojWorkflowV1Alpha1Template;
     /** Name of the step */
     name?: string;
@@ -5297,7 +5393,7 @@ export interface IoArgoprojWorkflowV1Alpha1WorkflowStep {
     templateRef?: IoArgoprojWorkflowV1Alpha1TemplateRef;
     /** When is an expression in which the step should conditionally execute */
     when?: string;
-    /** WithItems expands a step into multiple parallel steps from the items in the list */
+    /** WithItems expands a step into multiple parallel steps from the items in the list Note: The structure of WithItems is free-form, so we need "x-kubernetes-preserve-unknown-fields: true" in the validation schema. */
     withItems?: IoArgoprojWorkflowV1Alpha1Item[];
     /** WithParam expands a step into multiple parallel steps from the value in the parameter, which is expected to be a JSON list. */
     withParam?: string;
@@ -5689,11 +5785,11 @@ export interface IoK8SApiCoreV1EmptyDirVolumeSource {
     sizeLimit?: IoK8SApimachineryPkgApiResourceQuantity;
 }
 
-/** EnvFromSource represents the source of a set of ConfigMaps */
+/** EnvFromSource represents the source of a set of ConfigMaps or Secrets */
 export interface IoK8SApiCoreV1EnvFromSource {
     /** The ConfigMap to select from */
     configMapRef?: IoK8SApiCoreV1ConfigMapEnvSource;
-    /** An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER. */
+    /** Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER. */
     prefix?: string;
     /** The Secret to select from */
     secretRef?: IoK8SApiCoreV1SecretEnvSource;
@@ -5847,6 +5943,7 @@ export interface IoK8SApiCoreV1GCEPersistentDiskVolumeSource {
     readOnly?: boolean;
 }
 
+/** GRPCAction specifies an action involving a GRPC service. */
 export interface IoK8SApiCoreV1GRPCAction {
     /** Port number of the gRPC service. Number must be in the range 1 to 65535. */
     port: number;
@@ -5946,6 +6043,14 @@ export interface IoK8SApiCoreV1ISCSIVolumeSource {
     targetPortal: string;
 }
 
+/** ImageVolumeSource represents a image volume resource. */
+export interface IoK8SApiCoreV1ImageVolumeSource {
+    /** Policy for pulling OCI objects. Possible values are: Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails. Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present. IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. */
+    pullPolicy?: string;
+    /** Required: Image or artifact reference to be used. Behaves in the same way as pod.spec.containers[*].image. Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets. */
+    reference?: string;
+}
+
 /** Maps a string key to a path within a volume. */
 export interface IoK8SApiCoreV1KeyToPath {
     /** key is the key to project. */
@@ -5962,17 +6067,19 @@ export interface IoK8SApiCoreV1Lifecycle {
     postStart?: IoK8SApiCoreV1LifecycleHandler;
     /** PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The Pod's termination grace period countdown begins before the PreStop hook is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period (unless delayed by finalizers). Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks */
     preStop?: IoK8SApiCoreV1LifecycleHandler;
+    /** StopSignal defines which signal will be sent to a container when it is being stopped. If not specified, the default is defined by the container runtime in use. StopSignal can only be set for Pods with a non-empty .spec.os.name */
+    stopSignal?: string;
 }
 
 /** LifecycleHandler defines a specific action that should be taken in a lifecycle hook. One and only one of the fields, except TCPSocket must be specified. */
 export interface IoK8SApiCoreV1LifecycleHandler {
-    /** Exec specifies the action to take. */
+    /** Exec specifies a command to execute in the container. */
     exec?: IoK8SApiCoreV1ExecAction;
-    /** HTTPGet specifies the http request to perform. */
+    /** HTTPGet specifies an HTTP GET request to perform. */
     httpGet?: IoK8SApiCoreV1HTTPGetAction;
-    /** Sleep represents the duration that the container should sleep before being terminated. */
+    /** Sleep represents a duration that the container should sleep. */
     sleep?: IoK8SApiCoreV1SleepAction;
-    /** Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for the backward compatibility. There are no validation of this field and lifecycle hooks will fail in runtime when tcp handler is specified. */
+    /** Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept for backward compatibility. There is no validation of this field and lifecycle hooks will fail at runtime when it is specified. */
     tcpSocket?: IoK8SApiCoreV1TCPSocketAction;
 }
 
@@ -6093,7 +6200,9 @@ export interface IoK8SApiCoreV1PersistentVolumeClaimCondition {
     message?: string;
     /** reason is a unique, this should be a short, machine understandable string that gives the reason for condition's last transition. If it reports "Resizing" that means the underlying persistent volume is being resized. */
     reason?: string;
+    /** Status is the status of the condition. Can be True, False, Unknown. More info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required */
     status: string;
+    /** Type is the type of the condition. More info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about */
     type: string;
 }
 
@@ -6120,7 +6229,7 @@ export interface IoK8SApiCoreV1PersistentVolumeClaimSpec {
     selector?: IoK8SApimachineryPkgApisMetaV1LabelSelector;
     /** storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1 */
     storageClassName?: string;
-    /** volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim. If specified, the CSI driver will create or update the volume with the attributes defined in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName, it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass will be applied to the claim but it's not allowed to reset this field to empty string once it is set. If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass will be set by the persistentvolume controller if it exists. If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource exists. More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/ (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled. */
+    /** volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim. If specified, the CSI driver will create or update the volume with the attributes defined in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName, it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass will be applied to the claim but it's not allowed to reset this field to empty string once it is set. If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass will be set by the persistentvolume controller if it exists. If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource exists. More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/ (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default). */
     volumeAttributesClassName?: string;
     /** volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec. */
     volumeMode?: string;
@@ -6183,9 +6292,9 @@ export interface IoK8SApiCoreV1PersistentVolumeClaimStatus {
     capacity?: Record<string, IoK8SApimachineryPkgApiResourceQuantity>;
     /** conditions is the current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'Resizing'. */
     conditions?: IoK8SApiCoreV1PersistentVolumeClaimCondition[];
-    /** currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using. When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim This is an alpha field and requires enabling VolumeAttributesClass feature. */
+    /** currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using. When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim This is a beta field and requires enabling VolumeAttributesClass feature (off by default). */
     currentVolumeAttributesClassName?: string;
-    /** ModifyVolumeStatus represents the status object of ControllerModifyVolume operation. When this is unset, there is no ModifyVolume operation being attempted. This is an alpha field and requires enabling VolumeAttributesClass feature. */
+    /** ModifyVolumeStatus represents the status object of ControllerModifyVolume operation. When this is unset, there is no ModifyVolume operation being attempted. This is a beta field and requires enabling VolumeAttributesClass feature (off by default). */
     modifyVolumeStatus?: IoK8SApiCoreV1ModifyVolumeStatus;
     /** phase represents the current phase of PersistentVolumeClaim. */
     phase?: string;
@@ -6227,9 +6336,9 @@ export interface IoK8SApiCoreV1PodAffinity {
 export interface IoK8SApiCoreV1PodAffinityTerm {
     /** A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods. */
     labelSelector?: IoK8SApimachineryPkgApisMetaV1LabelSelector;
-    /** MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both matchLabelKeys and labelSelector. Also, matchLabelKeys cannot be set when labelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate. */
+    /** MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both matchLabelKeys and labelSelector. Also, matchLabelKeys cannot be set when labelSelector isn't set. */
     matchLabelKeys?: string[];
-    /** MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both mismatchLabelKeys and labelSelector. Also, mismatchLabelKeys cannot be set when labelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate. */
+    /** MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both mismatchLabelKeys and labelSelector. Also, mismatchLabelKeys cannot be set when labelSelector isn't set. */
     mismatchLabelKeys?: string[];
     /** A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. */
     namespaceSelector?: IoK8SApimachineryPkgApisMetaV1LabelSelector;
@@ -6259,8 +6368,9 @@ export interface IoK8SApiCoreV1PodDNSConfig {
 
 /** PodDNSConfigOption defines DNS resolver options of a pod. */
 export interface IoK8SApiCoreV1PodDNSConfigOption {
-    /** Required. */
+    /** Name is this DNS resolver option's name. Required. */
     name?: string;
+    /** Value is this DNS resolver option's value. */
     value?: string;
 }
 
@@ -6284,12 +6394,28 @@ export interface IoK8SApiCoreV1PodSecurityContext {
     runAsNonRoot?: boolean;
     /** The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows. */
     runAsUser?: number;
+    /**
+     * seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod. It has no effect on nodes that do not support SELinux or to volumes does not support SELinux. Valid values are "MountOption" and "Recursive".
+     *
+     * "Recursive" means relabeling of all files on all Pod volumes by the container runtime. This may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.
+     *
+     * "MountOption" mounts all eligible Pod volumes with `-o context` mount option. This requires all Pods that share the same volume to use the same SELinux label. It is not possible to share the same volume among privileged and unprivileged Pods. Eligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes whose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their CSIDriver instance. Other volumes are always re-labelled recursively. "MountOption" value is allowed only when SELinuxMount feature gate is enabled.
+     *
+     * If not specified and SELinuxMount feature gate is enabled, "MountOption" is used. If not specified and SELinuxMount feature gate is disabled, "MountOption" is used for ReadWriteOncePod volumes and "Recursive" for all other volumes.
+     *
+     * This field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.
+     *
+     * All Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state. Note that this field cannot be set when spec.os.name is windows.
+     */
+    seLinuxChangePolicy?: string;
     /** The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container. Note that this field cannot be set when spec.os.name is windows. */
     seLinuxOptions?: IoK8SApiCoreV1SELinuxOptions;
     /** The seccomp options to use by the containers in this pod. Note that this field cannot be set when spec.os.name is windows. */
     seccompProfile?: IoK8SApiCoreV1SeccompProfile;
-    /** A list of groups applied to the first process run in each container, in addition to the container's primary GID, the fsGroup (if specified), and group memberships defined in the container image for the uid of the container process. If unspecified, no additional groups are added to any container. Note that group memberships defined in the container image for the uid of the container process are still effective, even if they are not included in this list. Note that this field cannot be set when spec.os.name is windows. */
+    /** A list of groups applied to the first process run in each container, in addition to the container's primary GID and fsGroup (if specified).  If the SupplementalGroupsPolicy feature is enabled, the supplementalGroupsPolicy field determines whether these are in addition to or instead of any group memberships defined in the container image. If unspecified, no additional groups are added, though group memberships defined in the container image may still be used, depending on the supplementalGroupsPolicy field. Note that this field cannot be set when spec.os.name is windows. */
     supplementalGroups?: number[];
+    /** Defines how supplemental groups of the first container processes are calculated. Valid values are "Merge" and "Strict". If not specified, "Merge" is used. (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled and the container runtime must implement support for this feature. Note that this field cannot be set when spec.os.name is windows. */
+    supplementalGroupsPolicy?: string;
     /** Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch. Note that this field cannot be set when spec.os.name is windows. */
     sysctls?: IoK8SApiCoreV1Sysctl[];
     /** The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux. */
@@ -6316,13 +6442,13 @@ export interface IoK8SApiCoreV1PreferredSchedulingTerm {
 
 /** Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic. */
 export interface IoK8SApiCoreV1Probe {
-    /** Exec specifies the action to take. */
+    /** Exec specifies a command to execute in the container. */
     exec?: IoK8SApiCoreV1ExecAction;
     /** Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1. */
     failureThreshold?: number;
-    /** GRPC specifies an action involving a GRPC port. */
+    /** GRPC specifies a GRPC HealthCheckRequest. */
     grpc?: IoK8SApiCoreV1GRPCAction;
-    /** HTTPGet specifies the http request to perform. */
+    /** HTTPGet specifies an HTTP GET request to perform. */
     httpGet?: IoK8SApiCoreV1HTTPGetAction;
     /** Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes */
     initialDelaySeconds?: number;
@@ -6330,7 +6456,7 @@ export interface IoK8SApiCoreV1Probe {
     periodSeconds?: number;
     /** Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1. */
     successThreshold?: number;
-    /** TCPSocket specifies an action involving a TCP port. */
+    /** TCPSocket specifies a connection to a TCP port. */
     tcpSocket?: IoK8SApiCoreV1TCPSocketAction;
     /** Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset. */
     terminationGracePeriodSeconds?: number;
@@ -6342,7 +6468,7 @@ export interface IoK8SApiCoreV1Probe {
 export interface IoK8SApiCoreV1ProjectedVolumeSource {
     /** defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set. */
     defaultMode?: number;
-    /** sources is the list of volume projections */
+    /** sources is the list of volume projections. Each entry in this list handles one source. */
     sources?: IoK8SApiCoreV1VolumeProjection[];
 }
 
@@ -6386,6 +6512,8 @@ export interface IoK8SApiCoreV1RBDVolumeSource {
 export interface IoK8SApiCoreV1ResourceClaim {
     /** Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container. */
     name: string;
+    /** Request is the name chosen for a request in the referenced claim. If empty, everything from the claim is made available, otherwise only the result of this request. */
+    request?: string;
 }
 
 /** ResourceFieldSelector represents container resources (cpu, memory) and their output format */
@@ -6524,7 +6652,7 @@ export interface IoK8SApiCoreV1SecurityContext {
     capabilities?: IoK8SApiCoreV1Capabilities;
     /** Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false. Note that this field cannot be set when spec.os.name is windows. */
     privileged?: boolean;
-    /** procMount denotes the type of proc mount to use for the containers. The default is DefaultProcMount which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled. Note that this field cannot be set when spec.os.name is windows. */
+    /** procMount denotes the type of proc mount to use for the containers. The default value is Default which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled. Note that this field cannot be set when spec.os.name is windows. */
     procMount?: string;
     /** Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows. */
     readOnlyRootFilesystem?: boolean;
@@ -6639,6 +6767,7 @@ export interface IoK8SApiCoreV1TypedLocalObjectReference {
     name: string;
 }
 
+/** TypedObjectReference contains enough information to let you locate the typed referenced object */
 export interface IoK8SApiCoreV1TypedObjectReference {
     /** APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required. */
     apiGroup?: string;
@@ -6652,19 +6781,19 @@ export interface IoK8SApiCoreV1TypedObjectReference {
 
 /** Volume represents a named volume in a pod that may be accessed by any container in the pod. */
 export interface IoK8SApiCoreV1Volume {
-    /** awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore */
+    /** awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore */
     awsElasticBlockStore?: IoK8SApiCoreV1AWSElasticBlockStoreVolumeSource;
-    /** azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod. */
+    /** azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod. Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type are redirected to the disk.csi.azure.com CSI driver. */
     azureDisk?: IoK8SApiCoreV1AzureDiskVolumeSource;
-    /** azureFile represents an Azure File Service mount on the host and bind mount to the pod. */
+    /** azureFile represents an Azure File Service mount on the host and bind mount to the pod. Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type are redirected to the file.csi.azure.com CSI driver. */
     azureFile?: IoK8SApiCoreV1AzureFileVolumeSource;
-    /** cephFS represents a Ceph FS mount on the host that shares a pod's lifetime */
+    /** cephFS represents a Ceph FS mount on the host that shares a pod's lifetime. Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported. */
     cephfs?: IoK8SApiCoreV1CephFSVolumeSource;
-    /** cinder represents a cinder volume attached and mounted on kubelets host machine. More info: https://examples.k8s.io/mysql-cinder-pd/README.md */
+    /** cinder represents a cinder volume attached and mounted on kubelets host machine. Deprecated: Cinder is deprecated. All operations for the in-tree cinder type are redirected to the cinder.csi.openstack.org CSI driver. More info: https://examples.k8s.io/mysql-cinder-pd/README.md */
     cinder?: IoK8SApiCoreV1CinderVolumeSource;
     /** configMap represents a configMap that should populate this volume */
     configMap?: IoK8SApiCoreV1ConfigMapVolumeSource;
-    /** csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature). */
+    /** csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers. */
     csi?: IoK8SApiCoreV1CSIVolumeSource;
     /** downwardAPI represents downward API about the pod that should populate this volume */
     downwardAPI?: IoK8SApiCoreV1DownwardAPIVolumeSource;
@@ -6689,18 +6818,26 @@ export interface IoK8SApiCoreV1Volume {
     ephemeral?: IoK8SApiCoreV1EphemeralVolumeSource;
     /** fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod. */
     fc?: IoK8SApiCoreV1FCVolumeSource;
-    /** flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin. */
+    /** flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin. Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead. */
     flexVolume?: IoK8SApiCoreV1FlexVolumeSource;
-    /** flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running */
+    /** flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running. Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported. */
     flocker?: IoK8SApiCoreV1FlockerVolumeSource;
-    /** gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk */
+    /** gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk */
     gcePersistentDisk?: IoK8SApiCoreV1GCEPersistentDiskVolumeSource;
-    /** gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container. */
+    /** gitRepo represents a git repository at a particular revision. Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container. */
     gitRepo?: IoK8SApiCoreV1GitRepoVolumeSource;
-    /** glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/glusterfs/README.md */
+    /** glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported. More info: https://examples.k8s.io/volumes/glusterfs/README.md */
     glusterfs?: IoK8SApiCoreV1GlusterfsVolumeSource;
     /** hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath */
     hostPath?: IoK8SApiCoreV1HostPathVolumeSource;
+    /**
+     * image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine. The volume is resolved at pod startup depending on which PullPolicy value is provided:
+     *
+     * - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails. - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present. - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+     *
+     * The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation. A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message. The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field. The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images. The volume will be mounted read-only (ro) and non-executable files (noexec). Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33. The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+     */
+    image?: IoK8SApiCoreV1ImageVolumeSource;
     /** iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md */
     iscsi?: IoK8SApiCoreV1ISCSIVolumeSource;
     /** name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names */
@@ -6709,23 +6846,23 @@ export interface IoK8SApiCoreV1Volume {
     nfs?: IoK8SApiCoreV1NFSVolumeSource;
     /** persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims */
     persistentVolumeClaim?: IoK8SApiCoreV1PersistentVolumeClaimVolumeSource;
-    /** photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine */
+    /** photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine. Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported. */
     photonPersistentDisk?: IoK8SApiCoreV1PhotonPersistentDiskVolumeSource;
-    /** portworxVolume represents a portworx volume attached and mounted on kubelets host machine */
+    /** portworxVolume represents a portworx volume attached and mounted on kubelets host machine. Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate is on. */
     portworxVolume?: IoK8SApiCoreV1PortworxVolumeSource;
     /** projected items for all in one resources secrets, configmaps, and downward API */
     projected?: IoK8SApiCoreV1ProjectedVolumeSource;
-    /** quobyte represents a Quobyte mount on the host that shares a pod's lifetime */
+    /** quobyte represents a Quobyte mount on the host that shares a pod's lifetime. Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported. */
     quobyte?: IoK8SApiCoreV1QuobyteVolumeSource;
-    /** rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. More info: https://examples.k8s.io/volumes/rbd/README.md */
+    /** rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported. More info: https://examples.k8s.io/volumes/rbd/README.md */
     rbd?: IoK8SApiCoreV1RBDVolumeSource;
-    /** scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes. */
+    /** scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes. Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported. */
     scaleIO?: IoK8SApiCoreV1ScaleIOVolumeSource;
     /** secret represents a secret that should populate this volume. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret */
     secret?: IoK8SApiCoreV1SecretVolumeSource;
-    /** storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes. */
+    /** storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes. Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported. */
     storageos?: IoK8SApiCoreV1StorageOSVolumeSource;
-    /** vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine */
+    /** vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine. Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type are redirected to the csi.vsphere.vmware.com CSI driver. */
     vsphereVolume?: IoK8SApiCoreV1VsphereVirtualDiskVolumeSource;
 }
 
@@ -6765,7 +6902,7 @@ export interface IoK8SApiCoreV1VolumeMount {
     subPathExpr?: string;
 }
 
-/** Projection that may be projected along with other supported volume types */
+/** Projection that may be projected along with other supported volume types. Exactly one of these fields must be set. */
 export interface IoK8SApiCoreV1VolumeProjection {
     /**
      * ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field of ClusterTrustBundle objects in an auto-updating file.
@@ -6845,8 +6982,6 @@ export interface IoK8SApiPolicyV1PodDisruptionBudgetSpec {
      * AlwaysAllow policy means that all running pods (status.phase="Running"), but not yet healthy are considered disrupted and can be evicted regardless of whether the criteria in a PDB is met. This means perspective running pods of a disrupted application might not get a chance to become healthy. Healthy pods will be subject to the PDB for eviction.
      *
      * Additional policies may be added in the future. Clients making eviction decisions should disallow eviction of unhealthy pods if they encounter an unrecognized policy in this field.
-     *
-     * This field is beta-level. The eviction API uses this field when the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
      */
     unhealthyPodEvictionPolicy?: string;
 }
@@ -6986,12 +7121,12 @@ export interface IoK8SApimachineryPkgApisMetaV1ListMeta {
 
 /** ManagedFieldsEntry is a workflow-id, a FieldSet and the group version of the resource that the fieldset applies to. */
 export interface IoK8SApimachineryPkgApisMetaV1ManagedFieldsEntry {
+    /** FieldsV1 holds the first JSON version format as described in the "FieldsV1" type. */
+    fieldsV1?: IoK8SApimachineryPkgApisMetaV1FieldsV1;
     /** APIVersion defines the version of this resource that this field set applies to. The format is "group/version" just like the top-level APIVersion field. It is necessary to track the version of a field set because it cannot be automatically converted. */
     apiVersion?: string;
     /** FieldsType is the discriminator for the different fields format and version. There is currently only one possible value: "FieldsV1" */
     fieldsType?: string;
-    /** FieldsV1 holds the first JSON version format as described in the "FieldsV1" type. */
-    fieldsV1?: IoK8SApimachineryPkgApisMetaV1FieldsV1;
     /** Manager is an identifier of the workflow managing these fields. */
     manager?: string;
     /** Operation is the type of operation which lead to this ManagedFieldsEntry being created. The only valid values for this field are 'Apply' and 'Update'. */
@@ -7096,7 +7231,7 @@ export interface SensorCreateSensorRequest {
     /** CreateOptions may be provided when creating an API object. */
     createOptions?: IoK8SApimachineryPkgApisMetaV1CreateOptions;
     namespace?: string;
-    sensor?: IoArgoprojEventsV1Alpha1Sensor;
+    sensor?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Sensor;
 }
 
 export type SensorDeleteSensorResponse = object;
@@ -7118,12 +7253,12 @@ export interface SensorLogEntry {
 }
 
 export interface SensorSensorWatchEvent {
-    object?: IoArgoprojEventsV1Alpha1Sensor;
+    object?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Sensor;
     type?: string;
 }
 
 export interface SensorUpdateSensorRequest {
     name?: string;
     namespace?: string;
-    sensor?: IoArgoprojEventsV1Alpha1Sensor;
+    sensor?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Sensor;
 }
