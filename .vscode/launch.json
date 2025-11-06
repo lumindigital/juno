@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Tests",
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "pretest",
+            "program": "${workspaceRoot}/node_modules/.bin/mocha",
+            "runtimeArgs": [
+                "--experimental-modules"
+            ],
+            "args": [
+                "--experimental-specifier-resolution=node",
+                "--loader=testdouble",
+                "${workspaceRoot}/test-output/test/**/*.js",
+                "--no-timeouts"
+            ],
+            "stopOnEntry": false,
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": null,
+            "env": {
+                "NODE_ENV": "testing"
+            },
+            "sourceMaps": true
+        }
+    ]
+}
