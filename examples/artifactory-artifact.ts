@@ -10,6 +10,21 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const helloArtArtifact = new OutputArtifact('hello-art', {
+        artifactory: {
+            passwordSecret: {
+                key: 'password',
+                name: 'my-artifactory-credentials',
+            },
+            url: 'http://artifactory:8081/artifactory/generic-local/hello_world.tgz',
+            usernameSecret: {
+                key: 'username',
+                name: 'my-artifactory-credentials',
+            },
+        },
+        path: '/tmp/hello_world.txt',
+    });
+
     const helloWorldToFileTemplate = new Template('hello-world-to-file', {
         container: new Container({
             args: ['echo hello world | tee /tmp/hello_world.txt'],
@@ -17,22 +32,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             image: 'busybox',
         }),
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('hello-art', {
-                    artifactory: {
-                        passwordSecret: {
-                            key: 'password',
-                            name: 'my-artifactory-credentials',
-                        },
-                        url: 'http://artifactory:8081/artifactory/generic-local/hello_world.tgz',
-                        usernameSecret: {
-                            key: 'username',
-                            name: 'my-artifactory-credentials',
-                        },
-                    },
-                    path: '/tmp/hello_world.txt',
-                }),
-            ],
+            artifacts: [helloArtArtifact],
         }),
     });
 
@@ -74,7 +74,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             messageInputArtifact.toArgumentArtifact({
-                                from: '{{steps.generate-artifact.outputs.artifacts.hello-art}}',
+                                fromOutputArtifact: { task: generateArtifactStep, parameter: helloArtArtifact },
                             }),
                         ],
                     }),
