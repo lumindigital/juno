@@ -10,6 +10,13 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const helloArtOutputArtifact = new OutputArtifact('hello-art', {
+        archive: {
+            none: {},
+        },
+        path: '/tmp/',
+    });
+
     const helloWorldToFileTemplate = new Template('hello-world-to-file', {
         container: new Container({
             args: ['sleep 1; echo hello world | tee /tmp/hello_world.txt'],
@@ -17,14 +24,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             image: 'busybox',
         }),
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('hello-art', {
-                    archive: {
-                        none: {},
-                    },
-                    path: '/tmp/',
-                }),
-            ],
+            artifacts: [helloArtOutputArtifact],
         }),
     });
 
@@ -72,7 +72,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             messageInputArtifact.toArgumentArtifact({
-                                from: '{{steps.generate-artifact.outputs.artifacts.hello-art}}',
+                                fromOutputArtifact: { task: generateArtifactStep, parameter: helloArtOutputArtifact },
                             }),
                         ],
                     }),
@@ -84,7 +84,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             messageInputArtifact.toArgumentArtifact({
-                                from: '{{steps.generate-artifact.outputs.artifacts.hello-art}}',
+                                fromOutputArtifact: { task: generateArtifactStep, parameter: helloArtOutputArtifact },
                                 subPath: 'hello_world.txt',
                             }),
                         ],

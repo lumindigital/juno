@@ -3,6 +3,7 @@ import { Container } from '../src/api/container';
 import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
 import { EnvironmentVariable } from '../src/api/environment-variable';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
@@ -11,6 +12,13 @@ import { WorkflowTemplate } from '../src/api/workflow-template';
 import { IoArgoprojWorkflowV1Alpha1WorkflowTemplate } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1WorkflowTemplate> {
+    const pathWorkflowParameter = new WorkflowParameter('path', { value: 'test/e2e/images/argosay/v2' });
+    const imageWorkflowParameter = new WorkflowParameter('image', { value: 'alexcollinsintuit/argosay:v2' });
+    const repoWorkflowParameter = new WorkflowParameter('repo', {
+        value: 'https://github.com/argoproj/argo-workflows',
+    });
+    const branchWorkflowParameter = new WorkflowParameter('branch', { value: 'master' });
+
     const repoInputParameter = new InputParameter('repo');
     const branchInputParameter = new InputParameter('branch');
 
@@ -21,9 +29,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 '--depth',
                 '1',
                 '--branch',
-                '{{inputs.parameters.branch}}',
+                `${simpleTag(branchInputParameter)}`,
                 '--single-branch',
-                '{{inputs.parameters.repo}}',
+                `${simpleTag(repoInputParameter)}`,
                 '.',
             ],
             image: 'alpine/git:v2.26.2',
@@ -58,7 +66,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     name: 'work',
                 },
             ],
-            workingDir: '/work/{{inputs.parameters.path}}',
+            workingDir: `/work/${simpleTag(pathInputParameter)}`,
         }),
         inputs: new Inputs({
             parameters: [pathInputParameter],
@@ -78,7 +86,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 '--local',
                 'dockerfile=.',
                 '--output',
-                'type=image,name=docker.io/{{inputs.parameters.image}},push=true',
+                `type=image,name=docker.io/${simpleTag(imageInputParameter)},push=true`,
             ],
             command: ['buildctl-daemonless.sh'],
             env: [
@@ -105,7 +113,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     name: 'docker-config',
                 },
             ],
-            workingDir: '/work/{{inputs.parameters.path}}',
+            workingDir: `/work/${simpleTag(pathInputParameter)}`,
         }),
         inputs: new Inputs({
             parameters: [pathInputParameter, imageInputParameter],
@@ -123,8 +131,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const cloneTask = new DagTask('clone', {
         arguments: new Arguments({
             parameters: [
-                repoInputParameter.toArgumentParameter({ value: '{{workflow.parameters.repo}}' }),
-                branchInputParameter.toArgumentParameter({ value: '{{workflow.parameters.branch}}' }),
+                repoInputParameter.toArgumentParameter({ valueFromWorkflowParameter: repoWorkflowParameter }),
+                branchInputParameter.toArgumentParameter({ valueFromWorkflowParameter: branchWorkflowParameter }),
             ],
         }),
         template: cloneTemplate,
@@ -132,7 +140,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const buildTask = new DagTask('build', {
         arguments: new Arguments({
-            parameters: [pathInputParameter.toArgumentParameter({ value: '{{workflow.parameters.path}}' })],
+            parameters: [pathInputParameter.toArgumentParameter({ valueFromWorkflowParameter: pathWorkflowParameter })],
         }),
         depends: cloneTask,
         template: buildTemplate,
@@ -146,8 +154,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new DagTask('image', {
                     arguments: new Arguments({
                         parameters: [
-                            pathInputParameter.toArgumentParameter({ value: '{{workflow.parameters.path}}' }),
-                            imageInputParameter.toArgumentParameter({ value: '{{workflow.parameters.image}}' }),
+                            pathInputParameter.toArgumentParameter({
+                                valueFromWorkflowParameter: pathWorkflowParameter,
+                            }),
+                            imageInputParameter.toArgumentParameter({
+                                valueFromWorkflowParameter: imageWorkflowParameter,
+                            }),
                         ],
                     }),
                     depends: buildTask,
@@ -164,10 +176,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
                 parameters: [
-                    new WorkflowParameter('repo', { value: 'https://github.com/argoproj/argo-workflows' }),
-                    new WorkflowParameter('branch', { value: 'master' }),
-                    new WorkflowParameter('path', { value: 'test/e2e/images/argosay/v2' }),
-                    new WorkflowParameter('image', { value: 'alexcollinsintuit/argosay:v2' }),
+                    repoWorkflowParameter,
+                    branchWorkflowParameter,
+                    pathWorkflowParameter,
+                    imageWorkflowParameter,
                 ],
             }),
             entrypoint: mainTemplate,

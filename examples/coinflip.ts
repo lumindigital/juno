@@ -1,4 +1,6 @@
+import { OutputResult } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -34,21 +36,21 @@ print(result)
         }),
     });
 
+    const flipCoinStep = new WorkflowStep('flip-coin', {
+        template: flipCoinTemplate,
+    });
+
     const coinflipTemplate = new Template('coinflip', {
         steps: [
-            [
-                new WorkflowStep('flip-coin', {
-                    template: flipCoinTemplate,
-                }),
-            ],
+            [flipCoinStep],
             [
                 new WorkflowStep('heads', {
                     template: headsTemplate,
-                    when: '{{steps.flip-coin.outputs.result}} == heads',
+                    when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == heads`,
                 }),
                 new WorkflowStep('tails', {
                     template: tailsTemplate,
-                    when: '{{steps.flip-coin.outputs.result}} == tails',
+                    when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == tails`,
                 }),
             ],
         ],

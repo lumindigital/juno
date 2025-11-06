@@ -10,6 +10,29 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const etcOutputArtifact = new OutputArtifact('etc', {
+        archive: {
+            none: {},
+        },
+        path: '/etc',
+    });
+
+    const helloTxtOutputArtifact = new OutputArtifact('hello-txt', {
+        archive: {
+            none: {},
+        },
+        path: '/tmp/hello_world.txt',
+    });
+
+    const helloTxtNcOutputArtifact = new OutputArtifact('hello-txt-nc', {
+        archive: {
+            tar: {
+                compressionLevel: 0,
+            },
+        },
+        path: '/tmp/hello_world_nc.txt',
+    });
+
     const helloWorldToFileTemplate = new Template('hello-world-to-file', {
         container: new Container({
             args: ['echo hello world | tee /tmp/hello_world.txt | tee /tmp/hello_world_nc.txt ; sleep 1'],
@@ -17,28 +40,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             image: 'busybox',
         }),
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('etc', {
-                    archive: {
-                        none: {},
-                    },
-                    path: '/etc',
-                }),
-                new OutputArtifact('hello-txt', {
-                    archive: {
-                        none: {},
-                    },
-                    path: '/tmp/hello_world.txt',
-                }),
-                new OutputArtifact('hello-txt-nc', {
-                    archive: {
-                        tar: {
-                            compressionLevel: 0,
-                        },
-                    },
-                    path: '/tmp/hello_world_nc.txt',
-                }),
-            ],
+            artifacts: [etcOutputArtifact, helloTxtOutputArtifact, helloTxtNcOutputArtifact],
         }),
     });
 
@@ -75,13 +77,13 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             etcInputArtifact.toArgumentArtifact({
-                                from: '{{steps.generate-artifact.outputs.artifacts.etc}}',
+                                fromOutputArtifact: { task: generateArtifactStep, parameter: etcOutputArtifact },
                             }),
                             helloTxtInputArtifact.toArgumentArtifact({
-                                from: '{{steps.generate-artifact.outputs.artifacts.hello-txt}}',
+                                fromOutputArtifact: { task: generateArtifactStep, parameter: helloTxtOutputArtifact },
                             }),
                             helloTxtNcInputArtifact.toArgumentArtifact({
-                                from: '{{steps.generate-artifact.outputs.artifacts.hello-txt-nc}}',
+                                fromOutputArtifact: { task: generateArtifactStep, parameter: helloTxtNcOutputArtifact },
                             }),
                         ],
                     }),
