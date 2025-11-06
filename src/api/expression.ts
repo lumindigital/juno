@@ -44,6 +44,14 @@ export class Self {
     constructor() {}
 }
 
+/**
+ * Adds a logical AND between multiple expressions.
+ *
+ * @param input - A valid {@link ExpressionArgs} object
+ *
+ * @returns A string representation of the AND expression
+ * @public
+ */
 export function and(inputs: ExpressionArgs[]): string {
     let result = '';
 
@@ -60,6 +68,14 @@ export function and(inputs: ExpressionArgs[]): string {
     return result;
 }
 
+/**
+ * Adds a logical OR between multiple expressions.
+ *
+ * @param input - A valid {@link ExpressionArgs} object
+ *
+ * @returns A string representation of the OR expression
+ * @public
+ */
 export function or(inputs: ExpressionArgs[]): string {
     let result = '';
 
@@ -76,30 +92,99 @@ export function or(inputs: ExpressionArgs[]): string {
     return result;
 }
 
+/**
+ * Adds a logical NOT to an expression.
+ *
+ * @param input - A valid {@link ExpressionArgs} object
+ *
+ * @returns A string representation of the negated expression
+ * @public
+ */
 export function not(input: ExpressionArgs): string {
     return `!${getTaskValue(input)}`;
 }
 
+/**
+ * Wraps an expression in parentheses.
+ *
+ * @param input - A valid expression string
+ *
+ * @returns A string wrapped in parentheses
+ * @public
+ */
 export function paren(input: string): string {
     return `( ${input} )`;
 }
 
+/**
+ * Takes a {@link ParameterArgs} or string and wraps it in simple expression tags.
+ * @param input - A valid {@link ParameterArgs} or string
+ *
+ * @returns A string wrapped in expression tags
+ * @public
+ */
 export function simpleTag(input: ParameterArgs | string): string {
     return `{{${getVariable(input)}}}`;
 }
 
+/**
+ * Converts a {@link ParameterArgs} into a string
+ *
+ * @param input - A valid {@link ParameterArgs} object
+ *
+ * @returns A string representation of the parameter argument. Note: this does not handle hypenated parameters. Use {@link hyphenParameter} for that.
+ * @public
+ */
+export function parameterArgsString(input: ParameterArgs): string {
+    return getVariable(input);
+}
+
+/**
+ * Takes a string an wraps it in expression tags.
+ *
+ * @param input - A valid argoworkflow expression string
+ *
+ * @returns A string wrapped in expression tags {{=string}}.  Note: this does not handle hypenated parameters. Wrap any hyphenated parameters using {@link hyphenParameter} for that.
+ * @public
+ */
 export function expressionTag(input: string): string {
     return `{{=${input}}}`;
 }
 
+/**
+ * Converts an expression argument into a string suitable for a 'depends' field. This is used by the {@link DagTask.depends} property.
+ * Unfortunately this needs to be exported for that to work
+ *
+ * @param input - description
+ *
+ * @returns A string representation of the depends expression.
+ * @internal
+ */
 export function depends(input: ExpressionArgs): string {
     return getTaskValue(input);
 }
 
+/**
+ * Takes a {@link ParameterArgs} and converts it to a string that works with expressions
+ *
+ * @param input - A valid {@link ParameterArgs} object
+ *
+ * @returns A string representation of the parameter argument. Any hyphenated parameters will be converted to the bracket notation.
+ * @public
+ */
 export function hyphenParameter(input: ParameterArgs): string {
     return hyphen(getVariable(input));
 }
 
+/**
+ * An internal method that checks if a string contains argo expression tags
+ *
+ * @param input - A valid argoworkflow string
+ *
+ *
+ * @returns a boolean indicating if the string contains argo expression tags
+ * @internal
+ */
 export function containsTag(input: string): boolean {
     return input.includes('{{') && input.includes('}}');
 }
@@ -109,6 +194,11 @@ function hyphen(input: string): string {
     let output = split[0];
 
     for (let i = 1; i < split.length; i++) {
+        if (split[i].includes('[')) {
+            output = output.concat(`.${split[i]}`);
+            continue;
+        }
+
         if (split[i].includes('-')) {
             output = output.concat(`['${split[i]}']`);
             continue;
