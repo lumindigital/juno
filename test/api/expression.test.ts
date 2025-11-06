@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { and, simpleTag, TaskResult, paren, or, hyphenParameter } from '../../src/api/expression';
+import { and, simpleTag, TaskResult, paren, or, hyphenParameter, Self } from '../../src/api/expression';
 import { InputParameter, OutputParameter, WorkflowParameter } from '../../src/api/parameter';
 import { DagTask } from '../../src/api/dag-task';
 import { WorkflowStep } from '../../src/api/workflow-step';
@@ -142,6 +142,33 @@ describe('expression tests', (): void => {
 
         it('returns string input when input type is string', (): void => {
             expect(simpleTag('A')).to.equal('{{A}}');
+        });
+
+        it('returns output parameter path when input type is OutputParameter and Self()', (): void => {
+            expect(
+                simpleTag({
+                    task: new Self(),
+                    parameter: new OutputParameter('ParamA', {}),
+                }),
+            ).to.equal('{{outputs.parameters.ParamA.path}}');
+        });
+
+        it('returns output artifact path when input type is OutputArtifact and Self()', (): void => {
+            expect(
+                simpleTag({
+                    task: new Self(),
+                    parameter: new OutputArtifact('OutputA', {}),
+                }),
+            ).to.equal('{{outputs.artifacts.OutputA.path}}');
+        });
+
+        it('returns input artifact path when input type is InputArtifact and Self()', (): void => {
+            expect(
+                simpleTag({
+                    task: new Self(),
+                    inputArtifact: new InputArtifact('InputA', {}),
+                }),
+            ).to.equal('{{inputs.artifacts.InputA.path}}');
         });
     });
 

@@ -6,18 +6,28 @@ import { InputArtifact, OutputArtifact, OutputResult } from './artifact.js';
 type Task = DagTask | WorkflowStep;
 export type TaskAndResult = { task: Task; result?: TaskResult };
 export type ExpressionArgs = Task | TaskAndResult | string;
-export type OutputParameterArgs = { parameter: OutputParameter | OutputArtifact | OutputResult; task: Task };
+export type OutputParameterArgs = { parameter: OutputParameter | OutputArtifact | OutputResult; task?: Task | Self };
+export type LocalInputArtifactArgs = { inputArtifact: InputArtifact; task?: Self };
 export type WithParameterArgs = OutputParameterArgs;
-type ParameterArgs = InputParameter | InputArtifact | OutputParameterArgs | WorkflowParameter | FromItemProperty;
+type ParameterArgs =
+    | InputParameter
+    | InputArtifact
+    | OutputParameterArgs
+    | WorkflowParameter
+    | FromItemProperty
+    | LocalInputArtifactArgs;
 
 enum InputType {
     InputParameter = 'InputParameter',
     InputArtifact = 'InputArtifact',
     WorkflowParameter = 'WorkflowParameter',
     OutputParameter = 'OutputParameter',
+    OutputParameterSelf = 'OutputParameterSelf',
     OutputArtifact = 'OutputArtifact',
+    OutputArtifactSelf = 'OutputArtifactSelf',
     OutputResult = 'OutputResult',
     FromItemProperty = 'FromItemProperty',
+    InputArtifactSelf = 'LocalInputArtifactSelf',
 }
 
 export enum TaskResult {
@@ -27,6 +37,11 @@ export enum TaskResult {
     Skipped = 'Skipped',
     Omitted = 'Omitted',
     Daemoned = 'Daemoned',
+}
+
+export class Self {
+    readonly isSelf = true;
+    constructor() {}
 }
 
 export function and(inputs: ExpressionArgs[]): string {
@@ -127,35 +142,64 @@ function isTaskAndResult(input: ExpressionArgs): input is TaskAndResult {
 }
 
 function isDagTask(input: Task): input is DagTask {
-    return (input as DagTask).dagTask !== undefined;
+    return (input as DagTask).isDagTask;
 }
 
 function getInputType(input: ParameterArgs): InputType {
-    if ((input as InputParameter).isInputParameter !== undefined) {
+    if ((input as InputParameter).isInputParameter) {
         return InputType.InputParameter;
     }
 
-    if ((input as InputArtifact).isInputArtifact !== undefined) {
+    if ((input as InputArtifact).isInputArtifact) {
         return InputType.InputArtifact;
     }
 
-    if (((input as OutputParameterArgs).parameter as OutputParameter)?.isOutputParameter !== undefined) {
+    if (
+        ((input as OutputParameterArgs).parameter as OutputParameter)?.isOutputParameter &&
+        !((input as OutputParameterArgs)?.task as Self)?.isSelf
+    ) {
         return InputType.OutputParameter;
     }
 
-    if (((input as OutputParameterArgs).parameter as OutputArtifact)?.isOutputArtifact !== undefined) {
+    if (
+        ((input as OutputParameterArgs).parameter as OutputArtifact)?.isOutputArtifact &&
+        !((input as OutputParameterArgs)?.task as Self)?.isSelf
+    ) {
         return InputType.OutputArtifact;
     }
 
-    if (((input as OutputParameterArgs).parameter as OutputResult)?.isOutputResult !== undefined) {
+    if (((input as OutputParameterArgs).parameter as OutputResult)?.isOutputResult) {
         return InputType.OutputResult;
     }
 
-    if ((input as FromItemProperty).isFromItemProperty !== undefined) {
+    if (
+        ((input as OutputParameterArgs).parameter as OutputParameter)?.isOutputParameter &&
+        ((input as OutputParameterArgs)?.task as Self)?.isSelf
+    ) {
+        return InputType.OutputParameterSelf;
+    }
+
+    if (
+        ((input as OutputParameterArgs).parameter as OutputArtifact)?.isOutputArtifact &&
+        ((input as OutputParameterArgs)?.task as Self)?.isSelf
+    ) {
+        return InputType.OutputArtifactSelf;
+    }
+
+    // if (((input as OutputParameterArgs)?.parameter as OutputResult)?.isOutputResult) {
+
+    //     throw new Error('Undefined self input type');
+    // }
+
+    if (((input as LocalInputArtifactArgs).inputArtifact as InputArtifact)?.isInputArtifact) {
+        return InputType.InputArtifactSelf;
+    }
+
+    if ((input as FromItemProperty).isFromItemProperty) {
         return InputType.FromItemProperty;
     }
 
-    if ((input as WorkflowParameter).isWorkflowParameter !== undefined) {
+    if ((input as WorkflowParameter).isWorkflowParameter) {
         return InputType.WorkflowParameter;
     }
 
@@ -180,37 +224,49 @@ function getVariable(input: ParameterArgs | string): string {
             const outputParameter = input as OutputParameterArgs;
             const parameter = outputParameter.parameter as OutputParameter;
             let adagOrStep = '';
-            if (isDagTask(outputParameter.task)) {
+
+            if (!outputParameter.task) {
+                throw new Error(`Task or localPath=true required for output parameter ${parameter.name}`);
+            }
+
+            const task = outputParameter.task as Task;
+
+            if (isDagTask(task)) {
                 adagOrStep = 'tasks';
             } else {
                 adagOrStep = 'steps';
             }
 
-            return `${adagOrStep}.${outputParameter.task.name}.outputs.parameters.${parameter.name}`;
+            return `${adagOrStep}.${task.name}.outputs.parameters.${parameter.name}`;
         }
         case InputType.OutputArtifact: {
             const outputArtifact = input as OutputParameterArgs;
             const parameter = outputArtifact.parameter as OutputArtifact;
             let pdagOrStep = '';
-            if (isDagTask(outputArtifact.task)) {
+
+            const task = outputArtifact.task as Task;
+
+            if (isDagTask(task)) {
                 pdagOrStep = 'tasks';
             } else {
                 pdagOrStep = 'steps';
             }
 
-            return `${pdagOrStep}.${outputArtifact.task.name}.outputs.artifacts.${parameter.name}`;
+            return `${pdagOrStep}.${task.name}.outputs.artifacts.${parameter.name}`;
         }
         case InputType.OutputResult: {
             const outputResult = input as OutputParameterArgs;
 
+            const task = outputResult.task as Task;
+
             let adagOrStep = '';
-            if (isDagTask(outputResult.task)) {
+            if (isDagTask(task)) {
                 adagOrStep = 'tasks';
             } else {
                 adagOrStep = 'steps';
             }
 
-            return `${adagOrStep}.${outputResult.task.name}.outputs.result`;
+            return `${adagOrStep}.${task.name}.outputs.result`;
         }
         case InputType.FromItemProperty: {
             const fromItem = input as FromItemProperty;
@@ -219,9 +275,23 @@ function getVariable(input: ParameterArgs | string): string {
             }
             return 'item';
         }
-
         case InputType.WorkflowParameter: {
             return `workflow.parameters.${(input as WorkflowParameter).name}`;
+        }
+        case InputType.InputArtifactSelf: {
+            return `inputs.artifacts.${(input as LocalInputArtifactArgs).inputArtifact.name}.path`;
+        }
+        case InputType.OutputArtifactSelf: {
+            const outputArtifactArgs = input as OutputParameterArgs;
+            const parameter = outputArtifactArgs.parameter as OutputArtifact;
+
+            return `outputs.artifacts.${parameter.name}.path`;
+        }
+        case InputType.OutputParameterSelf: {
+            const outputParameterArgs = input as OutputParameterArgs;
+            const parameter = outputParameterArgs.parameter as OutputParameter;
+
+            return `outputs.parameters.${parameter.name}.path`;
         }
     }
 }
