@@ -1,4 +1,5 @@
-import { OutputArtifact } from '../src/api/artifact';
+import { OutputArtifact, OutputResult } from '../src/api/artifact';
+import { parameterArgsString, hyphenParameter, simpleTag } from '../src/api/expression';
 import { Outputs } from '../src/api/outputs';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
@@ -18,13 +19,13 @@ print("heads" if random.randint(0,1) == 0 else "tails")
         }),
     });
 
+    const resultOutputArtifact = new OutputArtifact('result', {
+        path: '/result.txt',
+    });
+
     const headsTemplate = new Template('heads', {
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('result', {
-                    path: '/result.txt',
-                }),
-            ],
+            artifacts: [resultOutputArtifact],
         }),
         script: new Script({
             command: ['python'],
@@ -37,11 +38,7 @@ print("heads" if random.randint(0,1) == 0 else "tails")
 
     const tailsTemplate = new Template('tails', {
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('result', {
-                    path: '/result.txt',
-                }),
-            ],
+            artifacts: [resultOutputArtifact],
         }),
         script: new Script({
             command: ['python'],
@@ -52,32 +49,28 @@ print("heads" if random.randint(0,1) == 0 else "tails")
         }),
     });
 
+    const flipCoinStep = new WorkflowStep('flip-coin', {
+        template: flipCoinTemplate,
+    });
+
+    const headsStep = new WorkflowStep('heads', {
+        template: headsTemplate,
+        when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == heads`,
+    });
+    const tailsStep = new WorkflowStep('tails', {
+        template: tailsTemplate,
+        when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == tails`,
+    });
+
     const mainTemplate = new Template('main', {
         outputs: new Outputs({
             artifacts: [
                 new OutputArtifact('result', {
-                    fromExpression:
-                        "steps['flip-coin'].outputs.result == 'heads' ? steps.heads.outputs.artifacts.result : steps.tails.outputs.artifacts.result",
+                    fromExpression: `${hyphenParameter({ task: flipCoinStep, parameter: new OutputResult() })} == 'heads' ? ${parameterArgsString({ task: headsStep, parameter: resultOutputArtifact })} : ${parameterArgsString({ task: tailsStep, parameter: resultOutputArtifact })}`,
                 }),
             ],
         }),
-        steps: [
-            [
-                new WorkflowStep('flip-coin', {
-                    template: flipCoinTemplate,
-                }),
-            ],
-            [
-                new WorkflowStep('heads', {
-                    template: headsTemplate,
-                    when: '{{steps.flip-coin.outputs.result}} == heads',
-                }),
-                new WorkflowStep('tails', {
-                    template: tailsTemplate,
-                    when: '{{steps.flip-coin.outputs.result}} == tails',
-                }),
-            ],
-        ],
+        steps: [[flipCoinStep], [headsStep, tailsStep]],
     });
 
     return new Workflow({
