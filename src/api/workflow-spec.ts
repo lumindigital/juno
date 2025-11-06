@@ -232,7 +232,7 @@ export class WorkflowSpec {
                 }
 
                 if (task.depends) {
-                    if ((task.depends as DagTask).dagTask !== undefined) {
+                    if ((task.depends as DagTask).isDagTask) {
                         const dependsDagTask = task.depends as DagTask;
 
                         if (!template.dag.tasks.find((x) => x.name === dependsDagTask.name)) {
@@ -271,7 +271,7 @@ export class WorkflowSpec {
                     for (const dep of task.dependencies) {
                         const errors = [];
 
-                        if ((dep as DagTask).dagTask !== undefined) {
+                        if ((dep as DagTask).isDagTask !== undefined) {
                             const depDagTask = dep as DagTask;
 
                             if (!template.dag.tasks.find((x) => x.name === depDagTask.name)) {

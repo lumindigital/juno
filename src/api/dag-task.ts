@@ -13,7 +13,7 @@ import { depends } from './expression.js';
 import { InputParameter } from './parameter.js';
 
 export class DagTask {
-    readonly dagTask = true;
+    readonly isDagTask = true;
     arguments?: Arguments;
     continueOn?: IoArgoprojWorkflowV1Alpha1ContinueOn;
     dependencies?: DagTask[] | string[];
@@ -98,14 +98,14 @@ function convertToWithParam(withParam: undefined | string | InputParameter | Wit
         return withParam;
     }
 
-    if ((withParam as InputParameter).isInputParameter !== undefined) {
+    if ((withParam as InputParameter).isInputParameter) {
         return simpleTag(withParam as InputParameter);
     }
 
     if ((withParam as WithParameterArgs).parameter !== undefined) {
         const withParamArgs = withParam as WithParameterArgs;
 
-        if ((withParamArgs.task as DagTask).dagTask !== undefined) {
+        if ((withParamArgs.task as DagTask).isDagTask) {
             return simpleTag({ task: withParamArgs.task as DagTask, parameter: withParamArgs.parameter });
         }
     }
