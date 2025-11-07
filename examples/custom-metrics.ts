@@ -1,4 +1,5 @@
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Outputs } from '../src/api/outputs';
 import { OutputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
@@ -8,6 +9,13 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const randIntValue = new OutputParameter('rand-int-value', {
+        globalName: 'rand-int-value',
+        valueFrom: {
+            path: '/tmp/rand_int.txt',
+        },
+    });
+
     const randomIntTemplate = new Template('random-int', {
         container: new Container({
             args: ['RAND_INT=$((1 + RANDOM % 10)); echo $RAND_INT; echo $RAND_INT > /tmp/rand_int.txt'],
@@ -20,7 +28,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     help: 'Value of the int emitted by random-int at step level',
                     histogram: {
                         buckets: [2.01, 4.01, 6.01, 8.01, 10.01],
-                        value: '{{outputs.parameters.rand-int-value}}',
+                        value: simpleTag({ metricParameter: randIntValue }),
                     },
                     name: 'random_int_step_histogram',
                     when: '{{status}} == Succeeded',
@@ -42,14 +50,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             ],
         },
         outputs: new Outputs({
-            parameters: [
-                new OutputParameter('rand-int-value', {
-                    globalName: 'rand-int-value',
-                    valueFrom: {
-                        path: '/tmp/rand_int.txt',
-                    },
-                }),
-            ],
+            parameters: [randIntValue],
         }),
     });
 
