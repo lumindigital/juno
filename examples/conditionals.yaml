@@ -29,7 +29,7 @@ spec:
         when: "{{inputs.parameters.should-print}} == true" # govaluate form
       - name: print-hello-expr
         template: argosay
-        when: "{{= inputs.parameters[\"should-print\"] == 'true'}}" # expr form; note: a dash in the name requires the use of brackets and quotes for expr to handle
+        when: "{{=inputs.parameters['should-print'] == 'true'}}" # expr form; note: a dash in the name requires the use of brackets and quotes for expr to handle
       - name: print-hello-expr-json
         template: argosay
         when: "{{=jsonpath(workflow.parameters.json, '$[0].value') == 'true'}}" # expr form

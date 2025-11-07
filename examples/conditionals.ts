@@ -1,5 +1,6 @@
 import { WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
+import { expressionTag, hyphenParameter, simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
@@ -27,15 +28,15 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             [
                 new WorkflowStep('print-hello-govaluate', {
                     template: argosayTemplate,
-                    when: '{{inputs.parameters.should-print}} == true',
+                    when: `${simpleTag(shouldPrintInputParameter)} == true`,
                 }),
                 new WorkflowStep('print-hello-expr', {
                     template: argosayTemplate,
-                    when: '{{= inputs.parameters["should-print"] == \'true\'}}',
+                    when: expressionTag(`${hyphenParameter(shouldPrintInputParameter)} == 'true'`),
                 }),
                 new WorkflowStep('print-hello-expr-json', {
                     template: argosayTemplate,
-                    when: "{{=jsonpath(workflow.parameters.json, '$[0].value') == 'true'}}",
+                    when: expressionTag(`jsonpath(workflow.parameters.json, '$[0].value') == 'true'`),
                 }),
             ],
         ],
