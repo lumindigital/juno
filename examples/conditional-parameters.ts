@@ -1,3 +1,5 @@
+import { OutputResult } from '../src/api/artifact';
+import { hyphenParameter, parameterArgsString, simpleTag } from '../src/api/expression';
 import { Outputs } from '../src/api/outputs';
 import { OutputParameter } from '../src/api/parameter';
 import { Script } from '../src/api/script';
@@ -36,34 +38,30 @@ print("heads" if random.randint(0,1) == 0 else "tails")
         }),
     });
 
+    const flipCoinStep = new WorkflowStep('flip-coin', {
+        template: flipCoinTemplate,
+    });
+
+    const headsStep = new WorkflowStep('heads', {
+        template: headsTemplate,
+        when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == heads`,
+    });
+    const tailsStep = new WorkflowStep('tails', {
+        template: tailsTemplate,
+        when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == tails`,
+    });
+
     const mainTemplate = new Template('main', {
         outputs: new Outputs({
             parameters: [
                 new OutputParameter('stepresult', {
                     valueFrom: {
-                        expression:
-                            "steps['flip-coin'].outputs.result == 'heads' ? steps.heads.outputs.result : steps.tails.outputs.result",
+                        expression: `${hyphenParameter({ task: flipCoinStep, parameter: new OutputResult() })} == 'heads' ? ${parameterArgsString({ task: headsStep, parameter: new OutputResult() })} : ${parameterArgsString({ task: tailsStep, parameter: new OutputResult() })}`,
                     },
                 }),
             ],
         }),
-        steps: [
-            [
-                new WorkflowStep('flip-coin', {
-                    template: flipCoinTemplate,
-                }),
-            ],
-            [
-                new WorkflowStep('heads', {
-                    template: headsTemplate,
-                    when: '{{steps.flip-coin.outputs.result}} == heads',
-                }),
-                new WorkflowStep('tails', {
-                    template: tailsTemplate,
-                    when: '{{steps.flip-coin.outputs.result}} == tails',
-                }),
-            ],
-        ],
+        steps: [[flipCoinStep], [headsStep, tailsStep]],
     });
 
     return new Workflow({
