@@ -8,6 +8,7 @@ export type TaskAndResult = { task: Task; result?: TaskResult };
 export type ExpressionArgs = Task | TaskAndResult | string;
 export type OutputParameterArgs = { parameter: OutputParameter | OutputArtifact | OutputResult; task?: Task | Self };
 export type LocalInputArtifactArgs = { inputArtifact: InputArtifact; task?: Self };
+export type MetricParameter = { metricParameter: OutputParameter | InputParameter };
 export type WithParameterArgs = OutputParameterArgs;
 type ParameterArgs =
     | InputParameter
@@ -15,7 +16,8 @@ type ParameterArgs =
     | OutputParameterArgs
     | WorkflowParameter
     | FromItemProperty
-    | LocalInputArtifactArgs;
+    | LocalInputArtifactArgs
+    | MetricParameter;
 
 enum InputType {
     InputParameter = 'InputParameter',
@@ -28,6 +30,7 @@ enum InputType {
     OutputResult = 'OutputResult',
     FromItemProperty = 'FromItemProperty',
     InputArtifactSelf = 'LocalInputArtifactSelf',
+    MetricParameter = 'MetricParameter',
 }
 
 export enum TaskResult {
@@ -293,6 +296,10 @@ function getInputType(input: ParameterArgs): InputType {
         return InputType.WorkflowParameter;
     }
 
+    if ((input as MetricParameter).metricParameter) {
+        return InputType.MetricParameter;
+    }
+
     throw new Error('Undefined input type');
 }
 
@@ -382,6 +389,18 @@ function getVariable(input: ParameterArgs | string): string {
             const parameter = outputParameterArgs.parameter as OutputParameter;
 
             return `outputs.parameters.${parameter.name}.path`;
+        }
+        case InputType.MetricParameter: {
+            const metricParameterArgs = input as MetricParameter;
+            const parameter = metricParameterArgs.metricParameter;
+
+            if ((parameter as InputParameter).isInputParameter) {
+                return `inputs.parameters.${(parameter as InputParameter).name}`;
+            } else if ((parameter as OutputParameter).isOutputParameter) {
+                return `outputs.parameters.${(parameter as OutputParameter).name}`;
+            } else {
+                throw new Error(`MetricParameter ${parameter.name} must be an InputParameter or OutputParameter`);
+            }
         }
     }
 }
