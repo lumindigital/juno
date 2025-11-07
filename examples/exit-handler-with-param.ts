@@ -62,8 +62,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 parameters: [
                     messageInputParameter.toArgumentParameter({
                         value: simpleTag({
-                            parameter: outputTemplate.outputs?.parameters?.[0] as OutputParameter,
-                            task: mainTemplate.steps?.[0][0],
+                            output: outputTemplate.outputs?.parameters?.[0] as OutputParameter,
+                            workflowStep: mainTemplate.steps?.[0][0],
                         }),
                     }),
                 ],

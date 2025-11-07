@@ -2,7 +2,7 @@ import {
     IoArgoprojWorkflowV1Alpha1Parameter,
     IoArgoprojWorkflowV1Alpha1ValueFrom,
 } from '../workflow-interfaces/data-contracts.js';
-import { OutputParameterArgs, simpleTag } from './expression.js';
+import { simpleTag, StepOutput, TaskOutput } from './expression.js';
 
 class Parameter {
     default?: string;
@@ -15,7 +15,7 @@ class Parameter {
     valueFrom?: IoArgoprojWorkflowV1Alpha1ValueFrom;
     valueFromInputParameter?: InputParameter;
     valueFromWorkflowParameter?: WorkflowParameter;
-    valueFromOutputParameter?: OutputParameterArgs;
+    valueFromOutputParameter?: TaskOutput | StepOutput;
     valueFromItemProperty?: FromItemProperty;
     constructor(name: string, init?: Partial<Parameter>) {
         this.name = name;

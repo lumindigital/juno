@@ -46,11 +46,11 @@ print(result)
             [
                 new WorkflowStep('heads', {
                     template: headsTemplate,
-                    when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == heads`,
+                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads`,
                 }),
                 new WorkflowStep('tails', {
                     template: tailsTemplate,
-                    when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == tails`,
+                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails`,
                 }),
             ],
         ],

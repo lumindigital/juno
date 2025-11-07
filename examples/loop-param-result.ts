@@ -50,7 +50,7 @@ json.dump([i for i in range(20, 31)], sys.stdout)
                         ],
                     }),
                     template: sleepNSecTemplate,
-                    withParam: { parameter: new OutputResult(), task: generateStep },
+                    withParam: { output: new OutputResult(), workflowStep: generateStep },
                 }),
             ],
         ],

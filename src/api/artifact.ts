@@ -12,7 +12,7 @@ import {
     IoArgoprojWorkflowV1Alpha1RawArtifact,
     IoArgoprojWorkflowV1Alpha1S3Artifact,
 } from '../workflow-interfaces/data-contracts.js';
-import { OutputParameterArgs, simpleTag } from './expression.js';
+import { simpleTag, StepOutput, TaskOutput } from './expression.js';
 
 export class Artifact {
     archive?: IoArgoprojWorkflowV1Alpha1ArchiveStrategy;
@@ -37,7 +37,7 @@ export class Artifact {
     recurseMode?: boolean;
     s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
     subPath?: string;
-    fromOutputArtifact?: OutputParameterArgs;
+    fromOutputArtifact?: TaskOutput | StepOutput;
     fromInputArtifact?: InputArtifact;
 
     constructor(name: string, init?: Partial<Artifact>) {
