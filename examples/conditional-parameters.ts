@@ -1,5 +1,5 @@
 import { OutputResult } from '../src/api/artifact';
-import { hyphenParameter, parameterArgsString, simpleTag } from '../src/api/expression';
+import { getVariableReference, hyphenParameter, simpleTag } from '../src/api/expression';
 import { Outputs } from '../src/api/outputs';
 import { OutputParameter } from '../src/api/parameter';
 import { Script } from '../src/api/script';
@@ -44,11 +44,11 @@ print("heads" if random.randint(0,1) == 0 else "tails")
 
     const headsStep = new WorkflowStep('heads', {
         template: headsTemplate,
-        when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == heads`,
+        when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads`,
     });
     const tailsStep = new WorkflowStep('tails', {
         template: tailsTemplate,
-        when: `${simpleTag({ task: flipCoinStep, parameter: new OutputResult() })} == tails`,
+        when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails`,
     });
 
     const mainTemplate = new Template('main', {
@@ -56,7 +56,7 @@ print("heads" if random.randint(0,1) == 0 else "tails")
             parameters: [
                 new OutputParameter('stepresult', {
                     valueFrom: {
-                        expression: `${hyphenParameter({ task: flipCoinStep, parameter: new OutputResult() })} == 'heads' ? ${parameterArgsString({ task: headsStep, parameter: new OutputResult() })} : ${parameterArgsString({ task: tailsStep, parameter: new OutputResult() })}`,
+                        expression: `${hyphenParameter({ workflowStep: flipCoinStep, output: new OutputResult() })} == 'heads' ? ${getVariableReference({ workflowStep: headsStep, output: new OutputResult() })} : ${getVariableReference({ workflowStep: tailsStep, output: new OutputResult() })}`,
                     },
                 }),
             ],

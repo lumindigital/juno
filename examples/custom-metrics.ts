@@ -28,7 +28,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     help: 'Value of the int emitted by random-int at step level',
                     histogram: {
                         buckets: [2.01, 4.01, 6.01, 8.01, 10.01],
-                        value: simpleTag({ metricParameter: randIntValue }),
+                        value: simpleTag(randIntValue),
                     },
                     name: 'random_int_step_histogram',
                     when: '{{status}} == Succeeded',

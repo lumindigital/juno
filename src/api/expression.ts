@@ -1,36 +1,47 @@
+import { InputArtifact, OutputArtifact, OutputResult } from './artifact.js';
 import { DagTask } from './dag-task.js';
 import { FromItemProperty, InputParameter, OutputParameter, WorkflowParameter } from './parameter.js';
 import { WorkflowStep } from './workflow-step.js';
-import { InputArtifact, OutputArtifact, OutputResult } from './artifact.js';
 
-type Task = DagTask | WorkflowStep;
-export type TaskAndResult = { task: Task; result?: TaskResult };
-export type ExpressionArgs = Task | TaskAndResult | string;
-export type OutputParameterArgs = { parameter: OutputParameter | OutputArtifact | OutputResult; task?: Task | Self };
-export type LocalInputArtifactArgs = { inputArtifact: InputArtifact; task?: Self };
-export type MetricParameter = { metricParameter: OutputParameter | InputParameter };
-export type WithParameterArgs = OutputParameterArgs;
-type ParameterArgs =
-    | InputParameter
-    | InputArtifact
-    | OutputParameterArgs
-    | WorkflowParameter
+type OutputType = OutputArtifact | OutputParameter | OutputResult;
+type InputType = InputParameter | InputArtifact | WorkflowParameter;
+export type ExpressionArgs =
+    | DagTask
+    | WorkflowStep
+    | TaskAndResult
+    | TaskOutput
+    | StepOutput
+    | InputType
+    | PathType
+    | WorkflowOutput
     | FromItemProperty
-    | LocalInputArtifactArgs
-    | MetricParameter;
+    | OutputParameter;
+export type TaskAndResult = { task: DagTask | WorkflowStep; result?: TaskResult };
+export type TaskOutput = { dagTask: DagTask; output: OutputType };
+export type StepOutput = { workflowStep: WorkflowStep; output: OutputType };
+export type PathType = { pathResult: InputArtifact | OutputArtifact | OutputParameter };
+export type WorkflowOutput = { workflowOutput: OutputArtifact | OutputParameter };
 
-enum InputType {
+enum ExpressionType {
+    DagTask = 'DagTask',
+    WorkflowStep = 'WorkflowStep',
+    TaskAndResult = 'TaskAndResult',
     InputParameter = 'InputParameter',
     InputArtifact = 'InputArtifact',
+    StepOutputResult = 'StepOutputResult',
+    StepOutputParameter = 'StepOutputParameter',
+    StepOutputArtifact = 'StepOutputArtifact',
+    TaskOutputResult = 'TaskOutputResult',
+    TaskOutputParameter = 'TaskOutputParameter',
+    TaskOutputArtifact = 'TaskOutputArtifact',
+    InputArtifactPath = 'InputArtifactPath',
+    OutputArtifactPath = 'OutputArtifactPath',
+    OutputParameterPath = 'OutputParameterPath',
     WorkflowParameter = 'WorkflowParameter',
-    OutputParameter = 'OutputParameter',
-    OutputParameterSelf = 'OutputParameterSelf',
-    OutputArtifact = 'OutputArtifact',
-    OutputArtifactSelf = 'OutputArtifactSelf',
-    OutputResult = 'OutputResult',
+    WorkflowOutputParameter = 'WorkflowOutputParameter',
+    WorkflowOutputArtifact = 'WorkflowOutputArtifact',
     FromItemProperty = 'FromItemProperty',
-    InputArtifactSelf = 'LocalInputArtifactSelf',
-    MetricParameter = 'MetricParameter',
+    OutputParameter = 'OutputParameter',
 }
 
 export enum TaskResult {
@@ -42,11 +53,6 @@ export enum TaskResult {
     Daemoned = 'Daemoned',
 }
 
-export class Self {
-    readonly isSelf = true;
-    constructor() {}
-}
-
 /**
  * Adds a logical AND between multiple expressions.
  *
@@ -55,7 +61,7 @@ export class Self {
  * @returns A string representation of the AND expression
  * @public
  */
-export function and(inputs: ExpressionArgs[]): string {
+export function and(inputs: (string | ExpressionArgs)[]): string {
     let result = '';
 
     for (let i = 0; i < inputs.length; i++) {
@@ -65,7 +71,7 @@ export function and(inputs: ExpressionArgs[]): string {
 
         const input = inputs[i];
 
-        result += getTaskValue(input);
+        result += getVariableReference(input);
     }
 
     return result;
@@ -79,7 +85,7 @@ export function and(inputs: ExpressionArgs[]): string {
  * @returns A string representation of the OR expression
  * @public
  */
-export function or(inputs: ExpressionArgs[]): string {
+export function or(inputs: (string | ExpressionArgs)[]): string {
     let result = '';
 
     for (let i = 0; i < inputs.length; i++) {
@@ -89,7 +95,7 @@ export function or(inputs: ExpressionArgs[]): string {
 
         const input = inputs[i];
 
-        result += getTaskValue(input);
+        result += getVariableReference(input);
     }
 
     return result;
@@ -103,8 +109,8 @@ export function or(inputs: ExpressionArgs[]): string {
  * @returns A string representation of the negated expression
  * @public
  */
-export function not(input: ExpressionArgs): string {
-    return `!${getTaskValue(input)}`;
+export function not(input: string | ExpressionArgs): string {
+    return `!${getVariableReference(input)}`;
 }
 
 /**
@@ -120,29 +126,6 @@ export function paren(input: string): string {
 }
 
 /**
- * Takes a {@link ParameterArgs} or string and wraps it in simple expression tags.
- * @param input - A valid {@link ParameterArgs} or string
- *
- * @returns A string wrapped in expression tags
- * @public
- */
-export function simpleTag(input: ParameterArgs | string): string {
-    return `{{${getVariable(input)}}}`;
-}
-
-/**
- * Converts a {@link ParameterArgs} into a string
- *
- * @param input - A valid {@link ParameterArgs} object
- *
- * @returns A string representation of the parameter argument. Note: this does not handle hypenated parameters. Use {@link hyphenParameter} for that.
- * @public
- */
-export function parameterArgsString(input: ParameterArgs): string {
-    return getVariable(input);
-}
-
-/**
  * Takes a string an wraps it in expression tags.
  *
  * @param input - A valid argoworkflow expression string
@@ -155,41 +138,130 @@ export function expressionTag(input: string): string {
 }
 
 /**
- * Converts an expression argument into a string suitable for a 'depends' field. This is used by the {@link DagTask.depends} property.
- * Unfortunately this needs to be exported for that to work
+ * Takes a {@link ExpressionArgs} and converts it to a string that works with expressions
  *
- * @param input - description
- *
- * @returns A string representation of the depends expression.
- * @internal
- */
-export function depends(input: ExpressionArgs): string {
-    return getTaskValue(input);
-}
-
-/**
- * Takes a {@link ParameterArgs} and converts it to a string that works with expressions
- *
- * @param input - A valid {@link ParameterArgs} object
+ * @param input - A valid {@link ExpressionArgs} object
  *
  * @returns A string representation of the parameter argument. Any hyphenated parameters will be converted to the bracket notation.
  * @public
  */
-export function hyphenParameter(input: ParameterArgs): string {
-    return hyphen(getVariable(input));
+export function hyphenParameter(input: ExpressionArgs): string {
+    return hyphen(getVariableReference(input));
 }
 
 /**
- * An internal method that checks if a string contains argo expression tags
+ * Takes a {@link ExpressionArgs} or string and wraps it in simple expression tags.
+ * @param input - A valid {@link ExpressionArgs} or string
  *
- * @param input - A valid argoworkflow string
- *
- *
- * @returns a boolean indicating if the string contains argo expression tags
- * @internal
+ * @returns A string wrapped in expression tags
+ * @public
  */
-export function containsTag(input: string): boolean {
-    return input.includes('{{') && input.includes('}}');
+export function simpleTag(input: ExpressionArgs | string): string {
+    return `{{${getVariableReference(input)}}}`;
+}
+
+export function getVariableReference(expressionArgs: ExpressionArgs | string): string {
+    if (typeof expressionArgs === 'string') {
+        return expressionArgs;
+    }
+
+    const expressionType = getExpressionType(expressionArgs);
+
+    switch (expressionType) {
+        case ExpressionType.DagTask:
+        case ExpressionType.WorkflowStep: {
+            const task = expressionArgs as DagTask | WorkflowStep;
+            return task.name;
+        }
+        case ExpressionType.TaskAndResult: {
+            const taskAndResult = expressionArgs as TaskAndResult;
+
+            if (taskAndResult.result) {
+                return `${taskAndResult.task.name}.${taskAndResult.result}`;
+            }
+
+            return taskAndResult.task.name;
+        }
+        case ExpressionType.InputParameter: {
+            const inputParameter = expressionArgs as InputParameter;
+            return `inputs.parameters.${inputParameter.name}`;
+        }
+        case ExpressionType.InputArtifact: {
+            const inputArtifact = expressionArgs as InputArtifact;
+            return `inputs.artifacts.${inputArtifact.name}`;
+        }
+        case ExpressionType.StepOutputResult: {
+            const stepOutputResult = expressionArgs as StepOutput;
+            return `steps.${stepOutputResult.workflowStep.name}.outputs.result`;
+        }
+        case ExpressionType.StepOutputParameter: {
+            const stepOutputParameter = expressionArgs as StepOutput;
+            const stepOutputOutputParameter = stepOutputParameter.output as OutputParameter;
+            return `steps.${stepOutputParameter.workflowStep.name}.outputs.parameters.${stepOutputOutputParameter.name}`;
+        }
+        case ExpressionType.StepOutputArtifact: {
+            const stepOutputArtifact = expressionArgs as StepOutput;
+            const stepOutputArtifactOutputArtifact = stepOutputArtifact.output as OutputArtifact;
+            return `steps.${stepOutputArtifact.workflowStep.name}.outputs.artifacts.${stepOutputArtifactOutputArtifact.name}`;
+        }
+        case ExpressionType.TaskOutputResult: {
+            const taskOutputResult = expressionArgs as TaskOutput;
+            return `tasks.${taskOutputResult.dagTask.name}.outputs.result`;
+        }
+        case ExpressionType.TaskOutputParameter: {
+            const taskOutputParameter = expressionArgs as TaskOutput;
+            const taskOutputOutputParam = taskOutputParameter.output as OutputParameter;
+            return `tasks.${taskOutputParameter.dagTask.name}.outputs.parameters.${taskOutputOutputParam.name}`;
+        }
+        case ExpressionType.TaskOutputArtifact: {
+            const taskOutputArtifact = expressionArgs as TaskOutput;
+            const taskOutputArtifactOutputArtifact = taskOutputArtifact.output as OutputArtifact;
+            return `tasks.${taskOutputArtifact.dagTask.name}.outputs.artifacts.${taskOutputArtifactOutputArtifact.name}`;
+        }
+        case ExpressionType.InputArtifactPath: {
+            const inputArtifactPath = expressionArgs as PathType;
+            const inputArtifactPathResult = inputArtifactPath.pathResult as InputArtifact;
+            return `inputs.artifacts.${inputArtifactPathResult.name}.path`;
+        }
+        case ExpressionType.OutputArtifactPath: {
+            const outputArtifactPath = expressionArgs as PathType;
+            const outputArtifactPathResult = outputArtifactPath.pathResult as OutputArtifact;
+            return `outputs.artifacts.${outputArtifactPathResult.name}.path`;
+        }
+        case ExpressionType.OutputParameterPath: {
+            const outputParameterPath = expressionArgs as PathType;
+            const outputParameterPathResult = outputParameterPath.pathResult as OutputParameter;
+            return `outputs.parameters.${outputParameterPathResult.name}.path`;
+        }
+        case ExpressionType.WorkflowParameter: {
+            const workflowParameter = expressionArgs as WorkflowParameter;
+            return `workflow.parameters.${workflowParameter.name}`;
+        }
+        case ExpressionType.WorkflowOutputParameter: {
+            const workflowOutputParameter = expressionArgs as WorkflowOutput;
+            const workflowOutputOutputParameter = workflowOutputParameter.workflowOutput as OutputParameter;
+            return `workflow.outputs.parameters.${workflowOutputOutputParameter.name}`;
+        }
+        case ExpressionType.WorkflowOutputArtifact: {
+            const workflowOutputArtifact = expressionArgs as WorkflowOutput;
+            const workflowOutputOutputArtifact = workflowOutputArtifact.workflowOutput as OutputArtifact;
+            return `workflow.outputs.artifacts.${workflowOutputOutputArtifact.name}`;
+        }
+        case ExpressionType.FromItemProperty: {
+            const fromItem = expressionArgs as FromItemProperty;
+            if (fromItem.itemKey) {
+                return `item.${fromItem.itemKey}`;
+            }
+            return 'item';
+        }
+        case ExpressionType.OutputParameter: {
+            const outputParameter = expressionArgs as OutputParameter;
+            return `outputs.parameters.${outputParameter.name}`;
+        }
+        default: {
+            throw new Error('Unsupported expression args');
+        }
+    }
 }
 
 function hyphen(input: string): string {
@@ -212,195 +284,104 @@ function hyphen(input: string): string {
     return output;
 }
 
-function getTaskValue(input: ExpressionArgs): string {
-    if (typeof input === 'string') {
-        return input;
-    } else if (isTaskAndResult(input)) {
-        return getTaskNameWithResult(input); //input.task.name;
-    } else {
-        return input.name;
-    }
-}
-
-function getTaskNameWithResult(input: TaskAndResult): string {
-    if (input.result) {
-        return `${input.task.name}.${input.result}`;
+function getExpressionType(expressionArgs: ExpressionArgs): ExpressionType {
+    if ((expressionArgs as TaskAndResult).task !== undefined && (expressionArgs as TaskAndResult)) {
+        return ExpressionType.TaskAndResult;
     }
 
-    return input.task.name;
-}
-
-function isTaskAndResult(input: ExpressionArgs): input is TaskAndResult {
-    return (input as TaskAndResult).task !== undefined;
-}
-
-function isDagTask(input: Task): input is DagTask {
-    return (input as DagTask).isDagTask;
-}
-
-function getInputType(input: ParameterArgs): InputType {
-    if ((input as InputParameter).isInputParameter) {
-        return InputType.InputParameter;
+    if ((expressionArgs as DagTask).isDagTask !== undefined) {
+        return ExpressionType.DagTask;
     }
 
-    if ((input as InputArtifact).isInputArtifact) {
-        return InputType.InputArtifact;
+    if ((expressionArgs as WorkflowStep).isWorkflowStep !== undefined) {
+        return ExpressionType.WorkflowStep;
+    }
+
+    if ((expressionArgs as InputParameter).isInputParameter) {
+        return ExpressionType.InputParameter;
+    }
+
+    if ((expressionArgs as InputArtifact).isInputArtifact) {
+        return ExpressionType.InputArtifact;
+    }
+
+    if ((expressionArgs as TaskOutput).dagTask !== undefined && (expressionArgs as TaskOutput).output !== undefined) {
+        const taskOutput = expressionArgs as TaskOutput;
+        if ((taskOutput.output as OutputParameter).isOutputParameter) {
+            return ExpressionType.TaskOutputParameter;
+        }
+
+        if ((taskOutput.output as OutputArtifact).isOutputArtifact) {
+            return ExpressionType.TaskOutputArtifact;
+        }
+
+        if ((taskOutput.output as OutputResult).isOutputResult) {
+            return ExpressionType.TaskOutputResult;
+        }
+
+        throw new Error(`Task ${taskOutput?.dagTask?.name} Unsupported task output`);
     }
 
     if (
-        ((input as OutputParameterArgs).parameter as OutputParameter)?.isOutputParameter &&
-        !((input as OutputParameterArgs)?.task as Self)?.isSelf
+        (expressionArgs as StepOutput).workflowStep !== undefined &&
+        (expressionArgs as StepOutput).output !== undefined
     ) {
-        return InputType.OutputParameter;
+        const stepOutput = expressionArgs as StepOutput;
+        if ((stepOutput.output as OutputParameter).isOutputParameter) {
+            return ExpressionType.StepOutputParameter;
+        }
+
+        if ((stepOutput.output as OutputArtifact).isOutputArtifact) {
+            return ExpressionType.StepOutputArtifact;
+        }
+        if ((stepOutput.output as OutputResult).isOutputResult) {
+            return ExpressionType.StepOutputResult;
+        }
+
+        throw new Error(`Step ${stepOutput?.workflowStep?.name} Unsupported step output`);
     }
 
-    if (
-        ((input as OutputParameterArgs).parameter as OutputArtifact)?.isOutputArtifact &&
-        !((input as OutputParameterArgs)?.task as Self)?.isSelf
-    ) {
-        return InputType.OutputArtifact;
+    if ((expressionArgs as PathType).pathResult !== undefined) {
+        const pathExpression = expressionArgs as PathType;
+        if ((pathExpression.pathResult as InputArtifact).isInputArtifact) {
+            return ExpressionType.InputArtifactPath;
+        }
+
+        if ((pathExpression.pathResult as OutputArtifact).isOutputArtifact) {
+            return ExpressionType.OutputArtifactPath;
+        }
+
+        if ((pathExpression.pathResult as OutputParameter).isOutputParameter) {
+            return ExpressionType.OutputParameterPath;
+        }
+
+        throw new Error('Unsupported path expression result type');
     }
 
-    if (((input as OutputParameterArgs).parameter as OutputResult)?.isOutputResult) {
-        return InputType.OutputResult;
+    if ((expressionArgs as WorkflowParameter).isWorkflowParameter) {
+        return ExpressionType.WorkflowParameter;
     }
 
-    if (
-        ((input as OutputParameterArgs).parameter as OutputParameter)?.isOutputParameter &&
-        ((input as OutputParameterArgs)?.task as Self)?.isSelf
-    ) {
-        return InputType.OutputParameterSelf;
+    if ((expressionArgs as WorkflowOutput).workflowOutput !== undefined) {
+        const workflowOutput = expressionArgs as WorkflowOutput;
+        if ((workflowOutput.workflowOutput as OutputParameter).isOutputParameter) {
+            return ExpressionType.WorkflowOutputParameter;
+        }
+
+        if ((workflowOutput.workflowOutput as OutputArtifact).isOutputArtifact) {
+            return ExpressionType.WorkflowOutputArtifact;
+        }
+
+        throw new Error('Unsupported workflow output type');
     }
 
-    if (
-        ((input as OutputParameterArgs).parameter as OutputArtifact)?.isOutputArtifact &&
-        ((input as OutputParameterArgs)?.task as Self)?.isSelf
-    ) {
-        return InputType.OutputArtifactSelf;
+    if ((expressionArgs as FromItemProperty).isFromItemProperty !== undefined) {
+        return ExpressionType.FromItemProperty;
     }
 
-    // if (((input as OutputParameterArgs)?.parameter as OutputResult)?.isOutputResult) {
-
-    //     throw new Error('Undefined self input type');
-    // }
-
-    if (((input as LocalInputArtifactArgs).inputArtifact as InputArtifact)?.isInputArtifact) {
-        return InputType.InputArtifactSelf;
+    if ((expressionArgs as OutputParameter).isOutputParameter) {
+        return ExpressionType.OutputParameter;
     }
 
-    if ((input as FromItemProperty).isFromItemProperty) {
-        return InputType.FromItemProperty;
-    }
-
-    if ((input as WorkflowParameter).isWorkflowParameter) {
-        return InputType.WorkflowParameter;
-    }
-
-    if ((input as MetricParameter).metricParameter) {
-        return InputType.MetricParameter;
-    }
-
-    throw new Error('Undefined input type');
-}
-
-function getVariable(input: ParameterArgs | string): string {
-    if (typeof input === 'string') {
-        return input;
-    }
-
-    const type = getInputType(input);
-
-    switch (type) {
-        case InputType.InputParameter: {
-            return `inputs.parameters.${(input as InputParameter).name}`;
-        }
-        case InputType.InputArtifact: {
-            return `inputs.artifacts.${(input as InputArtifact).name}`;
-        }
-        case InputType.OutputParameter: {
-            const outputParameter = input as OutputParameterArgs;
-            const parameter = outputParameter.parameter as OutputParameter;
-            let adagOrStep = '';
-
-            if (!outputParameter.task) {
-                throw new Error(`Task or localPath=true required for output parameter ${parameter.name}`);
-            }
-
-            const task = outputParameter.task as Task;
-
-            if (isDagTask(task)) {
-                adagOrStep = 'tasks';
-            } else {
-                adagOrStep = 'steps';
-            }
-
-            return `${adagOrStep}.${task.name}.outputs.parameters.${parameter.name}`;
-        }
-        case InputType.OutputArtifact: {
-            const outputArtifact = input as OutputParameterArgs;
-            const parameter = outputArtifact.parameter as OutputArtifact;
-            let pdagOrStep = '';
-
-            const task = outputArtifact.task as Task;
-
-            if (isDagTask(task)) {
-                pdagOrStep = 'tasks';
-            } else {
-                pdagOrStep = 'steps';
-            }
-
-            return `${pdagOrStep}.${task.name}.outputs.artifacts.${parameter.name}`;
-        }
-        case InputType.OutputResult: {
-            const outputResult = input as OutputParameterArgs;
-
-            const task = outputResult.task as Task;
-
-            let adagOrStep = '';
-            if (isDagTask(task)) {
-                adagOrStep = 'tasks';
-            } else {
-                adagOrStep = 'steps';
-            }
-
-            return `${adagOrStep}.${task.name}.outputs.result`;
-        }
-        case InputType.FromItemProperty: {
-            const fromItem = input as FromItemProperty;
-            if (fromItem.itemKey) {
-                return `item.${fromItem.itemKey}`;
-            }
-            return 'item';
-        }
-        case InputType.WorkflowParameter: {
-            return `workflow.parameters.${(input as WorkflowParameter).name}`;
-        }
-        case InputType.InputArtifactSelf: {
-            return `inputs.artifacts.${(input as LocalInputArtifactArgs).inputArtifact.name}.path`;
-        }
-        case InputType.OutputArtifactSelf: {
-            const outputArtifactArgs = input as OutputParameterArgs;
-            const parameter = outputArtifactArgs.parameter as OutputArtifact;
-
-            return `outputs.artifacts.${parameter.name}.path`;
-        }
-        case InputType.OutputParameterSelf: {
-            const outputParameterArgs = input as OutputParameterArgs;
-            const parameter = outputParameterArgs.parameter as OutputParameter;
-
-            return `outputs.parameters.${parameter.name}.path`;
-        }
-        case InputType.MetricParameter: {
-            const metricParameterArgs = input as MetricParameter;
-            const parameter = metricParameterArgs.metricParameter;
-
-            if ((parameter as InputParameter).isInputParameter) {
-                return `inputs.parameters.${(parameter as InputParameter).name}`;
-            } else if ((parameter as OutputParameter).isOutputParameter) {
-                return `outputs.parameters.${(parameter as OutputParameter).name}`;
-            } else {
-                throw new Error(`MetricParameter ${parameter.name} must be an InputParameter or OutputParameter`);
-            }
-        }
-    }
+    throw new Error('Unsupported expression args');
 }

@@ -77,13 +77,19 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             etcInputArtifact.toArgumentArtifact({
-                                fromOutputArtifact: { task: generateArtifactStep, parameter: etcOutputArtifact },
+                                fromOutputArtifact: { workflowStep: generateArtifactStep, output: etcOutputArtifact },
                             }),
                             helloTxtInputArtifact.toArgumentArtifact({
-                                fromOutputArtifact: { task: generateArtifactStep, parameter: helloTxtOutputArtifact },
+                                fromOutputArtifact: {
+                                    workflowStep: generateArtifactStep,
+                                    output: helloTxtOutputArtifact,
+                                },
                             }),
                             helloTxtNcInputArtifact.toArgumentArtifact({
-                                fromOutputArtifact: { task: generateArtifactStep, parameter: helloTxtNcOutputArtifact },
+                                fromOutputArtifact: {
+                                    workflowStep: generateArtifactStep,
+                                    output: helloTxtNcOutputArtifact,
+                                },
                             }),
                         ],
                     }),

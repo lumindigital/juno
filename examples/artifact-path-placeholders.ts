@@ -1,7 +1,7 @@
 import { WorkflowArguments } from '../src/api/arguments';
 import { InputArtifact, OutputArtifact } from '../src/api/artifact';
 import { Container } from '../src/api/container';
-import { Self, simpleTag } from '../src/api/expression';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
 import { InputParameter, OutputParameter, WorkflowParameter } from '../src/api/parameter';
@@ -32,7 +32,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             command: [
                 'sh',
                 '-c',
-                `mkdir -p "$(dirname "${simpleTag({ parameter: textOutputArtifact, task: new Self() })}")" "$(dirname "${simpleTag({ parameter: actualLinesCountOutputParameter, task: new Self() })}")" ; head -n ${simpleTag(linesCountInputParameter)} < "${simpleTag({ inputArtifact: textInputArtifact, task: new Self() })}" | tee "${simpleTag({ parameter: textOutputArtifact, task: new Self() })}" | wc -l > "${simpleTag({ parameter: actualLinesCountOutputParameter, task: new Self() })}"`,
+                `mkdir -p "$(dirname "${simpleTag({ pathResult: textOutputArtifact })}")" "$(dirname "${simpleTag({ pathResult: actualLinesCountOutputParameter })}")" ; head -n ${simpleTag(linesCountInputParameter)} < "${simpleTag({ pathResult: textInputArtifact })}" | tee "${simpleTag({ pathResult: textOutputArtifact })}" | wc -l > "${simpleTag({ pathResult: actualLinesCountOutputParameter })}"`,
             ],
             image: 'busybox',
         }),

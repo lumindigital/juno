@@ -406,7 +406,7 @@ describe('workflow-spec validation tests', (): void => {
 
             const workflowSpec = new WorkflowSpec({
                 additionalTemplates: [
-                    new Template('C', {
+                    new Template('D', {
                         dag: new DagTemplate({
                             tasks: [taskB],
                         }),
@@ -415,7 +415,7 @@ describe('workflow-spec validation tests', (): void => {
             });
 
             expect(() => workflowSpec.toWorkflowSpec()).to.throw(
-                'Dependency A in dag task B is not included in template C',
+                'Dependency A in dag task B is not included in template D',
             );
         });
 
@@ -431,7 +431,7 @@ describe('workflow-spec validation tests', (): void => {
 
             const workflowSpec = new WorkflowSpec({
                 additionalTemplates: [
-                    new Template('C', {
+                    new Template('D', {
                         dag: new DagTemplate({
                             tasks: [taskB],
                         }),
@@ -440,7 +440,7 @@ describe('workflow-spec validation tests', (): void => {
             });
 
             expect(() => workflowSpec.toWorkflowSpec()).to.throw(
-                'Dependency A in dag task B is not included in template C',
+                'Dependency A in dag task B is not included in template D',
             );
         });
 
@@ -457,7 +457,7 @@ describe('workflow-spec validation tests', (): void => {
 
             const workflowSpec = new WorkflowSpec({
                 additionalTemplates: [
-                    new Template('C', {
+                    new Template('D', {
                         dag: new DagTemplate({
                             tasks: [taskB],
                         }),
@@ -466,7 +466,7 @@ describe('workflow-spec validation tests', (): void => {
             });
 
             expect(() => workflowSpec.toWorkflowSpec()).to.throw(
-                `Dependency on ${stepA.name} is not valid in a dag task ${taskB.name} on template C`,
+                `Dependency on ${stepA.name} is not valid in a dag task ${taskB.name} on template D`,
             );
         });
 

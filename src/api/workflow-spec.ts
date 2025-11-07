@@ -29,7 +29,7 @@ import { ArgumentParameter, InputParameter } from './parameter.js';
 import { DagTask } from './dag-task.js';
 import { WorkflowStep } from './workflow-step.js';
 import { ArgumentArtifact, InputArtifact } from './artifact.js';
-import { containsTag, TaskAndResult } from './expression.js';
+import { TaskAndResult } from './expression.js';
 
 /**
  * The juno workflow specification.
@@ -111,7 +111,7 @@ export class WorkflowSpec {
             const templateVolumeNames = template.volumes?.map((x) => x.name) ?? [];
 
             for (const volumeMount of template.script?.volumeMounts ?? []) {
-                if (containsTag(volumeMount.name)) {
+                if (this.containsTag(volumeMount.name)) {
                     // We have no way to check expressions for correctness
                     continue;
                 }
@@ -124,7 +124,7 @@ export class WorkflowSpec {
             }
 
             for (const volumeMount of template.container?.volumeMounts ?? []) {
-                if (containsTag(volumeMount.name)) {
+                if (this.containsTag(volumeMount.name)) {
                     // We have no way to check expressions for correctness
                     continue;
                 }
@@ -233,11 +233,11 @@ export class WorkflowSpec {
 
                 if (task.depends) {
                     if ((task.depends as DagTask).isDagTask) {
-                        const dependsDagTask = task.depends as DagTask;
+                        const dagTask = task.depends as DagTask;
 
-                        if (!template.dag.tasks.find((x) => x.name === dependsDagTask.name)) {
+                        if (!template.dag.tasks.find((x) => x.name === dagTask.name)) {
                             throw new Error(
-                                `Dependency ${dependsDagTask.name} in dag task ${task.name} is not included in template ${template.name}`,
+                                `Dependency ${dagTask.name} in dag task ${task.name} is not included in template ${template.name}`,
                             );
                         }
                     } else if (
@@ -246,7 +246,7 @@ export class WorkflowSpec {
                     ) {
                         const taskAndResult = task.depends as TaskAndResult;
 
-                        if ((taskAndResult.task as WorkflowStep).workflowStep !== undefined) {
+                        if ((taskAndResult.task as WorkflowStep).isWorkflowStep !== undefined) {
                             throw new Error(
                                 `Dependency on ${taskAndResult.task.name} is not valid in a dag task ${task.name} on template ${template.name}`,
                             );
@@ -257,7 +257,7 @@ export class WorkflowSpec {
                                 `Dependency ${taskAndResult.task.name} in dag task ${task.name} is not included in template ${template.name}`,
                             );
                         }
-                    } else if ((task.depends as WorkflowStep).workflowStep !== undefined) {
+                    } else if ((task.depends as WorkflowStep).isWorkflowStep) {
                         const workflowStep = task.depends as WorkflowStep;
                         throw new Error(
                             `Dependency on ${workflowStep.name} is not valid in a dag task ${task.name} on template ${template.name}`,
@@ -447,5 +447,9 @@ export class WorkflowSpec {
                 throw new Error(`Missing parameter(s) (${param.name}) for entrypoint template ${this.entrypoint.name}`);
             }
         }
+    }
+
+    containsTag(input: string): boolean {
+        return input.includes('{{') && input.includes('}}');
     }
 }
