@@ -12,7 +12,7 @@ import {
     IoArgoprojWorkflowV1Alpha1RawArtifact,
     IoArgoprojWorkflowV1Alpha1S3Artifact,
 } from '../workflow-interfaces/data-contracts.js';
-import { simpleTag, StepOutput, TaskOutput } from './expression.js';
+import { ExpressionArgs, simpleTag } from './expression.js';
 
 export class Artifact {
     archive?: IoArgoprojWorkflowV1Alpha1ArchiveStrategy;
@@ -37,8 +37,7 @@ export class Artifact {
     recurseMode?: boolean;
     s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
     subPath?: string;
-    fromOutputArtifact?: TaskOutput | StepOutput;
-    fromInputArtifact?: InputArtifact;
+    valueFromExpressionArgs?: ExpressionArgs;
 
     constructor(name: string, init?: Partial<Artifact>) {
         this.name = name;
@@ -51,14 +50,8 @@ export class Artifact {
         let from;
         if (this.from) {
             from = this.from;
-        }
-
-        if (this.fromOutputArtifact) {
-            from = simpleTag(this.fromOutputArtifact);
-        }
-
-        if (this.fromInputArtifact) {
-            from = simpleTag(this.fromInputArtifact);
+        } else if (this.valueFromExpressionArgs) {
+            from = simpleTag(this.valueFromExpressionArgs);
         }
 
         return {
@@ -97,16 +90,12 @@ export class Artifact {
             count++;
         }
 
-        if (this.fromOutputArtifact) {
-            count++;
-        }
-
-        if (this.fromInputArtifact) {
+        if (this.valueFromExpressionArgs) {
             count++;
         }
 
         if (count > 1) {
-            throw new Error(`from, fromOutputArtifact, and fromExpression are mutually exclusive on ${this.name}`);
+            throw new Error(`from, valueFromExpressionArgs, and fromExpression are mutually exclusive on ${this.name}`);
         }
     }
 }
