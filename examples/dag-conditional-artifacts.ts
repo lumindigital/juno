@@ -1,6 +1,7 @@
-import { OutputArtifact } from '../src/api/artifact';
+import { OutputArtifact, OutputResult } from '../src/api/artifact';
 import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
+import { getVariableReference, hyphenParameter, simpleTag } from '../src/api/expression';
 import { Outputs } from '../src/api/outputs';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
@@ -19,13 +20,13 @@ print("heads" if random.randint(0,1) == 0 else "tails")
         }),
     });
 
+    const resultArtifact = new OutputArtifact('result', {
+        path: '/result.txt',
+    });
+
     const headsTemplate = new Template('heads', {
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('result', {
-                    path: '/result.txt',
-                }),
-            ],
+            artifacts: [resultArtifact],
         }),
         script: new Script({
             command: ['python'],
@@ -38,11 +39,7 @@ print("heads" if random.randint(0,1) == 0 else "tails")
 
     const tailsTemplate = new Template('tails', {
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('result', {
-                    path: '/result.txt',
-                }),
-            ],
+            artifacts: [resultArtifact],
         }),
         script: new Script({
             command: ['python'],
@@ -57,27 +54,25 @@ print("heads" if random.randint(0,1) == 0 else "tails")
         template: flipCoinTemplate,
     });
 
+    const headsTask = new DagTask('heads', {
+        depends: flipCoinTask,
+        template: headsTemplate,
+        when: `${simpleTag({ dagTask: flipCoinTask, output: new OutputResult() })} == heads`,
+    });
+    const tailsTask = new DagTask('tails', {
+        depends: flipCoinTask,
+        template: tailsTemplate,
+        when: `${simpleTag({ dagTask: flipCoinTask, output: new OutputResult() })} == tails`,
+    });
+
     const mainTemplate = new Template('main', {
         dag: new DagTemplate({
-            tasks: [
-                flipCoinTask,
-                new DagTask('heads', {
-                    depends: flipCoinTask,
-                    template: headsTemplate,
-                    when: '{{tasks.flip-coin.outputs.result}} == heads',
-                }),
-                new DagTask('tails', {
-                    depends: flipCoinTask,
-                    template: tailsTemplate,
-                    when: '{{tasks.flip-coin.outputs.result}} == tails',
-                }),
-            ],
+            tasks: [flipCoinTask, headsTask, tailsTask],
         }),
         outputs: new Outputs({
             artifacts: [
                 new OutputArtifact('result', {
-                    fromExpression:
-                        "tasks['flip-coin'].outputs.result == 'heads' ? tasks.heads.outputs.artifacts.result : tasks.tails.outputs.artifacts.result",
+                    fromExpression: `${hyphenParameter({ dagTask: flipCoinTask, output: new OutputResult() })} == 'heads' ? ${getVariableReference({ dagTask: headsTask, output: resultArtifact })} : ${getVariableReference({ dagTask: tailsTask, output: resultArtifact })}`,
                 }),
             ],
         }),

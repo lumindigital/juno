@@ -4,7 +4,7 @@ import { DagTemplate } from '../src/api/dag-template';
 import { Container } from '../src/api/container';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter } from '../src/api/parameter';
-import { simpleTag } from '../src/api/expression';
+import { and, simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -34,7 +34,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             messageInputParameter.toArgumentParameter({
-                                value: '{{inputs.parameters.message}}{{item}}',
+                                value: `${simpleTag(messageInputParameter)}${simpleTag('item')}`,
                             }),
                         ],
                     }),
@@ -45,37 +45,37 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         ],
     });
 
+    const taskA = new DagTask('A', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'A' })],
+        }),
+        template: echoThriceTemplate,
+    });
+    const taskB = new DagTask('B', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'B' })],
+        }),
+        depends: taskA,
+        template: echoThriceTemplate,
+    });
+    const taskC = new DagTask('C', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
+        }),
+        depends: taskA,
+        template: echoThriceTemplate,
+    });
+    const taskD = new DagTask('D', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
+        }),
+        depends: and([taskB, taskC]),
+        template: echoThriceTemplate,
+    });
+
     const diamondTemplate = new Template('diamond', {
         dag: new DagTemplate({
-            tasks: [
-                new DagTask('A', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'A' })],
-                    }),
-                    template: echoThriceTemplate,
-                }),
-                new DagTask('B', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'B' })],
-                    }),
-                    depends: 'A',
-                    template: echoThriceTemplate,
-                }),
-                new DagTask('C', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
-                    }),
-                    depends: 'A',
-                    template: echoThriceTemplate,
-                }),
-                new DagTask('D', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
-                    }),
-                    depends: 'B && C',
-                    template: echoThriceTemplate,
-                }),
-            ],
+            tasks: [taskA, taskB, taskC, taskD],
         }),
     });
 
