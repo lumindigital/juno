@@ -372,6 +372,12 @@ export class WorkflowSpec {
                 if (inputParam.value || inputParam.default) {
                     continue;
                 }
+
+                // I'm not 100% sure about continue block, since I widened the scope for input parameters it seems reasonable
+                //  as there might be some cases I'm missing that need this other than WorkflowOutput
+                if (inputParam.valueFromExpressionArgs) {
+                    continue;
+                }
             }
 
             if (!argumentParameters.find((x) => x.name === param.name)) {

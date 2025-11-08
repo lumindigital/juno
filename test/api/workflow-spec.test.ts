@@ -869,7 +869,7 @@ describe('workflow-spec validation tests', (): void => {
                     inputs: new Inputs({
                         parameters: [
                             new InputParameter('INPUT', {
-                                valueFromWorkflowParameter: new WorkflowParameter('MISSING_WORKFLOW_PARAM'),
+                                valueFromExpressionArgs: new WorkflowParameter('MISSING_WORKFLOW_PARAM'),
                             }),
                         ],
                     }),

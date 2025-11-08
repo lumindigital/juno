@@ -73,7 +73,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                 value: `console output-->TEST-${simpleTag(new FromItemProperty('command'))}`,
                             }),
                             tagInputParameter.toArgumentParameter({
-                                valueFromItemProperty: new FromItemProperty('tag'),
+                                valueFromExpressionArgs: new FromItemProperty('tag'),
                             }),
                         ],
                     }),
@@ -90,7 +90,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                 value: `console output-->TEST-${simpleTag(new FromItemProperty('command'))}`,
                             }),
                             tagInputParameter.toArgumentParameter({
-                                valueFromItemProperty: new FromItemProperty('tag'),
+                                valueFromExpressionArgs: new FromItemProperty('tag'),
                             }),
                         ],
                     }),

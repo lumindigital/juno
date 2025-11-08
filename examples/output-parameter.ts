@@ -54,7 +54,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             printMessageInputMessageParam.toArgumentParameter({
-                                valueFromOutputParameter: {
+                                valueFromExpressionArgs: {
                                     workflowStep: generateParameter,
                                     output: helloOutputParam,
                                 },

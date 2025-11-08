@@ -265,12 +265,12 @@ export function getVariableReference(expressionArgs: ExpressionArgs | string): s
         case ExpressionType.WorkflowOutputParameter: {
             const workflowOutputParameter = expressionArgs as WorkflowOutput;
             const workflowOutputOutputParameter = workflowOutputParameter.workflowOutput as OutputParameter;
-            return `workflow.outputs.parameters.${workflowOutputOutputParameter.name}`;
+            return `workflow.outputs.parameters.${workflowOutputOutputParameter.globalName}`;
         }
         case ExpressionType.WorkflowOutputArtifact: {
             const workflowOutputArtifact = expressionArgs as WorkflowOutput;
             const workflowOutputOutputArtifact = workflowOutputArtifact.workflowOutput as OutputArtifact;
-            return `workflow.outputs.artifacts.${workflowOutputOutputArtifact.name}`;
+            return `workflow.outputs.artifacts.${workflowOutputOutputArtifact.globalName}`;
         }
         case ExpressionType.FromItemProperty: {
             const fromItem = expressionArgs as FromItemProperty;
