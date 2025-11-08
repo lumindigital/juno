@@ -1,6 +1,7 @@
 import { Arguments } from '../src/api/arguments';
 import { InputArtifact, OutputArtifact } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { LifecycleHook } from '../src/api/lifecycle-hook';
 import { Outputs } from '../src/api/outputs';
@@ -12,13 +13,13 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const resultOutputArtifact = new OutputArtifact('result', {
+        path: '/result.txt',
+    });
+
     const outputTemplate = new Template('output', {
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('result', {
-                    path: '/result.txt',
-                }),
-            ],
+            artifacts: [resultOutputArtifact],
         }),
         script: new Script({
             command: ['python'],
@@ -53,7 +54,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             arguments: new Arguments({
                                 artifacts: [
                                     messageInputArtifact.toArgumentArtifact({
-                                        from: '{{steps.step-1.outputs.artifacts.result}}',
+                                        from: simpleTag({ workflowStepName: 'step-1', output: resultOutputArtifact }),
                                     }),
                                 ],
                             }),

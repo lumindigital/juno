@@ -67,7 +67,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         artifacts: [
                             fileInputArtifact.toArgumentArtifact({
                                 s3: {
-                                    key: '{{item}}',
+                                    key: simpleTag(new FromItemProperty()),
                                 },
                             }),
                         ],

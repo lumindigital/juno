@@ -16,7 +16,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const echoTemplate = new Template('echo', {
         container: new Container({
-            command: ['echo', '{{inputs.parameters.message}}'],
+            command: ['echo', simpleTag(messageInputParameter)],
             image: 'alpine:3.7',
         }),
         inputs: new Inputs({
@@ -70,7 +70,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             messageInputParameter.toArgumentParameter({
-                                value: 'console output-->TEST-{{item.command}}',
+                                value: `console output-->TEST-${simpleTag(new FromItemProperty('command'))}`,
                             }),
                             tagInputParameter.toArgumentParameter({
                                 valueFromItemProperty: new FromItemProperty('tag'),
@@ -87,7 +87,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             messageInputParameter.toArgumentParameter({
-                                value: 'console output-->TEST-{{item.command}}',
+                                value: `console output-->TEST-${simpleTag(new FromItemProperty('command'))}`,
                             }),
                             tagInputParameter.toArgumentParameter({
                                 valueFromItemProperty: new FromItemProperty('tag'),

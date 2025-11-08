@@ -207,6 +207,78 @@ describe('expression tests', (): void => {
                 'tasks.DagA.myString',
             );
         });
+
+        it('returns valid reference when type is StringStepOutputString', (): void => {
+            expect(
+                getVariableReference({
+                    workflowStepName: 'StepA',
+                    output: 'value',
+                }),
+            ).to.equal('steps.StepA.value');
+        });
+
+        it('returns valid reference when type is StringTaskOutputString', (): void => {
+            expect(
+                getVariableReference({
+                    dagTaskName: 'DagA',
+                    output: 'value',
+                }),
+            ).to.equal('tasks.DagA.value');
+        });
+
+        it('returns valid reference when type is StringStepOutputParameter', (): void => {
+            expect(
+                getVariableReference({
+                    workflowStepName: 'StepA',
+                    output: new OutputParameter('ParamA', {}),
+                }),
+            ).to.equal('steps.StepA.outputs.parameters.ParamA');
+        });
+
+        it('returns valid reference when type is StringTaskOutputParameter', (): void => {
+            expect(
+                getVariableReference({
+                    workflowStepName: 'StepA',
+                    output: new OutputParameter('ParamA', {}),
+                }),
+            ).to.equal('steps.StepA.outputs.parameters.ParamA');
+        });
+
+        it('returns valid reference when type is StringStepOutputArtifact', (): void => {
+            expect(
+                getVariableReference({
+                    workflowStepName: 'StepA',
+                    output: new OutputArtifact('ArtifactA', {}),
+                }),
+            ).to.equal('steps.StepA.outputs.artifacts.ArtifactA');
+        });
+
+        it('returns valid reference when type is StringTaskOutputArtifact', (): void => {
+            expect(
+                getVariableReference({
+                    dagTaskName: 'TaskA',
+                    output: new OutputArtifact('ArtifactA', {}),
+                }),
+            ).to.equal('tasks.TaskA.outputs.artifacts.ArtifactA');
+        });
+
+        it('returns valid reference when type is StringStepOutputResult', (): void => {
+            expect(
+                getVariableReference({
+                    workflowStepName: 'StepA',
+                    output: new OutputResult(),
+                }),
+            ).to.equal('steps.StepA.outputs.result');
+        });
+
+        it('returns valid reference when type is StringTaskOutputResult', (): void => {
+            expect(
+                getVariableReference({
+                    dagTaskName: 'TaskA',
+                    output: new OutputResult(),
+                }),
+            ).to.equal('tasks.TaskA.outputs.result');
+        });
     });
 
     describe('hyphenExpression', (): void => {
