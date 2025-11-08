@@ -73,7 +73,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         ],
                         parameters: [
                             fileNameInputParameter.toArgumentParameter({
-                                valueFromItemProperty: new FromItemProperty(),
+                                valueFromExpressionArgs: new FromItemProperty(),
                             }),
                         ],
                     }),

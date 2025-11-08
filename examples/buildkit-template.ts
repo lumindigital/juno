@@ -131,8 +131,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const cloneTask = new DagTask('clone', {
         arguments: new Arguments({
             parameters: [
-                repoInputParameter.toArgumentParameter({ valueFromWorkflowParameter: repoWorkflowParameter }),
-                branchInputParameter.toArgumentParameter({ valueFromWorkflowParameter: branchWorkflowParameter }),
+                repoInputParameter.toArgumentParameter({ valueFromExpressionArgs: repoWorkflowParameter }),
+                branchInputParameter.toArgumentParameter({ valueFromExpressionArgs: branchWorkflowParameter }),
             ],
         }),
         template: cloneTemplate,
@@ -140,7 +140,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const buildTask = new DagTask('build', {
         arguments: new Arguments({
-            parameters: [pathInputParameter.toArgumentParameter({ valueFromWorkflowParameter: pathWorkflowParameter })],
+            parameters: [pathInputParameter.toArgumentParameter({ valueFromExpressionArgs: pathWorkflowParameter })],
         }),
         depends: cloneTask,
         template: buildTemplate,
@@ -155,10 +155,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             pathInputParameter.toArgumentParameter({
-                                valueFromWorkflowParameter: pathWorkflowParameter,
+                                valueFromExpressionArgs: pathWorkflowParameter,
                             }),
                             imageInputParameter.toArgumentParameter({
-                                valueFromWorkflowParameter: imageWorkflowParameter,
+                                valueFromExpressionArgs: imageWorkflowParameter,
                             }),
                         ],
                     }),

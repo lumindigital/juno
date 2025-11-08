@@ -31,16 +31,16 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             command: ['bash'],
             env: [
                 new EnvironmentVariable('A', {
-                    value: '{{inputs.parameters.a}}',
+                    valueFromInputParameter: aInputParameter,
                 }),
                 new EnvironmentVariable('B', {
-                    value: '{{inputs.parameters.b}}',
+                    valueFromInputParameter: bInputParameter,
                 }),
                 new EnvironmentVariable('C', {
-                    value: '{{inputs.parameters.c}}',
+                    valueFromInputParameter: cInputParameter,
                 }),
                 new EnvironmentVariable('D', {
-                    value: '{{inputs.parameters.d}}',
+                    valueFromInputParameter: dInputParameter,
                 }),
             ],
             image: 'debian:9.4',

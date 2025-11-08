@@ -45,7 +45,7 @@ json.dump([i for i in range(20, 31)], sys.stdout)
                     arguments: new Arguments({
                         parameters: [
                             secondsInputParameter.toArgumentParameter({
-                                valueFromItemProperty: new FromItemProperty(),
+                                valueFromExpressionArgs: new FromItemProperty(),
                             }),
                         ],
                     }),

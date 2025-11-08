@@ -11,6 +11,13 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const myGlobalParam = new OutputParameter('hello-param', {
+        globalName: 'my-global-param',
+        valueFrom: {
+            path: '/tmp/hello_world.txt',
+        },
+    });
+
     const globalOutputTemplate = new Template('global-output', {
         container: new Container({
             args: ['sleep 1; echo -n hello world > /tmp/hello_world.txt'],
@@ -24,20 +31,17 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     path: '/tmp/hello_world.txt',
                 }),
             ],
-            parameters: [
-                new OutputParameter('hello-param', {
-                    globalName: 'my-global-param',
-                    valueFrom: {
-                        path: '/tmp/hello_world.txt',
-                    },
-                }),
-            ],
+            parameters: [myGlobalParam],
         }),
     });
 
     const paramInputParameter = new InputParameter('param', {
-        value: '{{workflow.outputs.parameters.my-global-param}}',
+        valueFromExpressionArgs: { workflowOutput: myGlobalParam },
     });
+
+    // const paramInputParameter = new InputParameter('param', {
+    //     value: '{{workflow.outputs.parameters.my-global-param}}',
+    // });
 
     const consumeGlobalParamTemplate = new Template('consume-global-param', {
         container: new Container({

@@ -165,17 +165,17 @@ describe('expression tests', (): void => {
         it('returns workflow output artifiact when type is WorkflowOutputParameter', (): void => {
             expect(
                 getVariableReference({
-                    workflowOutput: new OutputArtifact('OutputA', {}),
+                    workflowOutput: new OutputArtifact('OutputA', { globalName: 'GlobalOutputA' }),
                 }),
-            ).to.equal('workflow.outputs.artifacts.OutputA');
+            ).to.equal('workflow.outputs.artifacts.GlobalOutputA');
         });
 
         it('returns workflow output parameter when type is WorkflowOutputParameter', (): void => {
             expect(
                 getVariableReference({
-                    workflowOutput: new OutputParameter('OutputA', {}),
+                    workflowOutput: new OutputParameter('OutputA', { globalName: 'GlobalOutputA' }),
                 }),
-            ).to.equal('workflow.outputs.parameters.OutputA');
+            ).to.equal('workflow.outputs.parameters.GlobalOutputA');
         });
 
         it('returns item.key when type is FromItemProperty', (): void => {

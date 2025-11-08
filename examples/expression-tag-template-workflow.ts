@@ -2,6 +2,7 @@ import { Arguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
 import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
+import { expressionTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
 import { InputParameter, OutputParameter } from '../src/api/parameter';
@@ -41,7 +42,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             tasks: [
                 new DagTask('task-0', {
                     arguments: new Arguments({
-                        parameters: [fooInputParameter.toArgumentParameter({ value: '{{=item}}' })],
+                        parameters: [fooInputParameter.toArgumentParameter({ value: expressionTag('item') })],
                     }),
                     template: pod0Template,
                     withParam: '{{=toJson(filter([1, 3], {# > 1}))}}',

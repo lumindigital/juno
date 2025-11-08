@@ -108,7 +108,7 @@ describe('template validation tests', (): void => {
                             arguments: new Arguments({
                                 parameters: [
                                     new ArgumentParameter('ARG', {
-                                        valueFromInputParameter: input,
+                                        valueFromExpressionArgs: input,
                                     }),
                                 ],
                             }),
@@ -131,7 +131,7 @@ describe('template validation tests', (): void => {
                             arguments: new Arguments({
                                 parameters: [
                                     new ArgumentParameter('ARG', {
-                                        valueFromInputParameter: missingInput,
+                                        valueFromExpressionArgs: missingInput,
                                     }),
                                 ],
                             }),
@@ -161,7 +161,7 @@ describe('template validation tests', (): void => {
                             arguments: new Arguments({
                                 parameters: [
                                     new ArgumentParameter('ARG', {
-                                        valueFromInputParameter: input,
+                                        valueFromExpressionArgs: input,
                                     }),
                                 ],
                             }),
@@ -184,7 +184,7 @@ describe('template validation tests', (): void => {
                             arguments: new Arguments({
                                 parameters: [
                                     new ArgumentParameter('ARG', {
-                                        valueFromInputParameter: missingInput,
+                                        valueFromExpressionArgs: missingInput,
                                     }),
                                 ],
                             }),

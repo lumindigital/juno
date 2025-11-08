@@ -24,7 +24,7 @@ import { Container } from './container.js';
 import { DagTemplate } from './dag-template.js';
 import { Inputs } from './inputs.js';
 import { Outputs } from './outputs.js';
-import { WorkflowParameter } from './parameter.js';
+import { InputParameter, WorkflowParameter } from './parameter.js';
 import { Script } from './script.js';
 import { UserContainer } from './user-container.js';
 import { WorkflowStep } from './workflow-step.js';
@@ -173,12 +173,18 @@ export class BaseTemplate {
 
         for (const dagTask of this.dag?.tasks ?? []) {
             for (const inputParameter of dagTask.arguments?.parameters ?? []) {
+                if (!(inputParameter.valueFromExpressionArgs as InputParameter)?.isInputParameter) {
+                    continue;
+                }
+
+                const inputParameterValueFromExpressionArgs = inputParameter.valueFromExpressionArgs as InputParameter;
+
                 if (
-                    inputParameter.valueFromInputParameter &&
-                    !inputNames?.includes(inputParameter.valueFromInputParameter?.name)
+                    inputParameterValueFromExpressionArgs &&
+                    !inputNames?.includes(inputParameterValueFromExpressionArgs.name)
                 ) {
                     throw new Error(
-                        `Template ${this.name} references an input parameter ${inputParameter.valueFromInputParameter?.name} in dag task ${dagTask.name} that is not included in template inputs`,
+                        `Template ${this.name} references an input parameter ${inputParameterValueFromExpressionArgs.name} in dag task ${dagTask.name} that is not included in template inputs`,
                     );
                 }
             }
@@ -187,12 +193,19 @@ export class BaseTemplate {
         for (const step of this.steps ?? []) {
             for (const innerStep of step) {
                 for (const inputParameter of innerStep.arguments?.parameters ?? []) {
+                    if (!(inputParameter.valueFromExpressionArgs as InputParameter)?.isInputParameter) {
+                        continue;
+                    }
+
+                    const inputParameterValueFromExpressionArgs =
+                        inputParameter.valueFromExpressionArgs as InputParameter;
+
                     if (
-                        inputParameter.valueFromInputParameter &&
-                        !inputNames?.includes(inputParameter.valueFromInputParameter?.name)
+                        inputParameterValueFromExpressionArgs &&
+                        !inputNames?.includes(inputParameterValueFromExpressionArgs?.name)
                     ) {
                         throw new Error(
-                            `Template ${this.name} references an input parameter ${inputParameter.valueFromInputParameter?.name} in step ${innerStep.name} that is not included in template inputs`,
+                            `Template ${this.name} references an input parameter ${inputParameterValueFromExpressionArgs?.name} in step ${innerStep.name} that is not included in template inputs`,
                         );
                     }
                 }
@@ -204,23 +217,31 @@ export class BaseTemplate {
         const argumentNames = workflowParameters?.map((x) => x.name);
 
         for (const param of this.inputs?.parameters ?? []) {
-            if (param.valueFromWorkflowParameter && !argumentNames?.includes(param.valueFromWorkflowParameter.name)) {
+            if (!(param.valueFromExpressionArgs as WorkflowParameter)?.isWorkflowParameter) {
+                continue;
+            }
+
+            const workflowParameterValueFromExpressionArgs = param.valueFromExpressionArgs as WorkflowParameter;
+
+            if (!argumentNames?.includes(workflowParameterValueFromExpressionArgs.name)) {
                 throw new Error(
-                    `Template ${this.name} references a workflow parameter ${param.valueFromWorkflowParameter.name} in inputs that is not defined in workflow parameters`,
+                    `Template ${this.name} references a workflow parameter ${workflowParameterValueFromExpressionArgs.name} in inputs that is not defined in workflow parameters`,
                 );
             }
         }
 
         for (const innersteps of this.steps ?? []) {
             for (const step of innersteps ?? []) {
-                for (const param of step.arguments?.parameters?.map((x) => x.valueFromWorkflowParameter) ?? []) {
-                    if (!param) {
+                for (const param of step.arguments?.parameters?.map((x) => x.valueFromExpressionArgs) ?? []) {
+                    if (!(param as WorkflowParameter)?.isWorkflowParameter) {
                         continue;
                     }
 
-                    if (!argumentNames?.includes(param.name)) {
+                    const workflowParameterValueFromExpressionArgs = param as WorkflowParameter;
+
+                    if (!argumentNames?.includes(workflowParameterValueFromExpressionArgs.name)) {
                         throw new Error(
-                            `Parameter ${param.name} on workflow step ${step.name} is not a defined workflow parameter`,
+                            `Parameter ${workflowParameterValueFromExpressionArgs.name} on workflow step ${step.name} is not a defined workflow parameter`,
                         );
                     }
                 }
@@ -228,14 +249,16 @@ export class BaseTemplate {
         }
 
         for (const dagTask of this.dag?.tasks ?? []) {
-            for (const param of dagTask.arguments?.parameters?.map((x) => x.valueFromWorkflowParameter) ?? []) {
-                if (!param) {
+            for (const param of dagTask.arguments?.parameters?.map((x) => x.valueFromExpressionArgs) ?? []) {
+                if (!(param as WorkflowParameter)?.isWorkflowParameter) {
                     continue;
                 }
 
-                if (!argumentNames?.includes(param.name)) {
+                const workflowParameterValueFromExpressionArgs = param as WorkflowParameter;
+
+                if (!argumentNames?.includes(workflowParameterValueFromExpressionArgs.name)) {
                     throw new Error(
-                        `Parameter ${param.name} on dag task ${dagTask.name} is not a defined workflow parameter`,
+                        `Parameter ${workflowParameterValueFromExpressionArgs.name} on dag task ${dagTask.name} is not a defined workflow parameter`,
                     );
                 }
             }

@@ -2,7 +2,7 @@ import {
     IoArgoprojWorkflowV1Alpha1Parameter,
     IoArgoprojWorkflowV1Alpha1ValueFrom,
 } from '../workflow-interfaces/data-contracts.js';
-import { simpleTag, StepOutput, TaskOutput } from './expression.js';
+import { ExpressionArgs, simpleTag } from './expression.js';
 
 class Parameter {
     default?: string;
@@ -13,10 +13,8 @@ class Parameter {
     readonly name: string;
     value?: string;
     valueFrom?: IoArgoprojWorkflowV1Alpha1ValueFrom;
-    valueFromInputParameter?: InputParameter;
-    valueFromWorkflowParameter?: WorkflowParameter;
-    valueFromOutputParameter?: TaskOutput | StepOutput;
-    valueFromItemProperty?: FromItemProperty;
+    valueFromExpressionArgs?: ExpressionArgs;
+
     constructor(name: string, init?: Partial<Parameter>) {
         this.name = name;
         Object.assign(this, init);
@@ -27,20 +25,8 @@ class Parameter {
 
         let value = this.value;
 
-        if (this.valueFromInputParameter) {
-            value = simpleTag(this.valueFromInputParameter);
-        }
-
-        if (this.valueFromWorkflowParameter) {
-            value = simpleTag(this.valueFromWorkflowParameter);
-        }
-
-        if (this.valueFromOutputParameter) {
-            value = simpleTag(this.valueFromOutputParameter);
-        }
-
-        if (this.valueFromItemProperty) {
-            value = simpleTag(this.valueFromItemProperty);
+        if (this.valueFromExpressionArgs) {
+            value = simpleTag(this.valueFromExpressionArgs);
         }
 
         return {
@@ -64,34 +50,17 @@ class Parameter {
             count++;
         }
 
-        if (this.valueFromInputParameter) {
-            count++;
-        }
-
-        if (this.valueFromWorkflowParameter) {
-            count++;
-        }
-
-        if (this.valueFromOutputParameter) {
+        if (this.valueFromExpressionArgs) {
             count++;
         }
 
         if (count > 1) {
-            throw new Error(
-                `value, valueFrom, valueFromInputParameter, valueFromOutputParameter, and valueFromWorkflowParameter are mutually exclusive on ${this.name}`,
-            );
+            throw new Error(`value, valueFrom, amnd valueFromExpressionArgs are mutually exclusive on ${this.name}`);
         }
     }
 
     isValueSet(): boolean {
-        return !!(
-            this.value ||
-            this.valueFrom ||
-            this.valueFromInputParameter ||
-            this.valueFromWorkflowParameter ||
-            this.valueFromOutputParameter ||
-            this.default
-        );
+        return !!(this.value || this.valueFrom || this.valueFromExpressionArgs || this.default);
     }
 }
 
