@@ -3,7 +3,7 @@ import { DagTask } from './dag-task.js';
 import { FromItemProperty, InputParameter, OutputParameter, WorkflowParameter } from './parameter.js';
 import { WorkflowStep } from './workflow-step.js';
 
-type OutputType = OutputArtifact | OutputParameter | OutputResult;
+type OutputType = OutputArtifact | OutputParameter | OutputResult | string;
 type InputType = InputParameter | InputArtifact | WorkflowParameter;
 export type ExpressionArgs =
     | DagTask
@@ -31,9 +31,11 @@ enum ExpressionType {
     StepOutputResult = 'StepOutputResult',
     StepOutputParameter = 'StepOutputParameter',
     StepOutputArtifact = 'StepOutputArtifact',
+    StepOutputString = 'StepOutputString',
     TaskOutputResult = 'TaskOutputResult',
     TaskOutputParameter = 'TaskOutputParameter',
     TaskOutputArtifact = 'TaskOutputArtifact',
+    TaskOutputString = 'TaskOutputString',
     InputArtifactPath = 'InputArtifactPath',
     OutputArtifactPath = 'OutputArtifactPath',
     OutputParameterPath = 'OutputParameterPath',
@@ -204,6 +206,11 @@ export function getVariableReference(expressionArgs: ExpressionArgs | string): s
             const stepOutputArtifactOutputArtifact = stepOutputArtifact.output as OutputArtifact;
             return `steps.${stepOutputArtifact.workflowStep.name}.outputs.artifacts.${stepOutputArtifactOutputArtifact.name}`;
         }
+        case ExpressionType.StepOutputString: {
+            const stepOutputString = expressionArgs as StepOutput;
+            const stepOutputStringOutput = stepOutputString.output as string;
+            return `steps.${stepOutputString.workflowStep.name}.${stepOutputStringOutput}`;
+        }
         case ExpressionType.TaskOutputResult: {
             const taskOutputResult = expressionArgs as TaskOutput;
             return `tasks.${taskOutputResult.dagTask.name}.outputs.result`;
@@ -217,6 +224,11 @@ export function getVariableReference(expressionArgs: ExpressionArgs | string): s
             const taskOutputArtifact = expressionArgs as TaskOutput;
             const taskOutputArtifactOutputArtifact = taskOutputArtifact.output as OutputArtifact;
             return `tasks.${taskOutputArtifact.dagTask.name}.outputs.artifacts.${taskOutputArtifactOutputArtifact.name}`;
+        }
+        case ExpressionType.TaskOutputString: {
+            const taskOutputString = expressionArgs as TaskOutput;
+            const taskOutputStringOutput = taskOutputString.output as string;
+            return `tasks.${taskOutputString.dagTask.name}.${taskOutputStringOutput}`;
         }
         case ExpressionType.InputArtifactPath: {
             const inputArtifactPath = expressionArgs as PathType;
@@ -319,6 +331,10 @@ function getExpressionType(expressionArgs: ExpressionArgs): ExpressionType {
             return ExpressionType.TaskOutputResult;
         }
 
+        if (typeof taskOutput.output === 'string') {
+            return ExpressionType.TaskOutputString;
+        }
+
         throw new Error(`Task ${taskOutput?.dagTask?.name} Unsupported task output`);
     }
 
@@ -336,6 +352,10 @@ function getExpressionType(expressionArgs: ExpressionArgs): ExpressionType {
         }
         if ((stepOutput.output as OutputResult).isOutputResult) {
             return ExpressionType.StepOutputResult;
+        }
+
+        if (typeof stepOutput.output === 'string') {
+            return ExpressionType.StepOutputString;
         }
 
         throw new Error(`Step ${stepOutput?.workflowStep?.name} Unsupported step output`);
