@@ -1,6 +1,7 @@
 import { Arguments } from '../src/api/arguments';
 import { OutputArtifact, InputArtifact } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
 import { OutputParameter, InputParameter } from '../src/api/parameter';
@@ -18,6 +19,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
     });
 
+    const myGlobalArt = new OutputArtifact('hello-art', {
+        globalName: 'my-global-art',
+        path: '/tmp/hello_world.txt',
+    });
+
     const globalOutputTemplate = new Template('global-output', {
         container: new Container({
             args: ['sleep 1; echo -n hello world > /tmp/hello_world.txt'],
@@ -25,12 +31,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             image: 'alpine:3.7',
         }),
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('hello-art', {
-                    globalName: 'my-global-art',
-                    path: '/tmp/hello_world.txt',
-                }),
-            ],
+            artifacts: [myGlobalArt],
             parameters: [myGlobalParam],
         }),
     });
@@ -39,13 +40,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         valueFromExpressionArgs: { workflowOutput: myGlobalParam },
     });
 
-    // const paramInputParameter = new InputParameter('param', {
-    //     value: '{{workflow.outputs.parameters.my-global-param}}',
-    // });
-
     const consumeGlobalParamTemplate = new Template('consume-global-param', {
         container: new Container({
-            args: ['echo {{inputs.parameters.param}}'],
+            args: [`echo ${simpleTag(paramInputParameter)}`],
             command: ['sh', '-c'],
             image: 'alpine:3.7',
         }),
@@ -79,7 +76,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             artInputArtifact.toArgumentArtifact({
-                                from: '{{workflow.outputs.artifacts.my-global-art}}',
+                                valueFromExpressionArgs: {
+                                    workflowOutput: myGlobalArt,
+                                },
                             }),
                         ],
                     }),
