@@ -195,6 +195,18 @@ describe('expression tests', (): void => {
         it('returns task only when type is TaskAndResult and only task is defined', (): void => {
             expect(getVariableReference({ task: new DagTask('TaskA', {}), result: undefined })).to.equal('TaskA');
         });
+
+        it('returns task and string when type is StepOutputString and both step and string are defined', (): void => {
+            expect(getVariableReference({ workflowStep: new WorkflowStep('StepA', {}), output: 'myString' })).to.equal(
+                'steps.StepA.myString',
+            );
+        });
+
+        it('returns task and string when type is TaskOutputString and both task and string are defined', (): void => {
+            expect(getVariableReference({ dagTask: new DagTask('DagA', {}), output: 'myString' })).to.equal(
+                'tasks.DagA.myString',
+            );
+        });
     });
 
     describe('hyphenExpression', (): void => {

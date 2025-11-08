@@ -47,7 +47,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [
                 cmdInputParameter.toArgumentParameter({
-                    value: 'curl -XPOST \'http://{{tasks.influx.ip}}:8086/query\' --data-urlencode "q=CREATE DATABASE mydb"',
+                    value: `curl -XPOST 'http://${simpleTag({ dagTask: influxTask, output: 'ip' })}:8086/query' --data-urlencode "q=CREATE DATABASE mydb"`,
                 }),
             ],
         }),
@@ -59,7 +59,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [
                 cmdInputParameter.toArgumentParameter({
-                    value: 'for i in $(seq 1 20); do curl -XPOST \'http://{{tasks.influx.ip}}:8086/write?db=mydb\' -d "cpu,host=server01,region=uswest load=$i" ; sleep .5 ; done',
+                    value: `for i in $(seq 1 20); do curl -XPOST 'http://${simpleTag({ dagTask: influxTask, output: 'ip' })}:8086/write?db=mydb' -d "cpu,host=server01,region=uswest load=$i" ; sleep .5 ; done`,
                 }),
             ],
         }),
@@ -71,7 +71,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [
                 cmdInputParameter.toArgumentParameter({
-                    value: 'for i in $(seq 1 20); do curl -XPOST \'http://{{tasks.influx.ip}}:8086/write?db=mydb\' -d "cpu,host=server02,region=uswest load=$((RANDOM % 100))" ; sleep .5 ; done',
+                    value: `for i in $(seq 1 20); do curl -XPOST 'http://${simpleTag({ dagTask: influxTask, output: 'ip' })}:8086/write?db=mydb' -d "cpu,host=server02,region=uswest load=$((RANDOM % 100))" ; sleep .5 ; done`,
                 }),
             ],
         }),
@@ -83,7 +83,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [
                 cmdInputParameter.toArgumentParameter({
-                    value: "curl -XPOST 'http://{{tasks.influx.ip}}:8086/write?db=mydb' -d 'cpu,host=server03,region=useast load=15.4'",
+                    value: `curl -XPOST 'http://${simpleTag({ dagTask: influxTask, output: 'ip' })}:8086/write?db=mydb' -d 'cpu,host=server03,region=useast load=15.4'`,
                 }),
             ],
         }),
@@ -103,7 +103,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             cmdInputParameter.toArgumentParameter({
-                                value: 'curl --silent -G http://{{tasks.influx.ip}}:8086/query?pretty=true --data-urlencode "db=mydb" --data-urlencode "q=SELECT * FROM cpu"',
+                                value: `curl --silent -G http://${simpleTag({ dagTask: influxTask, output: 'ip' })}:8086/query?pretty=true --data-urlencode "db=mydb" --data-urlencode "q=SELECT * FROM cpu"`,
                             }),
                         ],
                     }),
