@@ -3,7 +3,7 @@ import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter } from '../src/api/parameter';
-import { and } from '../src/api/expression';
+import { and, simpleTag } from '../src/api/expression';
 import { Container } from '../src/api/container';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -30,7 +30,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const influxdbClientTemplate = new Template('influxdb-client', {
         container: new Container({
-            args: ['{{inputs.parameters.cmd}}'],
+            args: [simpleTag(cmdInputParameter)],
             command: ['sh', '-c'],
             image: 'appropriate/curl:latest',
         }),

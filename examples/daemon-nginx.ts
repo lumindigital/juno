@@ -1,5 +1,6 @@
 import { Arguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
@@ -29,7 +30,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const nginxClientTemplate = new Template('nginx-client', {
         container: new Container({
             args: [
-                'echo curl --silent -G http://{{inputs.parameters.server-ip}}:80/ && curl --silent -G http://{{inputs.parameters.server-ip}}:80/',
+                `echo curl --silent -G http://${simpleTag(serverIpInputParameter)}:80/ && curl --silent -G http://${simpleTag(serverIpInputParameter)}:80/`,
             ],
             command: ['/bin/sh', '-c'],
             image: 'appropriate/curl:latest',

@@ -8,14 +8,14 @@ import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
-import { and } from '../src/api/expression';
+import { and, simpleTag } from '../src/api/expression';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageInputParameter = new InputParameter('message');
 
     const echoTemplate = new Template('echo', {
         container: new Container({
-            command: ['echo', '{{inputs.parameters.message}}'],
+            command: ['echo', simpleTag(messageInputParameter)],
             image: 'alpine:3.7',
         }),
         inputs: new Inputs({
@@ -37,26 +37,24 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         template: echoTemplate,
     });
 
+    const taskC = new DagTask('C', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
+        }),
+        depends: taskA,
+        template: echoTemplate,
+    });
+    const taskD = new DagTask('D', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
+        }),
+        depends: and([taskA, taskB]),
+        template: echoTemplate,
+    });
+
     const multirootTemplate = new Template('multiroot', {
         dag: new DagTemplate({
-            tasks: [
-                taskA,
-                taskB,
-                new DagTask('C', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
-                    }),
-                    depends: taskA,
-                    template: echoTemplate,
-                }),
-                new DagTask('D', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
-                    }),
-                    depends: and([taskA, taskB]),
-                    template: echoTemplate,
-                }),
-            ],
+            tasks: [taskA, taskB, taskC, taskD],
         }),
     });
 

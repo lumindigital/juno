@@ -1,5 +1,7 @@
+import { OutputResult } from '../src/api/artifact';
 import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
+import { getVariableReference, hyphenParameter, simpleTag } from '../src/api/expression';
 import { Outputs } from '../src/api/outputs';
 import { OutputParameter } from '../src/api/parameter';
 import { Script } from '../src/api/script';
@@ -41,28 +43,26 @@ print("heads" if random.randint(0,1) == 0 else "tails")
         template: flipCoinTemplate,
     });
 
+    const headsTask = new DagTask('heads', {
+        depends: flipCoinTask,
+        template: headsTemplate,
+        when: `${simpleTag({ dagTask: flipCoinTask, output: new OutputResult() })} == heads`,
+    });
+    const tailsTask = new DagTask('tails', {
+        depends: flipCoinTask,
+        template: tailsTemplate,
+        when: `${simpleTag({ dagTask: flipCoinTask, output: new OutputResult() })} == tails`,
+    });
+
     const mainTemplate = new Template('main', {
         dag: new DagTemplate({
-            tasks: [
-                flipCoinTask,
-                new DagTask('heads', {
-                    depends: flipCoinTask,
-                    template: headsTemplate,
-                    when: '{{tasks.flip-coin.outputs.result}} == heads',
-                }),
-                new DagTask('tails', {
-                    depends: flipCoinTask,
-                    template: tailsTemplate,
-                    when: '{{tasks.flip-coin.outputs.result}} == tails',
-                }),
-            ],
+            tasks: [flipCoinTask, headsTask, tailsTask],
         }),
         outputs: new Outputs({
             parameters: [
                 new OutputParameter('stepresult', {
                     valueFrom: {
-                        expression:
-                            "tasks['flip-coin'].outputs.result == 'heads' ? tasks.heads.outputs.result : tasks.tails.outputs.result",
+                        expression: `${hyphenParameter({ dagTask: flipCoinTask, output: new OutputResult() })} == 'heads' ? ${getVariableReference({ dagTask: headsTask, output: new OutputResult() })} : ${getVariableReference({ dagTask: tailsTask, output: new OutputResult() })}`,
                     },
                 }),
             ],

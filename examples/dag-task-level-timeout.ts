@@ -8,6 +8,7 @@ import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
+import { simpleTag } from '../src/api/expression';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const timeoutInputParameter = new InputParameter('timeout');
@@ -20,33 +21,33 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         inputs: new Inputs({
             parameters: [timeoutInputParameter],
         }),
-        timeout: '{{inputs.parameters.timeout}}',
+        timeout: simpleTag(timeoutInputParameter),
+    });
+
+    const dagTaskA = new DagTask('A', {
+        arguments: new Arguments({
+            parameters: [timeoutInputParameter.toArgumentParameter({ value: '20s' })],
+        }),
+        template: echoTemplate,
+    });
+    const dagTaskB = new DagTask('B', {
+        arguments: new Arguments({
+            parameters: [timeoutInputParameter.toArgumentParameter({ value: '10s' })],
+        }),
+        depends: dagTaskA,
+        template: echoTemplate,
+    });
+    const dagTaskC = new DagTask('C', {
+        arguments: new Arguments({
+            parameters: [timeoutInputParameter.toArgumentParameter({ value: '20s' })],
+        }),
+        depends: dagTaskA,
+        template: echoTemplate,
     });
 
     const diamondTemplate = new Template('diamond', {
         dag: new DagTemplate({
-            tasks: [
-                new DagTask('A', {
-                    arguments: new Arguments({
-                        parameters: [timeoutInputParameter.toArgumentParameter({ value: '20s' })],
-                    }),
-                    template: echoTemplate,
-                }),
-                new DagTask('B', {
-                    arguments: new Arguments({
-                        parameters: [timeoutInputParameter.toArgumentParameter({ value: '10s' })],
-                    }),
-                    depends: 'A',
-                    template: echoTemplate,
-                }),
-                new DagTask('C', {
-                    arguments: new Arguments({
-                        parameters: [timeoutInputParameter.toArgumentParameter({ value: '20s' })],
-                    }),
-                    depends: 'A',
-                    template: echoTemplate,
-                }),
-            ],
+            tasks: [dagTaskA, dagTaskB, dagTaskC],
         }),
     });
 

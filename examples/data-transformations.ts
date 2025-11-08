@@ -1,9 +1,10 @@
 import { Arguments } from '../src/api/arguments';
-import { InputArtifact, OutputArtifact } from '../src/api/artifact';
+import { InputArtifact, OutputArtifact, OutputResult } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
-import { InputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -43,7 +44,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const processLogsTemplate = new Template('process-logs', {
         container: new Container({
-            args: ['echo {{inputs.parameters.file-name}}\nhead /file\n'],
+            args: [`echo ${simpleTag(fileNameInputParameter)}\nhead /file\n`],
             command: ['sh', '-c'],
             image: 'argoproj/argosay:v2',
         }),
@@ -70,10 +71,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                 },
                             }),
                         ],
-                        parameters: [fileNameInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            fileNameInputParameter.toArgumentParameter({
+                                valueFromItemProperty: new FromItemProperty(),
+                            }),
+                        ],
                     }),
                     template: processLogsTemplate,
-                    withParam: '{{steps.list-log-files.outputs.result}}',
+                    withParam: simpleTag({ workflowStep: listLogFilesStep, output: new OutputResult() }),
                 }),
             ],
         ],

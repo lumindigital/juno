@@ -2,8 +2,9 @@ import { Arguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
 import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -32,7 +33,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     labels: [
                         {
                             key: 'playground_task_name',
-                            value: '{{inputs.parameters.tag}}',
+                            value: simpleTag(tagInputParameter),
                         },
                         {
                             key: 'status',
@@ -49,7 +50,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     labels: [
                         {
                             key: 'playground_task_name_counter',
-                            value: '{{inputs.parameters.tag}}',
+                            value: simpleTag(tagInputParameter),
                         },
                         {
                             key: 'status',
@@ -71,7 +72,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             messageInputParameter.toArgumentParameter({
                                 value: 'console output-->TEST-{{item.command}}',
                             }),
-                            tagInputParameter.toArgumentParameter({ value: '{{item.tag}}' }),
+                            tagInputParameter.toArgumentParameter({
+                                valueFromItemProperty: new FromItemProperty('tag'),
+                            }),
                         ],
                     }),
                     template: echoTemplate,
@@ -86,7 +89,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             messageInputParameter.toArgumentParameter({
                                 value: 'console output-->TEST-{{item.command}}',
                             }),
-                            tagInputParameter.toArgumentParameter({ value: '{{item.tag}}' }),
+                            tagInputParameter.toArgumentParameter({
+                                valueFromItemProperty: new FromItemProperty('tag'),
+                            }),
                         ],
                     }),
                     template: echoTemplate,
