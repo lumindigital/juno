@@ -40,18 +40,20 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
+    const nginxServerStep = new WorkflowStep('nginx-server', {
+        template: nginxServerTemplate,
+    });
+
     const daemonNginxExampleTemplate = new Template('daemon-nginx-example', {
         steps: [
-            [
-                new WorkflowStep('nginx-server', {
-                    template: nginxServerTemplate,
-                }),
-            ],
+            [nginxServerStep],
             [
                 new WorkflowStep('nginx-client', {
                     arguments: new Arguments({
                         parameters: [
-                            serverIpInputParameter.toArgumentParameter({ value: '{{steps.nginx-server.ip}}' }),
+                            serverIpInputParameter.toArgumentParameter({
+                                value: simpleTag({ workflowStep: nginxServerStep, output: 'ip' }),
+                            }),
                         ],
                     }),
                     template: nginxClientTemplate,

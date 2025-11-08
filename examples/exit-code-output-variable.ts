@@ -31,22 +31,22 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
+    const failingContainerStep = new WorkflowStep('failing-container', {
+        continueOn: {
+            failed: true,
+        },
+        template: failingContainerTemplate,
+    });
+
     const exitCodeOutputVariableTemplate = new Template('exit-code-output-variable', {
         steps: [
-            [
-                new WorkflowStep('failing-container', {
-                    continueOn: {
-                        failed: true,
-                    },
-                    template: failingContainerTemplate,
-                }),
-            ],
+            [failingContainerStep],
             [
                 new WorkflowStep('echo-container', {
                     arguments: new Arguments({
                         parameters: [
                             exitCodeInputParameter.toArgumentParameter({
-                                value: '{{steps.failing-container.exitCode}}',
+                                value: simpleTag({ workflowStep: failingContainerStep, output: 'exitCode' }),
                             }),
                         ],
                     }),
