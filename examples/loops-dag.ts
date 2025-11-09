@@ -3,7 +3,7 @@ import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
 import { Container } from '../src/api/container';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -35,7 +35,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
                 new DagTask('B', {
                     arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            messageInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
+                        ],
                     }),
                     depends: 'A',
                     template: printMessageTemplate,

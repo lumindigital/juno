@@ -1,6 +1,7 @@
 import { Arguments } from '../src/api/arguments';
 import { OutputArtifact, InputArtifact } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
 import { InputParameter, OutputParameter } from '../src/api/parameter';
@@ -11,13 +12,13 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
-    const outParameterOutputParam = new OutputParameter('out-parameter', {
+    const outParameterOutputParameter = new OutputParameter('out-parameter', {
         valueFrom: {
             path: '/tmp/my-output-parameter.txt',
         },
     });
 
-    const outArtifactOutputArt = new OutputArtifact('out-artifact', {
+    const outArtifactOutputArtifact = new OutputArtifact('out-artifact', {
         path: '/tmp/my-output-artifact.txt',
     });
 
@@ -30,42 +31,44 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             image: 'busybox',
         }),
         outputs: new Outputs({
-            artifacts: [outArtifactOutputArt],
-            parameters: [outParameterOutputParam],
+            artifacts: [outArtifactOutputArtifact],
+            parameters: [outParameterOutputParameter],
         }),
     });
 
-    const inParameterInputParam = new InputParameter('in-parameter');
-    const inArtifactInputArt = new InputArtifact('in-artifact', {
+    const inParameterInputParameter = new InputParameter('in-parameter');
+    const inArtifactInputArtifact = new InputArtifact('in-artifact', {
         path: '/tmp/art',
     });
 
     const consumeTemplate = new Template('consume', {
         container: new Container({
             args: [
-                " echo 'input parameter value: {{inputs.parameters.in-parameter}}' && echo 'input artifact contents:' && cat /tmp/art",
+                ` echo 'input parameter value: ${simpleTag(inParameterInputParameter)}' && echo 'input artifact contents:' && cat /tmp/art`,
             ],
             command: ['sh', '-c'],
             image: 'alpine:3.7',
         }),
         inputs: new Inputs({
-            artifacts: [inArtifactInputArt],
-            parameters: [inParameterInputParam],
+            artifacts: [inArtifactInputArtifact],
+            parameters: [inParameterInputParameter],
         }),
     });
 
-    const nestedInParameterInputParam = new InputParameter('nested-in-parameter');
-    const nestedInArtifactInputArt = new InputArtifact('nested-in-artifact');
+    const nestedInParameterInputParameter = new InputParameter('nested-in-parameter');
+    const nestedInArtifactInputArtifact = new InputArtifact('nested-in-artifact');
 
     const consumeStep = new WorkflowStep('consume', {
         arguments: new Arguments({
             artifacts: [
-                inArtifactInputArt.toArgumentArtifact({
-                    from: '{{inputs.artifacts.nested-in-artifact}}',
+                inArtifactInputArtifact.toArgumentArtifact({
+                    valueFromExpressionArgs: nestedInArtifactInputArtifact,
                 }),
             ],
             parameters: [
-                inParameterInputParam.toArgumentParameter({ value: '{{inputs.parameters.nested-in-parameter}}' }),
+                inParameterInputParameter.toArgumentParameter({
+                    valueFromExpressionArgs: nestedInParameterInputParameter,
+                }),
             ],
         }),
         template: consumeTemplate,
@@ -75,26 +78,42 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         template: generateTemplate,
     });
 
+    const nestedOutputArtifact = new OutputArtifact('nested-out-artifact', {
+        valueFromExpressionArgs: { workflowStep: generateStep, output: outArtifactOutputArtifact },
+    });
+
+    const nestedOutputParameter = new OutputParameter('nested-out-parameter', {
+        valueFrom: {
+            parameter: simpleTag({ workflowStep: generateStep, output: outParameterOutputParameter }),
+        },
+    });
+
     const nestedWfTemplate = new Template('nested-wf', {
         inputs: new Inputs({
-            artifacts: [nestedInArtifactInputArt],
-            parameters: [nestedInParameterInputParam],
+            artifacts: [nestedInArtifactInputArtifact],
+            parameters: [nestedInParameterInputParameter],
         }),
         outputs: new Outputs({
+            artifacts: [nestedOutputArtifact],
+            parameters: [nestedOutputParameter],
+        }),
+        steps: [[consumeStep, generateStep]],
+    });
+
+    const nestedWfStep = new WorkflowStep('nested-wf', {
+        arguments: new Arguments({
             artifacts: [
-                new OutputArtifact('nested-out-artifact', {
-                    from: '{{steps.generate.outputs.artifacts.out-artifact}}',
+                nestedInArtifactInputArtifact.toArgumentArtifact({
+                    valueFromExpressionArgs: { workflowStep: generateStep, output: outArtifactOutputArtifact },
                 }),
             ],
             parameters: [
-                new OutputParameter('nested-out-parameter', {
-                    valueFrom: {
-                        parameter: '{{steps.generate.outputs.parameters.out-parameter}}',
-                    },
+                nestedInParameterInputParameter.toArgumentParameter({
+                    valueFromExpressionArgs: { workflowStep: generateStep, output: outParameterOutputParameter },
                 }),
             ],
         }),
-        steps: [[consumeStep, generateStep]],
+        template: nestedWfTemplate,
     });
 
     const nestedWorkflowExampleTemplate = new Template('nested-workflow-example', {
@@ -104,34 +123,24 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     template: generateTemplate,
                 }),
             ],
-            [
-                new WorkflowStep('nested-wf', {
-                    arguments: new Arguments({
-                        artifacts: [
-                            nestedInArtifactInputArt.toArgumentArtifact({
-                                from: '{{steps.generate.outputs.artifacts.out-artifact}}',
-                            }),
-                        ],
-                        parameters: [
-                            nestedInParameterInputParam.toArgumentParameter({
-                                value: '{{steps.generate.outputs.parameters.out-parameter}}',
-                            }),
-                        ],
-                    }),
-                    template: nestedWfTemplate,
-                }),
-            ],
+            [nestedWfStep],
             [
                 new WorkflowStep('consume', {
                     arguments: new Arguments({
                         artifacts: [
-                            inArtifactInputArt.toArgumentArtifact({
-                                from: '{{steps.nested-wf.outputs.artifacts.nested-out-artifact}}',
+                            inArtifactInputArtifact.toArgumentArtifact({
+                                valueFromExpressionArgs: {
+                                    workflowStep: nestedWfStep,
+                                    output: nestedOutputArtifact,
+                                },
                             }),
                         ],
                         parameters: [
-                            inParameterInputParam.toArgumentParameter({
-                                value: '{{steps.nested-wf.outputs.parameters.nested-out-parameter}}',
+                            inParameterInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: {
+                                    workflowStep: nestedWfStep,
+                                    output: nestedOutputParameter,
+                                },
                             }),
                         ],
                     }),

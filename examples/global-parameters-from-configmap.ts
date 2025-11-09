@@ -1,5 +1,6 @@
 import { WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { WorkflowParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -7,9 +8,18 @@ import { WorkflowSpec } from '../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const messageWorkflowParameter = new WorkflowParameter('message', {
+        valueFrom: {
+            configMapKeyRef: {
+                key: 'msg',
+                name: 'simple-parameters',
+            },
+        },
+    });
+
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
-            args: ['{{workflow.parameters.message}}'],
+            args: [simpleTag(messageWorkflowParameter)],
             command: ['echo'],
             image: 'busybox',
         }),
@@ -28,16 +38,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [
-                    new WorkflowParameter('message', {
-                        valueFrom: {
-                            configMapKeyRef: {
-                                key: 'msg',
-                                name: 'simple-parameters',
-                            },
-                        },
-                    }),
-                ],
+                parameters: [messageWorkflowParameter],
             }),
             entrypoint: printMessageTemplate,
         }),

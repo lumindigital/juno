@@ -1,5 +1,6 @@
 import { Arguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
 import { InputParameter, OutputParameter } from '../src/api/parameter';
@@ -10,20 +11,20 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const jobNameOutput = new OutputParameter('job-name', {
+        valueFrom: {
+            jsonPath: '{.metadata.name}',
+        },
+    });
+    const jobUidOutput = new OutputParameter('job-uid', {
+        valueFrom: {
+            jsonPath: '{.metadata.uid}',
+        },
+    });
+
     const randomNumberJobTemplate = new Template('random-number-job', {
         outputs: new Outputs({
-            parameters: [
-                new OutputParameter('job-name', {
-                    valueFrom: {
-                        jsonPath: '{.metadata.name}',
-                    },
-                }),
-                new OutputParameter('job-uid', {
-                    valueFrom: {
-                        jsonPath: '{.metadata.uid}',
-                    },
-                }),
-            ],
+            parameters: [jobNameOutput, jobUidOutput],
         }),
         resource: {
             action: 'create',
@@ -54,7 +55,7 @@ spec:
     const printGeneratedNumbersTemplate = new Template('print-generated-numbers', {
         container: new Container({
             args: [
-                ' for i in `kubectl get pods -l controller-uid={{inputs.parameters.job-uid}} -o name`; do kubectl logs $i; done',
+                ` for i in \`kubectl get pods -l controller-uid=${simpleTag(jobUidInputParameter)} -o name\`; do kubectl logs $i; done`,
             ],
             command: ['sh', '-c'],
             image: 'argoproj/argoexec:latest',
@@ -75,7 +76,7 @@ spec:
             manifest: `apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{inputs.parameters.job-name}}
+  name: ${simpleTag(jobNameInputParameter)}
 `,
         },
     });
@@ -92,7 +93,7 @@ metadata:
                     arguments: new Arguments({
                         parameters: [
                             jobUidInputParameter.toArgumentParameter({
-                                value: '{{steps.random-number-job.outputs.parameters.job-uid}}',
+                                valueFromExpressionArgs: { workflowStep: randomNumberJobStep, output: jobUidOutput },
                             }),
                         ],
                     }),
@@ -104,7 +105,7 @@ metadata:
                     arguments: new Arguments({
                         parameters: [
                             jobNameInputParameter.toArgumentParameter({
-                                value: '{{steps.random-number-job.outputs.parameters.job-name}}',
+                                valueFromExpressionArgs: { workflowStep: randomNumberJobStep, output: jobNameOutput },
                             }),
                         ],
                     }),

@@ -3,15 +3,26 @@ import { InputArtifact } from '../src/api/artifact';
 import { Container } from '../src/api/container';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
-import { InputParameter, OutputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter, OutputParameter } from '../src/api/parameter';
 import { OutputArtifact } from '../src/api/artifact';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
+import { simpleTag } from '../src/api/expression';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const itemsOutputArtifacts = new OutputArtifact('items', {
+        path: '/tmp/items',
+    });
+
+    const countOutputParameter = new OutputParameter('count', {
+        valueFrom: {
+            path: '/tmp/count',
+        },
+    });
+
     const getItemsTemplate = new Template('get-items', {
         container: new Container({
             args: ['echo \'["a", "b", "c"]\' > /tmp/items && echo \'3\' > /tmp/count'],
@@ -19,18 +30,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             image: 'alpine:latest',
         }),
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('items', {
-                    path: '/tmp/items',
-                }),
-            ],
-            parameters: [
-                new OutputParameter('count', {
-                    valueFrom: {
-                        path: '/tmp/count',
-                    },
-                }),
-            ],
+            artifacts: [itemsOutputArtifacts],
+            parameters: [countOutputParameter],
         }),
     });
 
@@ -41,7 +42,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const echoTemplate = new Template('echo', {
         container: new Container({
-            args: ["cat /tmp/items | jq '.[{{inputs.parameters.index}}]'"],
+            args: [`cat /tmp/items | jq '.[${simpleTag(indexInputParameter)}]'`],
             command: ['sh', '-c'],
             image: 'stedolan/jq:latest',
         }),
@@ -63,14 +64,18 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             itemsInputArtifact.toArgumentArtifact({
-                                from: '{{steps.get-items.outputs.artifacts.items}}',
+                                valueFromExpressionArgs: { workflowStep: getItemsStep, output: itemsOutputArtifacts },
                             }),
                         ],
-                        parameters: [indexInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            indexInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
+                        ],
                     }),
                     template: echoTemplate,
                     withSequence: {
-                        count: '{{steps.get-items.outputs.parameters.count}}',
+                        count: simpleTag({ workflowStep: getItemsStep, output: countOutputParameter }),
                     },
                 }),
             ],

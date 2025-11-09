@@ -2,7 +2,7 @@ import { Arguments, WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter, WorkflowParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -10,6 +10,10 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const countWorkflowParameter = new WorkflowParameter('count', {
+        value: '3',
+    });
+
     const msgInputParameter = new InputParameter('msg');
 
     const echoTemplate = new Template('echo', {
@@ -27,7 +31,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             [
                 new WorkflowStep('sequence-count', {
                     arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            msgInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() }),
+                        ],
                     }),
                     template: echoTemplate,
                     withSequence: {
@@ -36,7 +42,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
                 new WorkflowStep('sequence-start-end', {
                     arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            msgInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() }),
+                        ],
                     }),
                     template: echoTemplate,
                     withSequence: {
@@ -46,17 +54,21 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
                 new WorkflowStep('sequence-param', {
                     arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            msgInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() }),
+                        ],
                     }),
                     template: echoTemplate,
                     withSequence: {
-                        count: '{{workflow.parameters.count}}',
+                        count: simpleTag(countWorkflowParameter),
                         start: '200',
                     },
                 }),
                 new WorkflowStep('sequence-negative', {
                     arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            msgInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() }),
+                        ],
                     }),
                     template: echoTemplate,
                     withSequence: {
@@ -66,7 +78,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
                 new WorkflowStep('sequence-format', {
                     arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            msgInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() }),
+                        ],
                     }),
                     template: echoTemplate,
                     withSequence: {
@@ -84,11 +98,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [
-                    new WorkflowParameter('count', {
-                        value: '3',
-                    }),
-                ],
+                parameters: [countWorkflowParameter],
             }),
             entrypoint: loopsSequenceTemplate,
         }),

@@ -8,6 +8,7 @@ import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
+import { simpleTag } from '../src/api/expression';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const deployTemplate = new Template('deploy', {
@@ -40,6 +41,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         suspend: {},
     });
 
+    const approvalStep = new WorkflowStep('approval', {
+        template: approvalTemplate,
+    });
+
     const cicdPipelineTemplate = new Template('cicd-pipeline', {
         steps: [
             [
@@ -47,15 +52,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     template: deployTemplate,
                 }),
             ],
-            [
-                new WorkflowStep('approval', {
-                    template: approvalTemplate,
-                }),
-            ],
+            [approvalStep],
             [
                 new WorkflowStep('deploy-prod', {
                     template: deployTemplate,
-                    when: '{{steps.approval.outputs.parameters.approve}} == YES',
+                    when: `${simpleTag({ workflowStep: approvalStep, output: approveOutputParameter })} == YES`,
                 }),
             ],
         ],
