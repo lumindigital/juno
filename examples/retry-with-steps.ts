@@ -1,4 +1,5 @@
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -9,7 +10,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const randomFailTemplate = new Template('random-fail', {
         container: new Container({
             args: [
-                "import random; import sys; print('retries: {{retries}}'); exit_code = random.choice([0, 1, 1]); sys.exit(exit_code)",
+                `import random; import sys; print('retries: ${simpleTag('retries')}'); exit_code = random.choice([0, 1, 1]); sys.exit(exit_code)`,
             ],
             command: ['python', '-c'],
             image: 'python:alpine3.6',

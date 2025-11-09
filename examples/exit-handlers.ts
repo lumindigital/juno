@@ -1,4 +1,5 @@
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -17,7 +18,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const sendEmailTemplate = new Template('send-email', {
         container: new Container({
             args: [
-                'echo send e-mail: {{workflow.name}} {{workflow.status}} {{workflow.duration}}. Failed steps {{workflow.failures}}',
+                `echo send e-mail: ${simpleTag('workflow.name')} ${simpleTag('workflow.status')} ${simpleTag('workflow.duration')}. Failed steps ${simpleTag('workflow.failures')}`,
             ],
             command: ['sh', '-c'],
             image: 'alpine:latest',
@@ -48,11 +49,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
                 new WorkflowStep('celebrate', {
                     template: celebrateTemplate,
-                    when: '{{workflow.status}} == Succeeded',
+                    when: `${simpleTag('workflow.status')} == Succeeded`,
                 }),
                 new WorkflowStep('cry', {
                     template: cryTemplate,
-                    when: '{{workflow.status}} != Succeeded',
+                    when: `${simpleTag('workflow.status')} != Succeeded`,
                 }),
             ],
         ],

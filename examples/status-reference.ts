@@ -1,4 +1,5 @@
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -30,24 +31,24 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
+    const flakeyContainerStep = new WorkflowStep('flakey-container', {
+        continueOn: {
+            failed: true,
+        },
+        template: flakeyContainerTemplate,
+    });
+
     const statusReferenceTemplate = new Template('status-reference', {
         steps: [
-            [
-                new WorkflowStep('flakey-container', {
-                    continueOn: {
-                        failed: true,
-                    },
-                    template: flakeyContainerTemplate,
-                }),
-            ],
+            [flakeyContainerStep],
             [
                 new WorkflowStep('failed', {
                     template: failedTemplate,
-                    when: '{{steps.flakey-container.status}} == Failed',
+                    when: `${simpleTag({ workflowStep: flakeyContainerStep, output: 'status' })} == Failed`,
                 }),
                 new WorkflowStep('succeeded', {
                     template: succeededTemplate,
-                    when: '{{steps.flakey-container.status}} == Succeeded',
+                    when: `${simpleTag({ workflowStep: flakeyContainerStep, output: 'status' })} == Succeeded`,
                 }),
             ],
         ],

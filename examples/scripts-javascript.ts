@@ -1,4 +1,5 @@
 import { Arguments } from '../src/api/arguments';
+import { OutputResult } from '../src/api/artifact';
 import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
@@ -34,18 +35,20 @@ console.log(rand);
         }),
     });
 
+    const generateStep = new WorkflowStep('generate', {
+        template: genRandomIntTemplate,
+    });
+
     const javascriptScriptExampleTemplate = new Template('javascript-script-example', {
         steps: [
-            [
-                new WorkflowStep('generate', {
-                    template: genRandomIntTemplate,
-                }),
-            ],
+            [generateStep],
             [
                 new WorkflowStep('print', {
                     arguments: new Arguments({
                         parameters: [
-                            messageInputParameter.toArgumentParameter({ value: '{{steps.generate.outputs.result}}' }),
+                            messageInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: { workflowStep: generateStep, output: new OutputResult() },
+                            }),
                         ],
                     }),
                     template: printMessageTemplate,

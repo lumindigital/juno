@@ -10,7 +10,7 @@ export type TaskOutput = { dagTask: DagTask; output: OutputType };
 export type TaskOutputParameters = { dagTaskOutputParameter: DagTask };
 export type StringTaskOutput = { dagTaskName: string; output: OutputType };
 export type StepOutput = { workflowStep: WorkflowStep; output: OutputType };
-export type StepOutputParameters = { stepOutputParameter: WorkflowStep };
+export type StepOutputParameters = { workflowStepOutputParameter: WorkflowStep };
 export type StringStepOutput = { workflowStepName: string; output: OutputType };
 export type PathType = { pathResult: InputArtifact | OutputArtifact | OutputParameter };
 export type WorkflowOutput = { workflowOutput: OutputArtifact | OutputParameter | OutputResult };
@@ -335,7 +335,7 @@ export function getVariableReference(expressionArgs: ExpressionArgs | string): s
 
         case ExpressionType.StepOutputParameters: {
             const stepOutputParameters = expressionArgs as StepOutputParameters;
-            return `steps.${stepOutputParameters.stepOutputParameter.name}.outputs.parameters`;
+            return `steps.${stepOutputParameters.workflowStepOutputParameter.name}.outputs.parameters`;
         }
 
         default: {
@@ -433,7 +433,7 @@ function getExpressionType(expressionArgs: ExpressionArgs): ExpressionType {
         throw new Error(`Step ${stepOutput?.workflowStep?.name} Unsupported step output`);
     }
 
-    if ((expressionArgs as StepOutputParameters).stepOutputParameter !== undefined) {
+    if ((expressionArgs as StepOutputParameters).workflowStepOutputParameter !== undefined) {
         return ExpressionType.StepOutputParameters;
     }
 

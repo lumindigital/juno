@@ -27,7 +27,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 {
                     gauge: {
                         realtime: false,
-                        value: '{{duration}}',
+                        value: `${simpleTag('duration')}`,
                     },
                     help: 'Duration gauge by task name in seconds - task level',
                     labels: [
@@ -37,7 +37,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         },
                         {
                             key: 'status',
-                            value: '{{status}}',
+                            value: `${simpleTag('status')}`,
                         },
                     ],
                     name: 'playground_workflow_duration_task_seconds',
@@ -54,7 +54,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         },
                         {
                             key: 'status',
-                            value: '{{status}}',
+                            value: `${simpleTag('status')}`,
                         },
                     ],
                     name: 'playground_workflow_result_task_counter',
@@ -115,7 +115,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     {
                         gauge: {
                             realtime: false,
-                            value: '{{workflow.duration}}',
+                            value: `${simpleTag('workflow.duration')}`,
                         },
                         help: 'Duration gauge by workflow level',
                         labels: [
@@ -125,7 +125,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             },
                             {
                                 key: 'status',
-                                value: '{{workflow.status}}',
+                                value: `${simpleTag('workflow.status')}`,
                             },
                         ],
                         name: 'playground_workflow_duration',
@@ -142,7 +142,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             },
                             {
                                 key: 'status',
-                                value: '{{workflow.status}}',
+                                value: `${simpleTag('workflow.status')}`,
                             },
                         ],
                         name: 'playground_workflow_result_counter',

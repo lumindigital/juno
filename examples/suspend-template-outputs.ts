@@ -13,6 +13,12 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/d
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageInputParameter = new InputParameter('message');
 
+    const messageOutputParameter = new OutputParameter('message', {
+        valueFrom: {
+            supplied: {},
+        },
+    });
+
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
             args: [simpleTag(messageInputParameter)],
@@ -26,30 +32,24 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const approveTemplate = new Template('approve', {
         outputs: new Outputs({
-            parameters: [
-                new OutputParameter('message', {
-                    valueFrom: {
-                        supplied: {},
-                    },
-                }),
-            ],
+            parameters: [messageOutputParameter],
         }),
         suspend: {},
     });
 
+    const approveStep = new WorkflowStep('approve', {
+        template: approveTemplate,
+    });
+
     const suspendTemplate = new Template('suspend', {
         steps: [
-            [
-                new WorkflowStep('approve', {
-                    template: approveTemplate,
-                }),
-            ],
+            [approveStep],
             [
                 new WorkflowStep('release', {
                     arguments: new Arguments({
                         parameters: [
                             messageInputParameter.toArgumentParameter({
-                                value: '{{steps.approve.outputs.parameters.message}}',
+                                valueFromExpressionArgs: { workflowStep: approveStep, output: messageOutputParameter },
                             }),
                         ],
                     }),

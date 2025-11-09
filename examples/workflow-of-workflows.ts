@@ -1,4 +1,5 @@
 import { Arguments } from '../src/api/arguments';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
@@ -23,7 +24,7 @@ metadata:
   generateName: workflow-of-workflows-1-
 spec:
   workflowTemplateRef:
-    name: {{inputs.parameters.workflowtemplate}}
+    name: ${simpleTag(workflowtemplateInputParameter)}
 `,
             successCondition: 'status.phase == Succeeded',
         },
@@ -46,9 +47,9 @@ spec:
   arguments:
     parameters:
     - name: message
-      value: {{inputs.parameters.message}}
+      value: ${simpleTag(messageInputParameter)}
   workflowTemplateRef:
-    name: {{inputs.parameters.workflowtemplate}}
+    name: ${simpleTag(workflowtemplateInputParameter)}
 `,
             successCondition: 'status.phase == Succeeded',
         },

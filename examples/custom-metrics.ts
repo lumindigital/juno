@@ -31,12 +31,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         value: simpleTag(randIntValue),
                     },
                     name: 'random_int_step_histogram',
-                    when: '{{status}} == Succeeded',
+                    when: `${simpleTag('status')} == Succeeded`,
                 },
                 {
                     gauge: {
                         realtime: true,
-                        value: '{{duration}}',
+                        value: `${simpleTag('duration')}`,
                     },
                     help: 'Duration gauge by name',
                     labels: [
@@ -74,7 +74,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         },
                         {
                             key: 'status',
-                            value: '{{status}}',
+                            value: `${simpleTag('status')}`,
                         },
                     ],
                     name: 'result_counter',
@@ -89,7 +89,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 {
                     gauge: {
                         realtime: true,
-                        value: '{{duration}}',
+                        value: `${simpleTag('duration')}`,
                     },
                     help: 'Duration gauge by name',
                     labels: [
@@ -127,7 +127,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     {
                         gauge: {
                             realtime: true,
-                            value: '{{workflow.duration}}',
+                            value: `${simpleTag('workflow.duration')}`,
                         },
                         help: 'Duration gauge by name',
                         labels: [

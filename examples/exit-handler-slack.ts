@@ -1,4 +1,5 @@
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -16,7 +17,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const exitHandlerTemplate = new Template('exit-handler', {
         container: new Container({
             args: [
-                `curl -X POST --data-urlencode 'payload={ "text": "{{workflow.name}} finished", "blocks": [ { "type": "section", "text": { "type": "mrkdwn", "text": "Workflow {{workflow.name}} {{workflow.status}}", } } ] }' YOUR_WEBHOOK_URL_HERE`,
+                `curl -X POST --data-urlencode 'payload={ "text": "${simpleTag('workflow.name')} finished", "blocks": [ { "type": "section", "text": { "type": "mrkdwn", "text": "Workflow ${simpleTag('workflow.name')} ${simpleTag('workflow.status')}", } } ] }' YOUR_WEBHOOK_URL_HERE`,
             ],
             command: ['sh', '-c'],
             image: 'curlimages/curl',

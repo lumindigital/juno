@@ -1,6 +1,7 @@
 import { Arguments } from '../src/api/arguments';
 import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
 import { InputParameter, OutputParameter } from '../src/api/parameter';
@@ -11,15 +12,15 @@ import { WorkflowSpec } from '../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const resourcesOutputParameter = new OutputParameter('resources', {
+        valueFrom: {
+            path: '/tmp/resources.json',
+        },
+    });
+
     const parseResourcesTmplTemplate = new Template('parse-resources-tmpl', {
         outputs: new Outputs({
-            parameters: [
-                new OutputParameter('resources', {
-                    valueFrom: {
-                        path: '/tmp/resources.json',
-                    },
-                }),
-            ],
+            parameters: [resourcesOutputParameter],
         }),
         script: new Script({
             command: ['sh'],
@@ -34,12 +35,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         inputs: new Inputs({
             parameters: [resourcesInputParameter],
         }),
-        podSpecPatch:
-            '{"containers":[{"name":"main", "resources":{"limits": {{inputs.parameters.resources}}, "requests": {{inputs.parameters.resources}} }}]}',
+        podSpecPatch: `{"containers":[{"name":"main", "resources":{"limits": ${simpleTag(resourcesInputParameter)}, "requests": ${simpleTag(resourcesInputParameter)} }}]}`,
         script: new Script({
             command: ['sh'],
             image: 'alpine:latest',
-            source: 'echo {{inputs.parameters.resources}}\n',
+            source: `echo ${simpleTag(resourcesInputParameter)}\n`,
         }),
     });
 
@@ -55,7 +55,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             resourcesInputParameter.toArgumentParameter({
-                                value: '{{tasks.parse-resources.outputs.parameters.resources}}',
+                                valueFromExpressionArgs: {
+                                    dagTask: parseResourcesTask,
+                                    output: resourcesOutputParameter,
+                                },
                             }),
                         ],
                     }),

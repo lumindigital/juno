@@ -1,4 +1,5 @@
 import { Arguments } from '../src/api/arguments';
+import { OutputResult } from '../src/api/artifact';
 import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
@@ -33,18 +34,20 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
+    const generateStep = new WorkflowStep('generate', {
+        template: genRandomIntTemplate,
+    });
+
     const bashScriptExampleTemplate = new Template('bash-script-example', {
         steps: [
-            [
-                new WorkflowStep('generate', {
-                    template: genRandomIntTemplate,
-                }),
-            ],
+            [generateStep],
             [
                 new WorkflowStep('print', {
                     arguments: new Arguments({
                         parameters: [
-                            messageInputParameter.toArgumentParameter({ value: '{{steps.generate.outputs.result}}' }),
+                            messageInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: { workflowStep: generateStep, output: new OutputResult() },
+                            }),
                         ],
                     }),
                     template: printMessageTemplate,
