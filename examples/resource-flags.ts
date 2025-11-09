@@ -1,3 +1,4 @@
+import { simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -36,20 +37,20 @@ spec:
         },
     });
 
+    const submitResourceStep = new WorkflowStep('submit-resource', {
+        continueOn: {
+            failed: true,
+        },
+        template: createRouteTemplate,
+    });
+
     const resourceValidateExampleTemplate = new Template('resource-validate-example', {
         steps: [
-            [
-                new WorkflowStep('submit-resource', {
-                    continueOn: {
-                        failed: true,
-                    },
-                    template: createRouteTemplate,
-                }),
-            ],
+            [submitResourceStep],
             [
                 new WorkflowStep('submit-resource-without-validation', {
                     template: createRouteWithoutValidationTemplate,
-                    when: '{{steps.submit-resource.status}} == Failed',
+                    when: `${simpleTag({ workflowStep: submitResourceStep, output: 'status' })} == Failed`,
                 }),
             ],
         ],

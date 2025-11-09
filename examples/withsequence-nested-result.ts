@@ -1,3 +1,5 @@
+import { OutputResult } from '../src/api/artifact';
+import { simpleTag } from '../src/api/expression';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -17,18 +19,18 @@ print(result)
         }),
     });
 
+    const helloBStep = new WorkflowStep('hello-b', {
+        template: helloTemplate,
+    });
+
     const helloHelloTemplate = new Template('hello-hello', {
         steps: [
-            [
-                new WorkflowStep('hello-b', {
-                    template: helloTemplate,
-                }),
-            ],
+            [helloBStep],
             [
                 new WorkflowStep('hello-c', {
                     template: helloTemplate,
                     withSequence: {
-                        end: '{{steps.hello-b.outputs.result}}',
+                        end: simpleTag({ workflowStep: helloBStep, output: new OutputResult() }),
                         start: '1',
                     },
                 }),
@@ -36,18 +38,18 @@ print(result)
         ],
     });
 
+    const helloAStep = new WorkflowStep('hello-a', {
+        template: helloTemplate,
+    });
+
     const helloEntrypointTemplate = new Template('hello-entrypoint', {
         steps: [
-            [
-                new WorkflowStep('hello-a', {
-                    template: helloTemplate,
-                }),
-            ],
+            [helloAStep],
             [
                 new WorkflowStep('hello-b', {
                     template: helloHelloTemplate,
                     withSequence: {
-                        end: '{{steps.hello-a.outputs.result}}',
+                        end: simpleTag({ workflowStep: helloAStep, output: new OutputResult() }),
                         start: '1',
                     },
                 }),

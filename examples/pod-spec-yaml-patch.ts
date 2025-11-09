@@ -5,8 +5,11 @@ import { Workflow } from '../src/api/workflow';
 import { WorkflowParameter } from '../src/api/parameter';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
+import { simpleTag } from '../src/api/expression';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const memLimit = new WorkflowParameter('mem-limit', { value: '100Mi' });
+
     const helloWorldTemplate = new Template('hello-world', {
         container: new Container({
             args: ['hello world'],
@@ -21,11 +24,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [new WorkflowParameter('mem-limit', { value: '100Mi' })],
+                parameters: [memLimit],
             }),
             entrypoint: helloWorldTemplate,
-            podSpecPatch:
-                'containers:\n  - name: main\n    resources:\n      limits:\n        memory: "{{workflow.parameters.mem-limit}}"\n',
+            podSpecPatch: `containers:\n  - name: main\n    resources:\n      limits:\n        memory: "${simpleTag(memLimit)}"\n`,
         }),
     }).toWorkflow();
 }

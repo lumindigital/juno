@@ -1,6 +1,8 @@
 import { Arguments } from '../src/api/arguments';
+import { OutputResult } from '../src/api/artifact';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -19,7 +21,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             command: ['python'],
             image: 'python:alpine3.6',
             source: `import json
-i = {{inputs.parameters.num}}
+i = ${simpleTag(numInputParameter)}
 res = {
   "num": i,
   "evenness": "even" if i % 2 == 0 else "odd"
@@ -36,13 +38,13 @@ print(json.dumps(res))
         script: new Script({
             command: ['sh', '-x'],
             image: 'alpine:latest',
-            source: 'echo $(({{inputs.parameters.num}}/2))\n',
+            source: `echo $((${simpleTag(numInputParameter)}/2))\n`,
         }),
     });
 
     const oddOrEvenStep = new WorkflowStep('odd-or-even', {
         arguments: new Arguments({
-            parameters: [numInputParameter.toArgumentParameter({ value: '{{item}}' })],
+            parameters: [numInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() })],
         }),
         template: oddOrEvenTemplate,
         withItems: [1, 2, 3, 4],
@@ -54,11 +56,15 @@ print(json.dumps(res))
             [
                 new WorkflowStep('divide-by-2', {
                     arguments: new Arguments({
-                        parameters: [numInputParameter.toArgumentParameter({ value: '{{item.num}}' })],
+                        parameters: [
+                            numInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty('num'),
+                            }),
+                        ],
                     }),
                     template: divideBy2Template,
-                    when: '{{item.evenness}} == even',
-                    withParam: '{{steps.odd-or-even.outputs.result}}',
+                    when: `${simpleTag(new FromItemProperty('evenness'))} == even`,
+                    withParam: { workflowStep: oddOrEvenStep, output: new OutputResult() },
                 }),
             ],
         ],

@@ -1,4 +1,6 @@
 import { Arguments } from '../src/api/arguments';
+import { OutputResult } from '../src/api/artifact';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter } from '../src/api/parameter';
 import { Script } from '../src/api/script';
@@ -25,7 +27,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [safeToRetryInputParameter],
         }),
         retryStrategy: {
-            expression: 'asInt(lastRetry.exitCode) > 1 && {{inputs.parameters.safe-to-retry}} == true',
+            expression: `asInt(lastRetry.exitCode) > 1 && ${simpleTag(safeToRetryInputParameter)} == true`,
             limit: '10',
         },
         script: new Script({
@@ -39,19 +41,19 @@ sys.exit(exit_code)
         }),
     });
 
+    const safeToRetryStep = new WorkflowStep('safe-to-retry', {
+        template: safeToRetryTemplate,
+    });
+
     const mainTemplate = new Template('main', {
         steps: [
-            [
-                new WorkflowStep('safe-to-retry', {
-                    template: safeToRetryTemplate,
-                }),
-            ],
+            [safeToRetryStep],
             [
                 new WorkflowStep('retry', {
                     arguments: new Arguments({
                         parameters: [
                             safeToRetryInputParameter.toArgumentParameter({
-                                value: '{{steps.safe-to-retry.outputs.result}}',
+                                valueFromExpressionArgs: { workflowStep: safeToRetryStep, output: new OutputResult() },
                             }),
                         ],
                     }),

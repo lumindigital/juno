@@ -1,4 +1,5 @@
 import { Arguments } from '../src/api/arguments';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
@@ -31,7 +32,7 @@ data:
         }),
         resource: {
             action: 'delete',
-            flags: ['configmap', '--selector', `{{inputs.parameters.${selectorInputParameter.name}}}`],
+            flags: ['configmap', '--selector', `${simpleTag(selectorInputParameter)}`],
         },
     });
 

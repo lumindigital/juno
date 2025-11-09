@@ -1,3 +1,4 @@
+import { simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -10,7 +11,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             manifest: `apiVersion: v1
 kind: Pod
 metadata:
-  name: {{pod.name}}
+  name: ${simpleTag('pod.name')}
   annotations:
     foo: bar
 `,

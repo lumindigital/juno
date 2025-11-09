@@ -1,3 +1,4 @@
+import { simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -29,7 +30,7 @@ spec:
            # specific labels, you can specify the label selector explicitly via \`argo logs -l <logs-label-selector>\`.
            # For example, you can use \`argo logs -c tensorflow -l replica-index=0\` to see the first worker pod's logs.
            labels:
-             workflows.argoproj.io/workflow: {{workflow.name}}
+             workflows.argoproj.io/workflow: ${simpleTag('workflow.name')}
          spec:
            containers:
              - name: tensorflow

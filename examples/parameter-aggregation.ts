@@ -1,8 +1,10 @@
 import { Arguments } from '../src/api/arguments';
+import { OutputResult } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
-import { InputParameter, OutputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter, OutputParameter } from '../src/api/parameter';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -13,10 +15,21 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/d
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const numInputParameter = new InputParameter('num');
 
+    const numOutputParameter = new OutputParameter('num', {
+        valueFrom: {
+            path: '/tmp/num',
+        },
+    });
+    const evennessOutputParameter = new OutputParameter('evenness', {
+        valueFrom: {
+            path: '/tmp/even',
+        },
+    });
+
     const oddOrEvenTemplate = new Template('odd-or-even', {
         container: new Container({
             args: [
-                'sleep 1 &&\necho {{inputs.parameters.num}} > /tmp/num &&\nif [ $(({{inputs.parameters.num}}%2)) -eq 0 ]; then\n  echo "even" > /tmp/even;\nelse\n  echo "odd" > /tmp/even;\nfi\n',
+                `sleep 1 &&\necho ${simpleTag(numInputParameter)} > /tmp/num &&\nif [ $((${simpleTag(numInputParameter)}%2)) -eq 0 ]; then\n  echo "even" > /tmp/even;\nelse\n  echo "odd" > /tmp/even;\nfi\n`,
             ],
             command: ['sh', '-xc'],
             image: 'alpine:latest',
@@ -25,18 +38,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [numInputParameter],
         }),
         outputs: new Outputs({
-            parameters: [
-                new OutputParameter('num', {
-                    valueFrom: {
-                        path: '/tmp/num',
-                    },
-                }),
-                new OutputParameter('evenness', {
-                    valueFrom: {
-                        path: '/tmp/even',
-                    },
-                }),
-            ],
+            parameters: [numOutputParameter, evennessOutputParameter],
         }),
     });
 
@@ -47,7 +49,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         script: new Script({
             command: ['sh', '-x'],
             image: 'alpine:latest',
-            source: '#!/bin/sh\necho $(({{inputs.parameters.num}}/2))\n',
+            source: `#!/bin/sh\necho $((${simpleTag(numInputParameter)}/2))\n`,
         }),
     });
 
@@ -55,7 +57,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
-            args: ['{{inputs.parameters.message}}'],
+            args: [`${simpleTag(messageInputParameter)}`],
             command: ['echo'],
             image: 'busybox',
         }),
@@ -66,10 +68,23 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const oddOrEvenStep = new WorkflowStep('odd-or-even', {
         arguments: new Arguments({
-            parameters: [numInputParameter.toArgumentParameter({ value: '{{item}}' })],
+            parameters: [numInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() })],
         }),
         template: oddOrEvenTemplate,
         withItems: [1, 2, 3, 4],
+    });
+
+    const divideBy2Step = new WorkflowStep('divide-by-2', {
+        arguments: new Arguments({
+            parameters: [
+                numInputParameter.toArgumentParameter({
+                    valueFromExpressionArgs: new FromItemProperty('num'),
+                }),
+            ],
+        }),
+        template: divideBy2Template,
+        when: `${simpleTag(new FromItemProperty('evenness'))} == even`,
+        withParam: { workflowStepOutputParameter: oddOrEvenStep },
     });
 
     const parameterAggregationTemplate = new Template('parameter-aggregation', {
@@ -80,7 +95,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             messageInputParameter.toArgumentParameter({
-                                value: '{{steps.odd-or-even.outputs.parameters.num}}',
+                                valueFromExpressionArgs: { workflowStep: oddOrEvenStep, output: numOutputParameter },
                             }),
                         ],
                     }),
@@ -92,30 +107,28 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             messageInputParameter.toArgumentParameter({
-                                value: '{{steps.odd-or-even.outputs.parameters.evenness}}',
+                                valueFromExpressionArgs: {
+                                    workflowStep: oddOrEvenStep,
+                                    output: evennessOutputParameter,
+                                },
                             }),
                         ],
                     }),
                     template: printMessageTemplate,
                 }),
             ],
-            [
-                new WorkflowStep('divide-by-2', {
-                    arguments: new Arguments({
-                        parameters: [numInputParameter.toArgumentParameter({ value: '{{item.num}}' })],
-                    }),
-                    template: divideBy2Template,
-                    when: '{{item.evenness}} == even',
-                    withParam: '{{steps.odd-or-even.outputs.parameters}}',
-                }),
-            ],
+            [divideBy2Step],
             [
                 new WorkflowStep('print', {
                     arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            messageInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
+                        ],
                     }),
                     template: printMessageTemplate,
-                    withParam: '{{steps.divide-by-2.outputs.result}}',
+                    withParam: { workflowStep: divideBy2Step, output: new OutputResult() },
                 }),
             ],
         ],

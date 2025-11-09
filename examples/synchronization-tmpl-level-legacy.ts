@@ -1,6 +1,6 @@
 import { Arguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
-import { InputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -31,7 +31,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             [
                 new WorkflowStep('synchronization-acquire-lock', {
                     arguments: new Arguments({
-                        parameters: [secondsInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            secondsInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
+                        ],
                     }),
                     template: acquireLockTemplate,
                     withParam: '["1","2","3","4","5"]',
