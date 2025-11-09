@@ -279,6 +279,22 @@ describe('expression tests', (): void => {
                 }),
             ).to.equal('tasks.TaskA.outputs.result');
         });
+
+        it('returns valid reference when type is TaskOutputParameters', (): void => {
+            expect(
+                getVariableReference({
+                    dagTaskOutputParameter: new DagTask('DagA', {}),
+                }),
+            ).to.equal('tasks.DagA.outputs.parameters');
+        });
+
+        it('returns valid reference when type is StepOutputParameters', (): void => {
+            expect(
+                getVariableReference({
+                    stepOutputParameter: new WorkflowStep('StepA', {}),
+                }),
+            ).to.equal('steps.StepA.outputs.parameters');
+        });
     });
 
     describe('hyphenExpression', (): void => {
