@@ -1,4 +1,5 @@
 import { Arguments } from '../src/api/arguments';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
@@ -12,7 +13,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const httpTemplate = new Template('http', {
         http: {
-            url: '{{inputs.parameters.url}}',
+            url: simpleTag(urlInputParameter),
         },
         inputs: new Inputs({
             parameters: [urlInputParameter],

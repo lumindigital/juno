@@ -8,13 +8,14 @@ import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
+import { and, simpleTag } from '../src/api/expression';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const msgInputParameter = new InputParameter('msg');
 
     const oneJobTemplate = new Template('one-job', {
         container: new Container({
-            args: ['echo {{inputs.parameters.msg}}; sleep 10'],
+            args: [`echo ${simpleTag(msgInputParameter)}; sleep 10`],
             command: ['/bin/sh', '-c'],
             image: 'alpine',
         }),
@@ -23,74 +24,74 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
+    const c1Task = new DagTask('c1', {
+        arguments: new Arguments({
+            parameters: [msgInputParameter.toArgumentParameter({ value: `${simpleTag(msgInputParameter)} c1` })],
+        }),
+        template: oneJobTemplate,
+    });
+    const c2Task = new DagTask('c2', {
+        arguments: new Arguments({
+            parameters: [msgInputParameter.toArgumentParameter({ value: `${simpleTag(msgInputParameter)} c2` })],
+        }),
+        depends: c1Task,
+        template: oneJobTemplate,
+    });
+    const c3Task = new DagTask('c3', {
+        arguments: new Arguments({
+            parameters: [msgInputParameter.toArgumentParameter({ value: `${simpleTag(msgInputParameter)} c3` })],
+        }),
+        depends: c1Task,
+        template: oneJobTemplate,
+    });
+
     const bTemplate = new Template('B', {
         dag: new DagTemplate({
-            tasks: [
-                new DagTask('c1', {
-                    arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '{{inputs.parameters.msg}} c1' })],
-                    }),
-                    template: oneJobTemplate,
-                }),
-                new DagTask('c2', {
-                    arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '{{inputs.parameters.msg}} c2' })],
-                    }),
-                    depends: 'c1',
-                    template: oneJobTemplate,
-                }),
-                new DagTask('c3', {
-                    arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '{{inputs.parameters.msg}} c3' })],
-                    }),
-                    depends: 'c1',
-                    template: oneJobTemplate,
-                }),
-            ],
+            tasks: [c1Task, c2Task, c3Task],
         }),
         inputs: new Inputs({
             parameters: [msgInputParameter],
         }),
     });
 
+    const b1Task = new DagTask('b1', {
+        arguments: new Arguments({
+            parameters: [msgInputParameter.toArgumentParameter({ value: '1' })],
+        }),
+        template: bTemplate,
+    });
+    const b2Task = new DagTask('b2', {
+        arguments: new Arguments({
+            parameters: [msgInputParameter.toArgumentParameter({ value: '2' })],
+        }),
+        depends: b1Task,
+        template: bTemplate,
+    });
+    const b3Task = new DagTask('b3', {
+        arguments: new Arguments({
+            parameters: [msgInputParameter.toArgumentParameter({ value: '3' })],
+        }),
+        depends: b1Task,
+        template: bTemplate,
+    });
+    const b4Task = new DagTask('b4', {
+        arguments: new Arguments({
+            parameters: [msgInputParameter.toArgumentParameter({ value: '4' })],
+        }),
+        depends: b1Task,
+        template: bTemplate,
+    });
+    const b5Task = new DagTask('b5', {
+        arguments: new Arguments({
+            parameters: [msgInputParameter.toArgumentParameter({ value: '5' })],
+        }),
+        depends: and([b2Task, b3Task, b4Task]),
+        template: bTemplate,
+    });
+
     const aTemplate = new Template('A', {
         dag: new DagTemplate({
-            tasks: [
-                new DagTask('b1', {
-                    arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '1' })],
-                    }),
-                    template: bTemplate,
-                }),
-                new DagTask('b2', {
-                    arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '2' })],
-                    }),
-                    depends: 'b1',
-                    template: bTemplate,
-                }),
-                new DagTask('b3', {
-                    arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '3' })],
-                    }),
-                    depends: 'b1',
-                    template: bTemplate,
-                }),
-                new DagTask('b4', {
-                    arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '4' })],
-                    }),
-                    depends: 'b1',
-                    template: bTemplate,
-                }),
-                new DagTask('b5', {
-                    arguments: new Arguments({
-                        parameters: [msgInputParameter.toArgumentParameter({ value: '5' })],
-                    }),
-                    depends: 'b2 && b3 && b4',
-                    template: bTemplate,
-                }),
-            ],
+            tasks: [b1Task, b2Task, b3Task, b4Task, b5Task],
         }),
         parallelism: 2,
     });

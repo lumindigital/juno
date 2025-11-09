@@ -1,7 +1,8 @@
 import { Arguments, WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter, WorkflowParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -14,7 +15,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const oneJobTemplate = new Template('one-job', {
         container: new Container({
-            args: ['echo {{inputs.parameters.parallel-id}} {{inputs.parameters.seq-id}}; sleep 10'],
+            args: [`echo ${simpleTag(parallelIdInputParameter)} ${simpleTag(seqIdInputParameter)}; sleep 10`],
             command: ['/bin/sh', '-c'],
             image: 'alpine',
         }),
@@ -36,13 +37,15 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             parallelIdInputParameter.toArgumentParameter({
-                                value: '{{inputs.parameters.parallel-id}}',
+                                valueFromExpressionArgs: parallelIdInputParameter,
                             }),
-                            seqIdInputParameter.toArgumentParameter({ value: '{{item}}' }),
+                            seqIdInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
                         ],
                     }),
                     template: oneJobTemplate,
-                    withParam: '{{inputs.parameters.seq-list}}',
+                    withParam: simpleTag(seqListInputParameter),
                 }),
             ],
         ],
@@ -59,12 +62,16 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new WorkflowStep('parallel-worker', {
                     arguments: new Arguments({
                         parameters: [
-                            seqListInputParameter.toArgumentParameter({ value: '{{inputs.parameters.seq-list}}' }),
-                            parallelIdInputParameter.toArgumentParameter({ value: '{{item}}' }),
+                            seqListInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: seqListInputParameter,
+                            }),
+                            parallelIdInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
                         ],
                     }),
                     template: seqWorkerTemplate,
-                    withParam: '{{inputs.parameters.parallel-list}}',
+                    withParam: simpleTag(parallelListInputParameter),
                 }),
             ],
         ],

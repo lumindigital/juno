@@ -1,8 +1,9 @@
 import { Arguments } from '../src/api/arguments';
+import { OutputResult } from '../src/api/artifact';
 import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -37,20 +38,24 @@ json.dump([i for i in range(20, 31)], sys.stdout)
         }),
     });
 
+    const generateStep = new WorkflowStep('generate', {
+        template: genNumberListTemplate,
+    });
+
     const loopParamResultExampleTemplate = new Template('loop-param-result-example', {
         steps: [
-            [
-                new WorkflowStep('generate', {
-                    template: genNumberListTemplate,
-                }),
-            ],
+            [generateStep],
             [
                 new WorkflowStep('sleep', {
                     arguments: new Arguments({
-                        parameters: [secondsInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            secondsInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
+                        ],
                     }),
                     template: sleepNSecTemplate,
-                    withParam: '{{steps.generate.outputs.result}}',
+                    withParam: { workflowStep: generateStep, output: new OutputResult() },
                 }),
             ],
         ],

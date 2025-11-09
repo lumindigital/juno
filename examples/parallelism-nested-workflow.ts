@@ -1,7 +1,8 @@
 import { Arguments, WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter, WorkflowParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -13,7 +14,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const oneJobTemplate = new Template('one-job', {
         container: new Container({
-            args: ['echo {{inputs.parameters.seq-id}}; sleep 30'],
+            args: [`echo ${simpleTag(seqIdInputParameter)}; sleep 30`],
             command: ['/bin/sh', '-c'],
             image: 'alpine',
         }),
@@ -31,7 +32,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new WorkflowStep('jobs', {
                     arguments: new Arguments({
                         parameters: [
-                            seqIdInputParameter.toArgumentParameter({ value: '{{inputs.parameters.seq-id}}' }),
+                            seqIdInputParameter.toArgumentParameter({ valueFromExpressionArgs: seqIdInputParameter }),
                         ],
                     }),
                     template: oneJobTemplate,
@@ -52,10 +53,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             [
                 new WorkflowStep('seq-step', {
                     arguments: new Arguments({
-                        parameters: [seqIdInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            seqIdInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
+                        ],
                     }),
                     template: bTemplate,
-                    withParam: '{{inputs.parameters.seq-list}}',
+                    withParam: simpleTag(seqListInputParameter),
                 }),
             ],
         ],

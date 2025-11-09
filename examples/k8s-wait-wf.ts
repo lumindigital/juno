@@ -1,4 +1,5 @@
 import { Arguments } from '../src/api/arguments';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
 import { InputParameter, OutputParameter } from '../src/api/parameter';
@@ -9,15 +10,15 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const wfNameOutput = new OutputParameter('wf-name', {
+        valueFrom: {
+            jsonPath: '{.metadata.name}',
+        },
+    });
+
     const createWfTemplate = new Template('create-wf', {
         outputs: new Outputs({
-            parameters: [
-                new OutputParameter('wf-name', {
-                    valueFrom: {
-                        jsonPath: '{.metadata.name}',
-                    },
-                }),
-            ],
+            parameters: [wfNameOutput],
         }),
         resource: {
             action: 'create',
@@ -48,7 +49,7 @@ spec:
             manifest: `apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  name: {{inputs.parameters.wf-name}}
+  name: ${simpleTag(wfNameInputParameter)}
 `,
             successCondition: 'status.phase == Succeeded',
         },
@@ -66,7 +67,7 @@ metadata:
                     arguments: new Arguments({
                         parameters: [
                             wfNameInputParameter.toArgumentParameter({
-                                value: '{{steps.create-wf.outputs.parameters.wf-name}}',
+                                valueFromExpressionArgs: { workflowStep: createWfStep, output: wfNameOutput },
                             }),
                         ],
                     }),

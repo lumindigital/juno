@@ -1,7 +1,8 @@
 import { Arguments, WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter, WorkflowParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -17,7 +18,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         container: new Container({
             args: ['/etc/os-release'],
             command: ['cat'],
-            image: '{{inputs.parameters.image}}:{{inputs.parameters.tag}}',
+            image: `${simpleTag(imageInputParameter)}:${simpleTag(tagInputParameter)}`,
         }),
         inputs: new Inputs({
             parameters: [imageInputParameter, tagInputParameter],
@@ -33,12 +34,16 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new WorkflowStep('test-linux', {
                     arguments: new Arguments({
                         parameters: [
-                            imageInputParameter.toArgumentParameter({ value: '{{item.image}}' }),
-                            tagInputParameter.toArgumentParameter({ value: '{{item.tag}}' }),
+                            imageInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty('image'),
+                            }),
+                            tagInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty('tag'),
+                            }),
                         ],
                     }),
                     template: catOsReleaseTemplate,
-                    withParam: '{{inputs.parameters.os-list}}',
+                    withParam: simpleTag(osListInputParameter),
                 }),
             ],
         ],

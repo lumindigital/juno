@@ -10,6 +10,19 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const helloWorldOutputArtifact = new OutputArtifact('hello-art', {
+        hdfs: {
+            addresses: [
+                'my-hdfs-namenode-0.my-hdfs-namenode.default.svc.cluster.local:8020',
+                'my-hdfs-namenode-1.my-hdfs-namenode.default.svc.cluster.local:8020',
+            ],
+            force: true,
+            hdfsUser: 'root',
+            path: '/tmp/argo/foo',
+        },
+        path: '/tmp/hello_world.txt',
+    });
+
     const helloWorldToFileTemplate = new Template('hello-world-to-file', {
         container: new Container({
             args: ['echo hello world | tee /tmp/hello_world.txt'],
@@ -17,20 +30,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             image: 'busybox',
         }),
         outputs: new Outputs({
-            artifacts: [
-                new OutputArtifact('hello-art', {
-                    hdfs: {
-                        addresses: [
-                            'my-hdfs-namenode-0.my-hdfs-namenode.default.svc.cluster.local:8020',
-                            'my-hdfs-namenode-1.my-hdfs-namenode.default.svc.cluster.local:8020',
-                        ],
-                        force: true,
-                        hdfsUser: 'root',
-                        path: '/tmp/argo/foo',
-                    },
-                    path: '/tmp/hello_world.txt',
-                }),
-            ],
+            artifacts: [helloWorldOutputArtifact],
         }),
     });
 
@@ -70,7 +70,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             messageInputArtifact.toArgumentArtifact({
-                                from: '{{steps.generate-artifact.outputs.artifacts.hello-art}}',
+                                valueFromExpressionArgs: {
+                                    workflowStep: generateArtifactStep,
+                                    output: helloWorldOutputArtifact,
+                                },
                             }),
                         ],
                     }),

@@ -2,7 +2,7 @@ import { Arguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -28,7 +28,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             [
                 new WorkflowStep('print-message-loop', {
                     arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            messageInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
+                        ],
                     }),
                     template: printMessageTemplate,
                     withItems: ['hello world', 'goodbye world'],

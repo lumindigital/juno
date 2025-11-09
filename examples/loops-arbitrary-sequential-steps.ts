@@ -1,7 +1,8 @@
 import { Arguments, WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter, WorkflowParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -14,7 +15,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const unitStepTemplate = new Template('unit-step-template', {
         container: new Container({
-            args: ['echo {{inputs.parameters.message}}; exit {{inputs.parameters.exit_code}}'],
+            args: [`echo ${simpleTag(messageInputParameter)}; exit ${simpleTag(exitCodeInputParameter)}`],
             command: ['/bin/sh', '-c'],
             image: 'alpine',
         }),
@@ -36,12 +37,16 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new WorkflowStep('unit-step', {
                     arguments: new Arguments({
                         parameters: [
-                            exitCodeInputParameter.toArgumentParameter({ value: '{{item.exit_code}}' }),
-                            messageInputParameter.toArgumentParameter({ value: '{{item.message}}' }),
+                            exitCodeInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty('exit_code'),
+                            }),
+                            messageInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty('message'),
+                            }),
                         ],
                     }),
                     template: unitStepTemplate,
-                    withParam: '{{inputs.parameters.step_params}}',
+                    withParam: stepParamsInputParameter,
                 }),
             ],
         ],
