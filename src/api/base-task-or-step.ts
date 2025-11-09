@@ -4,7 +4,7 @@ import {
     IoArgoprojWorkflowV1Alpha1Sequence,
 } from '../workflow-interfaces/data-contracts.js';
 import { Arguments } from './arguments.js';
-import { TaskOutput, StepOutput, simpleTag } from './expression.js';
+import { TaskOutput, StepOutput, simpleTag, StepOutputParameters, TaskOutputParameters } from './expression.js';
 import { LifecycleHook } from './lifecycle-hook.js';
 import { InputParameter } from './parameter.js';
 import { TemplateReference } from './template-reference.js';
@@ -23,7 +23,7 @@ export class BaseTaskOrStep {
     templateRef?: TemplateReference;
     when?: string;
     withItems?: IoArgoprojWorkflowV1Alpha1Item[];
-    withParam?: string | InputParameter | TaskOutput | StepOutput;
+    withParam?: string | InputParameter | TaskOutput | StepOutput | StepOutputParameters | TaskOutputParameters;
     withSequence?: IoArgoprojWorkflowV1Alpha1Sequence;
 
     readonly name: string;
@@ -32,7 +32,14 @@ export class BaseTaskOrStep {
     }
 
     protected toWithParam(
-        withParam: undefined | string | InputParameter | TaskOutput | StepOutput,
+        withParam:
+            | undefined
+            | string
+            | InputParameter
+            | TaskOutput
+            | StepOutput
+            | StepOutputParameters
+            | TaskOutputParameters,
     ): string | undefined {
         if (!withParam) {
             return undefined;

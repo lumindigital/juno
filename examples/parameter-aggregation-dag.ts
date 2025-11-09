@@ -1,10 +1,12 @@
 import { Arguments } from '../src/api/arguments';
+import { OutputResult } from '../src/api/artifact';
 import { Container } from '../src/api/container';
 import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
-import { InputParameter, OutputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter, OutputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -13,10 +15,21 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/d
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const numInputParameter = new InputParameter('num');
 
+    const numOutputParameter = new OutputParameter('num', {
+        valueFrom: {
+            path: '/tmp/num',
+        },
+    });
+    const evennessOutputParameter = new OutputParameter('evenness', {
+        valueFrom: {
+            path: '/tmp/even',
+        },
+    });
+
     const oddOrEvenTemplate = new Template('odd-or-even', {
         container: new Container({
             args: [
-                'sleep 1 &&\necho {{inputs.parameters.num}} > /tmp/num &&\nif [ $(({{inputs.parameters.num}}%2)) -eq 0 ]; then\n  echo "even" > /tmp/even;\nelse\n  echo "odd" > /tmp/even;\nfi\n',
+                `sleep 1 &&\necho ${simpleTag(numInputParameter)} > /tmp/num &&\nif [ $((${simpleTag(numInputParameter)}%2)) -eq 0 ]; then\n  echo "even" > /tmp/even;\nelse\n  echo "odd" > /tmp/even;\nfi\n`,
             ],
             command: ['sh', '-c'],
             image: 'alpine:latest',
@@ -25,24 +38,13 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [numInputParameter],
         }),
         outputs: new Outputs({
-            parameters: [
-                new OutputParameter('num', {
-                    valueFrom: {
-                        path: '/tmp/num',
-                    },
-                }),
-                new OutputParameter('evenness', {
-                    valueFrom: {
-                        path: '/tmp/even',
-                    },
-                }),
-            ],
+            parameters: [numOutputParameter, evennessOutputParameter],
         }),
     });
 
     const divideBy2Template = new Template('divide-by-2', {
         container: new Container({
-            args: ['echo $(({{inputs.parameters.num}}/2))'],
+            args: [`echo $((${simpleTag(numInputParameter)}/2))`],
             command: ['sh', '-c'],
             image: 'alpine:latest',
         }),
@@ -55,7 +57,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
-            args: ['{{inputs.parameters.message}}'],
+            args: [`${simpleTag(messageInputParameter)}`],
             command: ['echo'],
             image: 'busybox',
         }),
@@ -66,7 +68,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const oddOrEvenTask = new DagTask('odd-or-even', {
         arguments: new Arguments({
-            parameters: [numInputParameter.toArgumentParameter({ value: '{{item}}' })],
+            parameters: [numInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() })],
         }),
         template: oddOrEvenTemplate,
         withItems: [1, 2, 3, 4],
@@ -74,12 +76,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const divideBy2Task = new DagTask('divide-by-2', {
         arguments: new Arguments({
-            parameters: [numInputParameter.toArgumentParameter({ value: '{{item.num}}' })],
+            parameters: [
+                numInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty('num') }),
+            ],
         }),
         depends: oddOrEvenTask,
         template: divideBy2Template,
-        when: '{{item.evenness}} == even',
-        withParam: '{{tasks.odd-or-even.outputs.parameters}}',
+        when: `${simpleTag(new FromItemProperty('evenness'))} == even`,
+        withParam: { dagTaskOutputParameter: oddOrEvenTask },
     });
 
     const parameterAggregationTemplate = new Template('parameter-aggregation', {
@@ -90,7 +94,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             messageInputParameter.toArgumentParameter({
-                                value: '{{tasks.odd-or-even.outputs.parameters.num}}',
+                                valueFromExpressionArgs: { dagTask: oddOrEvenTask, output: numOutputParameter },
                             }),
                         ],
                     }),
@@ -101,7 +105,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             messageInputParameter.toArgumentParameter({
-                                value: '{{tasks.odd-or-even.outputs.parameters.evenness}}',
+                                valueFromExpressionArgs: { dagTask: oddOrEvenTask, output: evennessOutputParameter },
                             }),
                         ],
                     }),
@@ -111,11 +115,15 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 divideBy2Task,
                 new DagTask('print', {
                     arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            messageInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: new FromItemProperty(),
+                            }),
+                        ],
                     }),
                     depends: divideBy2Task,
                     template: printMessageTemplate,
-                    withParam: '{{tasks.divide-by-2.outputs.result}}',
+                    withParam: { dagTask: divideBy2Task, output: new OutputResult() },
                 }),
             ],
         }),
