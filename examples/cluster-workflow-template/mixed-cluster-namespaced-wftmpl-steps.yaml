@@ -9,6 +9,7 @@ spec:
     steps:
     - - name: hello1
         templateRef:
+          clusterScope: false
           name: workflow-template-print-message
           template: print-message
         arguments:
@@ -26,6 +27,7 @@ spec:
             value: "hello2a"
       - name: hello2b
         templateRef:
+          clusterScope: false
           name: workflow-template-print-message
           template: print-message
         arguments:

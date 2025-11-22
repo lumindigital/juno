@@ -1,5 +1,7 @@
+import { ClusterWorkflowTemplates } from '../../example-helpers/cluster-workflow-templates';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
+import { WorkflowTemplateReference } from '../../src/api/workflow-template-reference';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
@@ -8,10 +10,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             generateName: 'cluster-workflow-template-hello-world-',
         },
         spec: new WorkflowSpec({
-            workflowTemplateRef: {
-                clusterScope: true,
-                name: 'cluster-workflow-template-submittable',
-            },
+            workflowTemplateRef: new WorkflowTemplateReference({
+                workflowTemplate: ClusterWorkflowTemplates.submittableClusterWorkflowTemplate,
+            }),
         }),
     }).toWorkflow();
 }

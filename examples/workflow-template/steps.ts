@@ -6,12 +6,8 @@ import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowStep } from '../../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
 import { TemplateReference } from '../../src/api/template-reference';
-import {
-    printMessageWorkflowTemplate,
-    printMessageTemplate,
-    innerStepsWorkflowTemplate,
-    innerStepsTemplate,
-} from '../../example-helpers/workflow-templates';
+import { SharedTemplates } from '../../example-helpers/shared-templates';
+import { WorkflowTemplates } from '../../example-helpers/workflow-templates';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageInputParameter = new InputParameter('message');
@@ -24,8 +20,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         parameters: [messageInputParameter.toArgumentParameter({ value: 'hello1' })],
                     }),
                     templateRef: new TemplateReference({
-                        workflowTemplate: printMessageWorkflowTemplate,
-                        template: printMessageTemplate,
+                        workflowTemplate: SharedTemplates.printMessageWorkflowTemplate,
+                        template: SharedTemplates.printMessageTemplate,
                     }),
                 }),
             ],
@@ -35,8 +31,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         parameters: [messageInputParameter.toArgumentParameter({ value: 'hello2a' })],
                     }),
                     templateRef: new TemplateReference({
-                        template: innerStepsTemplate,
-                        workflowTemplate: innerStepsWorkflowTemplate,
+                        template: SharedTemplates.innerStepsTemplate,
+                        workflowTemplate: WorkflowTemplates.innerStepsWorkflowTemplate,
                     }),
                 }),
                 new WorkflowStep('hello2b', {
@@ -44,8 +40,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         parameters: [messageInputParameter.toArgumentParameter({ value: 'hello2b' })],
                     }),
                     templateRef: new TemplateReference({
-                        workflowTemplate: printMessageWorkflowTemplate,
-                        template: printMessageTemplate,
+                        workflowTemplate: SharedTemplates.printMessageWorkflowTemplate,
+                        template: SharedTemplates.printMessageTemplate,
                     }),
                 }),
             ],

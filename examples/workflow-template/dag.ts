@@ -1,3 +1,5 @@
+import { SharedTemplates } from '../../example-helpers/shared-templates';
+import { WorkflowTemplates } from '../../example-helpers/workflow-templates';
 import { Arguments } from '../../src/api/arguments';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
@@ -9,12 +11,6 @@ import { TemplateReference } from '../../src/api/template-reference';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
-import {
-    innerDagWorkflowTemplate,
-    printMessageTemplate,
-    printMessageWorkflowTemplate,
-    innerDiamondTemplate,
-} from '../../example-helpers/workflow-templates';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageInputParameter = new InputParameter('message');
@@ -24,8 +20,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [messageInputParameter.toArgumentParameter({ value: 'A' })],
         }),
         templateRef: new TemplateReference({
-            workflowTemplate: printMessageWorkflowTemplate,
-            template: printMessageTemplate,
+            workflowTemplate: SharedTemplates.printMessageWorkflowTemplate,
+            template: SharedTemplates.printMessageTemplate,
         }),
     });
 
@@ -35,16 +31,16 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         depends: aTask,
         templateRef: new TemplateReference({
-            workflowTemplate: printMessageWorkflowTemplate,
-            template: printMessageTemplate,
+            workflowTemplate: SharedTemplates.printMessageWorkflowTemplate,
+            template: SharedTemplates.printMessageTemplate,
         }),
     });
 
     const cTask = new DagTask('C', {
         depends: aTask,
         templateRef: new TemplateReference({
-            workflowTemplate: innerDagWorkflowTemplate,
-            template: innerDiamondTemplate,
+            workflowTemplate: WorkflowTemplates.innerDagWorkflowTemplate,
+            template: SharedTemplates.innerDiamondTemplate,
         }),
     });
 
@@ -60,8 +56,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     }),
                     depends: and([bTask, cTask]),
                     templateRef: new TemplateReference({
-                        template: printMessageTemplate,
-                        workflowTemplate: printMessageWorkflowTemplate,
+                        workflowTemplate: SharedTemplates.printMessageWorkflowTemplate,
+                        template: SharedTemplates.printMessageTemplate,
                     }),
                 }),
             ],

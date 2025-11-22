@@ -1,3 +1,5 @@
+import { ClusterWorkflowTemplates } from '../../example-helpers/cluster-workflow-templates';
+import { SharedTemplates } from '../../example-helpers/shared-templates';
 import { Arguments } from '../../src/api/arguments';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
@@ -17,9 +19,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [messageInputParameter.toArgumentParameter({ value: 'A' })],
         }),
         templateRef: new TemplateReference({
-            //clusterScope: true,
-            name: 'cluster-workflow-template-print-message',
-            //template: 'print-message',
+            workflowTemplate: ClusterWorkflowTemplates.printMessageClusterWorkflowTemplate,
+            template: SharedTemplates.printMessageTemplate,
         }),
     });
 
@@ -29,18 +30,16 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         depends: aTask,
         templateRef: new TemplateReference({
-            //clusterScope: true,
-            name: 'cluster-workflow-template-print-message',
-            //template: 'print-message',
+            workflowTemplate: ClusterWorkflowTemplates.printMessageClusterWorkflowTemplate,
+            template: SharedTemplates.printMessageTemplate,
         }),
     });
 
     const cTask = new DagTask('C', {
         depends: aTask,
         templateRef: new TemplateReference({
-            //clusterScope: true,
-            name: 'cluster-workflow-template-inner-dag',
-            //template: 'inner-diamond',
+            workflowTemplate: ClusterWorkflowTemplates.innerDagClusterWorkflowTemplate,
+            template: SharedTemplates.innerDiamondTemplate,
         }),
     });
 
@@ -56,9 +55,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     }),
                     depends: and([bTask, cTask]),
                     templateRef: new TemplateReference({
-                        //clusterScope: true,
-                        name: 'cluster-workflow-template-print-message',
-                        //template: 'print-message',
+                        workflowTemplate: ClusterWorkflowTemplates.printMessageClusterWorkflowTemplate,
+                        template: SharedTemplates.printMessageTemplate,
                     }),
                 }),
             ],
