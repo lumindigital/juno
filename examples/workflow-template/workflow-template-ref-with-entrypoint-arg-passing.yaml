@@ -9,6 +9,8 @@ spec:
       - name: message
         value: "hello world"
   workflowTemplateRef:
+    clusterScope: false
     name: workflow-template-print-message
+  templates: []
 
 

@@ -73,6 +73,10 @@ export class InputParameter extends Parameter {
     toArgumentParameter(init?: Partial<Parameter>): ArgumentParameter {
         return new ArgumentParameter(this.name, init);
     }
+
+    toWorkflowParameter(init?: Partial<Parameter>): WorkflowParameter {
+        return new WorkflowParameter(this.name, init);
+    }
 }
 
 export class OutputParameter extends Parameter {

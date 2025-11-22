@@ -1,3 +1,6 @@
+import { printMessageTemplate, printMessageWorkflowTemplate } from '../../example-helpers/workflow-templates';
+import { WorkflowArguments } from '../../src/api/arguments';
+import { WorkflowParameter } from '../../src/api/parameter';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowTemplateReference } from '../../src/api/workflow-template-reference';
@@ -9,8 +12,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             generateName: 'workflow-template-hello-world-',
         },
         spec: new WorkflowSpec({
+            arguments: new WorkflowArguments({
+                parameters: [new WorkflowParameter('message', { value: 'hello world' })],
+            }),
+            entrypoint: printMessageTemplate,
             workflowTemplateRef: new WorkflowTemplateReference({
-                //name: 'workflow-template-submittable',
+                workflowTemplate: printMessageWorkflowTemplate,
             }),
         }),
     }).toWorkflow();

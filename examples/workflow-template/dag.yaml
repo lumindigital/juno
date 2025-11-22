@@ -17,6 +17,7 @@ spec:
       tasks:
       - name: A
         templateRef:
+          clusterScope: false
           name: workflow-template-print-message
           template: print-message
         arguments:
@@ -26,6 +27,7 @@ spec:
       - name: B
         depends: "A"
         templateRef:
+          clusterScope: false
           name: workflow-template-print-message
           template: print-message
         arguments:
@@ -35,11 +37,13 @@ spec:
       - name: C
         depends: "A"
         templateRef:
+          clusterScope: false
           name: workflow-template-inner-dag
           template: inner-diamond
       - name: D
         depends: "B && C"
         templateRef:
+          clusterScope: false
           name: workflow-template-print-message
           template: print-message
         arguments:

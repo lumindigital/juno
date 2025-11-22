@@ -5,9 +5,16 @@ import { and } from '../../src/api/expression';
 import { InputParameter } from '../../src/api/parameter';
 
 import { Template } from '../../src/api/template';
+import { TemplateReference } from '../../src/api/template-reference';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
+import {
+    innerDagWorkflowTemplate,
+    printMessageTemplate,
+    printMessageWorkflowTemplate,
+    innerDiamondTemplate,
+} from '../../example-helpers/workflow-templates';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageInputParameter = new InputParameter('message');
@@ -16,10 +23,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [messageInputParameter.toArgumentParameter({ value: 'A' })],
         }),
-        // templateRef: new TemplateReference({
-        //     name: 'workflow-template-print-message',
-        //     template: 'print-message',
-        // }),
+        templateRef: new TemplateReference({
+            workflowTemplate: printMessageWorkflowTemplate,
+            template: printMessageTemplate,
+        }),
     });
 
     const bTask = new DagTask('B', {
@@ -27,18 +34,18 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [messageInputParameter.toArgumentParameter({ value: 'B' })],
         }),
         depends: aTask,
-        // templateRef: new TemplateReference({
-        //     name: 'workflow-template-print-message',
-        //     template: 'print-message',
-        // }),
+        templateRef: new TemplateReference({
+            workflowTemplate: printMessageWorkflowTemplate,
+            template: printMessageTemplate,
+        }),
     });
 
     const cTask = new DagTask('C', {
         depends: aTask,
-        // templateRef: new TemplateReference({
-        //     name: 'workflow-template-inner-dag',
-        //     template: 'inner-diamond',
-        // }),
+        templateRef: new TemplateReference({
+            workflowTemplate: innerDagWorkflowTemplate,
+            template: innerDiamondTemplate,
+        }),
     });
 
     const diamondTemplate = new Template('diamond', {
@@ -52,10 +59,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
                     }),
                     depends: and([bTask, cTask]),
-                    // templateRef: new TemplateReference({
-                    //     name: 'workflow-template-print-message',
-                    //     template: 'print-message',
-                    // }),
+                    templateRef: new TemplateReference({
+                        template: printMessageTemplate,
+                        workflowTemplate: printMessageWorkflowTemplate,
+                    }),
                 }),
             ],
         }),
