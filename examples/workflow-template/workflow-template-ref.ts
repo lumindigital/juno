@@ -1,4 +1,4 @@
-import { submittableWorkflowTemplate } from '../../example-helpers/workflow-templates';
+import { WorkflowTemplates } from '../../example-helpers/workflow-templates';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowTemplateReference } from '../../src/api/workflow-template-reference';
@@ -11,7 +11,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             workflowTemplateRef: new WorkflowTemplateReference({
-                workflowTemplate: submittableWorkflowTemplate,
+                workflowTemplate: WorkflowTemplates.submittableWorkflowTemplate,
             }),
         }),
     }).toWorkflow();

@@ -1,4 +1,4 @@
-import { printMessageTemplate, printMessageWorkflowTemplate } from '../../example-helpers/workflow-templates';
+import { SharedTemplates } from '../../example-helpers/shared-templates';
 import { Arguments } from '../../src/api/arguments';
 import { InputParameter } from '../../src/api/parameter';
 import { Template } from '../../src/api/template';
@@ -19,8 +19,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         parameters: [messageInputParameter.toArgumentParameter({ value: 'hello world' })],
                     }),
                     templateRef: new TemplateReference({
-                        template: printMessageTemplate,
-                        workflowTemplate: printMessageWorkflowTemplate,
+                        workflowTemplate: SharedTemplates.printMessageWorkflowTemplate,
+                        template: SharedTemplates.printMessageTemplate,
                     }),
                 }),
             ],

@@ -1,7 +1,5 @@
-import {
-    randomFailTemplate,
-    workflowTemplateRandomFail as randomFailWorkflowTemplate,
-} from '../../example-helpers/workflow-templates';
+import { SharedTemplates } from '../../example-helpers/shared-templates';
+import { WorkflowTemplates } from '../../example-helpers/workflow-templates';
 import { Template } from '../../src/api/template';
 import { TemplateReference } from '../../src/api/template-reference';
 import { Workflow } from '../../src/api/workflow';
@@ -15,22 +13,22 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             [
                 new WorkflowStep('hello1', {
                     templateRef: new TemplateReference({
-                        template: randomFailTemplate,
-                        workflowTemplate: randomFailWorkflowTemplate,
+                        template: SharedTemplates.randomFailTemplate,
+                        workflowTemplate: WorkflowTemplates.randomFailWorkflowTemplate,
                     }),
                 }),
             ],
             [
                 new WorkflowStep('hello2a', {
                     templateRef: new TemplateReference({
-                        template: randomFailTemplate,
-                        workflowTemplate: randomFailWorkflowTemplate,
+                        template: SharedTemplates.randomFailTemplate,
+                        workflowTemplate: WorkflowTemplates.randomFailWorkflowTemplate,
                     }),
                 }),
                 new WorkflowStep('hello2b', {
                     templateRef: new TemplateReference({
-                        template: randomFailTemplate,
-                        workflowTemplate: randomFailWorkflowTemplate,
+                        template: SharedTemplates.randomFailTemplate,
+                        workflowTemplate: WorkflowTemplates.randomFailWorkflowTemplate,
                     }),
                 }),
             ],
