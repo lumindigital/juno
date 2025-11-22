@@ -10,13 +10,16 @@ spec:
     steps:
     - - name: hello1
         templateRef:
+          clusterScope: false
           name: workflow-template-random-fail-template
           template: random-fail-template
     - - name: hello2a
         templateRef:
+          clusterScope: false
           name: workflow-template-random-fail-template
           template: random-fail-template
       - name: hello2b
         templateRef:
+          clusterScope: false
           name: workflow-template-random-fail-template
           template: random-fail-template

@@ -141,7 +141,8 @@ export class WorkflowSpec {
     validateWorkflow() {
         const templates = [...(this.additionalTemplates ?? [])];
 
-        if (this.entrypoint) {
+        // Ignore adding entrypoint if workflowTemplateRef is set as the template does not need to be included.
+        if (this.entrypoint && !this.workflowTemplateRef) {
             templates.push(this.entrypoint);
             this.validateEntryPoint();
         }

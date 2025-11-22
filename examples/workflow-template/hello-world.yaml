@@ -9,6 +9,7 @@ spec:
     steps:
       - - name: call-print-message
           templateRef:
+            clusterScope: false
             name: workflow-template-print-message
             template: print-message
           arguments:

@@ -1,4 +1,9 @@
+import {
+    randomFailTemplate,
+    workflowTemplateRandomFail as randomFailWorkflowTemplate,
+} from '../../example-helpers/workflow-templates';
 import { Template } from '../../src/api/template';
+import { TemplateReference } from '../../src/api/template-reference';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowStep } from '../../src/api/workflow-step';
@@ -9,24 +14,24 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         steps: [
             [
                 new WorkflowStep('hello1', {
-                    // templateRef: new TemplateReference({
-                    //     name: 'workflow-template-random-fail-template',
-                    //     template: 'random-fail-template',
-                    // }),
+                    templateRef: new TemplateReference({
+                        template: randomFailTemplate,
+                        workflowTemplate: randomFailWorkflowTemplate,
+                    }),
                 }),
             ],
             [
                 new WorkflowStep('hello2a', {
-                    // templateRef: new TemplateReference({
-                    //     name: 'workflow-template-random-fail-template',
-                    //     template: 'random-fail-template',
-                    // }),
+                    templateRef: new TemplateReference({
+                        template: randomFailTemplate,
+                        workflowTemplate: randomFailWorkflowTemplate,
+                    }),
                 }),
                 new WorkflowStep('hello2b', {
-                    // templateRef: new TemplateReference({
-                    //     name: 'workflow-template-random-fail-template',
-                    //     template: 'random-fail-template',
-                    // }),
+                    templateRef: new TemplateReference({
+                        template: randomFailTemplate,
+                        workflowTemplate: randomFailWorkflowTemplate,
+                    }),
                 }),
             ],
         ],

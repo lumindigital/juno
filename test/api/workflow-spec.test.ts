@@ -14,6 +14,7 @@ import { Container } from '../../src/api/container';
 import { LifecycleHook } from '../../src/api/lifecycle-hook';
 import { TaskResult } from '../../src/api/expression';
 import { WorkflowArguments } from '../../src/api/arguments';
+import { WorkflowTemplateReference } from '../../src/api/workflow-template-reference';
 
 describe('workflow-spec validation tests', (): void => {
     describe('workflow templates', (): void => {
@@ -154,6 +155,23 @@ describe('workflow-spec validation tests', (): void => {
             });
 
             expect(() => workflowSpec.toWorkflowSpec()).to.throw('Duplicate template names found: A');
+        });
+
+        it('will not contain templates when workflowtemplateRef is used', (): void => {
+            const template = new Template('A', {});
+
+            const workflowSpec = new WorkflowSpec({
+                workflowTemplateRef: new WorkflowTemplateReference({
+                    workflowTemplate: new WorkflowTemplate({
+                        metadata: { name: 'workflow-template-ref' },
+                    }),
+                }),
+                entrypoint: template,
+            });
+
+            const result = workflowSpec.toWorkflowSpec();
+
+            expect(result.templates).to.have.lengthOf(0);
         });
     });
 
