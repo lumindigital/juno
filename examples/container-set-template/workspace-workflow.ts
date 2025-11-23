@@ -1,4 +1,5 @@
 import { OutputArtifact } from '../../src/api/artifact';
+import { ContainerNode } from '../../src/api/container-node';
 import { ContainerSetTemplate } from '../../src/api/container-set-template';
 import { Outputs } from '../../src/api/outputs';
 import { OutputParameter } from '../../src/api/parameter';
@@ -11,15 +12,13 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const mainTemplate = new Template('main', {
         containerSet: new ContainerSetTemplate({
             containers: [
-                {
+                new ContainerNode('a', {
                     args: ['echo', 'hi', '/workspace/out'],
                     image: 'argoproj/argosay:v2',
-                    name: 'a',
-                },
-                {
+                }),
+                new ContainerNode('main', {
                     image: 'argoproj/argosay:v2',
-                    name: 'main',
-                },
+                }),
             ],
             volumeMounts: [
                 {

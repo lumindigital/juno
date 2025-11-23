@@ -6,13 +6,12 @@ import {
 import { ContainerNode } from './container-node.js';
 
 export class ContainerSetTemplate {
-    readonly containers: ContainerNode[];
+    readonly containers!: ContainerNode[];
     retryStrategy?: IoArgoprojWorkflowV1Alpha1ContainerSetRetryStrategy;
     volumeMounts?: IoK8SApiCoreV1VolumeMount[];
 
-    constructor(containers: ContainerNode[], init?: Partial<ContainerSetTemplate>) {
+    constructor(init?: Partial<ContainerSetTemplate>) {
         Object.assign(this, init);
-        this.containers = containers;
     }
 
     toContainerSetTemplate(): IoArgoprojWorkflowV1Alpha1ContainerSetTemplate {
