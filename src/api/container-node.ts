@@ -15,7 +15,7 @@ import { EnvironmentVariable } from './environment-variable.js';
 export class ContainerNode {
     args?: string[];
     command?: string[];
-    dependencies?: string[];
+    dependencies?: ContainerNode[];
     env?: EnvironmentVariable[];
     envFrom?: IoK8SApiCoreV1EnvFromSource[];
     image?: string;
@@ -48,6 +48,7 @@ export class ContainerNode {
         return {
             args: this.args,
             command: this.command,
+            dependencies: this.dependencies?.map((d) => d.name),
             env: this.env?.map((x) => x.toEnvironmentVariable()),
             envFrom: this.envFrom,
             image: this.image,

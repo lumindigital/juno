@@ -1,3 +1,4 @@
+import { ContainerNode } from '../../src/api/container-node';
 import { ContainerSetTemplate } from '../../src/api/container-set-template';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -8,20 +9,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const mainTemplate = new Template('main', {
         containerSet: new ContainerSetTemplate({
             containers: [
-                {
+                new ContainerNode('a', {
                     image: 'argoproj/argosay:v2',
-                    name: 'a',
-                },
-                {
-                    dependencies: ['a'],
+                }),
+                new ContainerNode('b', {
                     image: 'argoproj/argosay:v2',
-                    name: 'b',
-                },
-                {
-                    dependencies: ['b'],
-                    image: 'argoproj/argosay:v2',
-                    name: 'c',
-                },
+                }),
             ],
         }),
     });
@@ -30,10 +23,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         metadata: {
             annotations: {
                 'workflows.argoproj.io/description':
-                    'This workflow demonstrates running a sequence of containers within a single pod.\n',
+                    'This workflow demonstrates running a parallel containers within a single pod.\n',
                 'workflows.argoproj.io/version': '>= 3.1.0',
             },
-            generateName: 'sequence-',
+            generateName: 'parallel-',
             labels: {
                 'workflows.argoproj.io/test': 'true',
             },

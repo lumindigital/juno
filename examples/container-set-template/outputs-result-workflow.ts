@@ -1,7 +1,10 @@
 import { Arguments } from '../../src/api/arguments';
+import { OutputResult } from '../../src/api/artifact';
+import { ContainerNode } from '../../src/api/container-node';
 import { ContainerSetTemplate } from '../../src/api/container-set-template';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
+import { simpleTag } from '../../src/api/expression';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter } from '../../src/api/parameter';
 import { Script } from '../../src/api/script';
@@ -14,12 +17,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const groupTemplate = new Template('group', {
         containerSet: new ContainerSetTemplate({
             containers: [
-                {
+                new ContainerNode('main', {
                     args: ['print("hi")\n'],
                     command: ['python', '-c'],
                     image: 'python:alpine3.6',
-                    name: 'main',
-                },
+                }),
             ],
         }),
     });
@@ -33,7 +35,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         script: new Script({
             command: ['python'],
             image: 'python:alpine3.6',
-            source: 'assert "{{inputs.parameters.x}}" == "hi"\n',
+            source: `assert "${simpleTag(xInputParameter)}" == "hi"\n`,
         }),
     });
 
@@ -47,9 +49,13 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 aTask,
                 new DagTask('b', {
                     arguments: new Arguments({
-                        parameters: [xInputParameter.toArgumentParameter({ value: '{{tasks.a.outputs.result}}' })],
+                        parameters: [
+                            xInputParameter.toArgumentParameter({
+                                valueFromExpressionArgs: { dagTask: aTask, output: new OutputResult() },
+                            }),
+                        ],
                     }),
-                    dependencies: ['a'],
+                    dependencies: [aTask],
                     template: verifyTemplate,
                 }),
             ],

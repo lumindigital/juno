@@ -294,15 +294,17 @@ describe('template validation tests', (): void => {
                 inputs: new Inputs({
                     parameters: [input],
                 }),
-                containerSet: new ContainerSetTemplate([
-                    new ContainerNode('container1', {
-                        env: [
-                            new EnvironmentVariable('ENV_VAR', {
-                                valueFromInputParameter: input,
-                            }),
-                        ],
-                    }),
-                ]),
+                containerSet: new ContainerSetTemplate({
+                    containers: [
+                        new ContainerNode('container1', {
+                            env: [
+                                new EnvironmentVariable('ENV_VAR', {
+                                    valueFromInputParameter: input,
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
             });
             expect(() => template.toTemplate()).to.not.throw();
         });
@@ -311,15 +313,17 @@ describe('template validation tests', (): void => {
             const missingInput = new InputParameter('MISSING_INPUT', {});
 
             const template = new Template('TEMPLATE', {
-                containerSet: new ContainerSetTemplate([
-                    new ContainerNode('container1', {
-                        env: [
-                            new EnvironmentVariable('ENV_VAR', {
-                                valueFromInputParameter: missingInput,
-                            }),
-                        ],
-                    }),
-                ]),
+                containerSet: new ContainerSetTemplate({
+                    containers: [
+                        new ContainerNode('container1', {
+                            env: [
+                                new EnvironmentVariable('ENV_VAR', {
+                                    valueFromInputParameter: missingInput,
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
             });
 
             expect(() => template.toTemplate()).to.throw(
