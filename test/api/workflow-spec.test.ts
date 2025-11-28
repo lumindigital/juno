@@ -348,10 +348,10 @@ describe('workflow-spec validation tests', (): void => {
             expect(() => workflowSpec.toWorkflowSpec()).to.not.throw();
         });
 
-        it('fails validation when argument not included in dagtask, and is defined on template as input artifact', (): void => {
+        it('fails validation when input artifact argument not included in dagtask, and is defined on template as input artifact and includes from', (): void => {
             const template = new Template('C', {
                 inputs: new Inputs({
-                    artifacts: [new InputArtifact('D', {})],
+                    artifacts: [new InputArtifact('D', { from: 'somewhere' })],
                 }),
             });
             const workflowSpec = new WorkflowSpec({
@@ -374,7 +374,75 @@ describe('workflow-spec validation tests', (): void => {
             );
         });
 
-        it('fails validation when argument not included in dagtask, and is defined on templateref template as input artifact', (): void => {
+        it('fails validation when input artifact argument not included in dagtask, and is defined on templateref template as input artifact and includes from', (): void => {
+            const template = new Template('C', {
+                inputs: new Inputs({
+                    artifacts: [
+                        new InputArtifact('D', {
+                            from: 'somewhere',
+                        }),
+                    ],
+                }),
+            });
+
+            const templateRefWorkflow = new WorkflowTemplate({
+                metadata: {
+                    name: 'D',
+                },
+                spec: new WorkflowSpec({
+                    additionalTemplates: [template],
+                }),
+            });
+
+            const workflowSpec = new WorkflowSpec({
+                additionalTemplates: [
+                    new Template('A', {
+                        dag: new DagTemplate({
+                            tasks: [
+                                new DagTask('B', {
+                                    templateRef: new TemplateReference({
+                                        template: template,
+                                        workflowTemplate: templateRefWorkflow,
+                                    }),
+                                }),
+                            ],
+                        }),
+                    }),
+                ],
+            });
+
+            expect(() => workflowSpec.toWorkflowSpec()).to.throw(
+                'B references a template named C and is missing artifact argument(s) (D)',
+            );
+        });
+
+        it('does not fail validation when input artifact argument not included in dagtask, and is defined on template as input artifact and does not include from', (): void => {
+            const template = new Template('C', {
+                inputs: new Inputs({
+                    artifacts: [new InputArtifact('D', {})],
+                }),
+            });
+            const workflowSpec = new WorkflowSpec({
+                additionalTemplates: [
+                    new Template('A', {
+                        dag: new DagTemplate({
+                            tasks: [
+                                new DagTask('B', {
+                                    template: template,
+                                }),
+                            ],
+                        }),
+                    }),
+                    template,
+                ],
+            });
+
+            expect(() => workflowSpec.toWorkflowSpec()).to.not.throw(
+                'B is missing artifact argument(s) (D) defined on template C',
+            );
+        });
+
+        it('does not fail validation when input artifact argument not included in dagtask, and is defined on templateref template as input artifact and does not include from', (): void => {
             const template = new Template('C', {
                 inputs: new Inputs({
                     artifacts: [new InputArtifact('D', {})],
@@ -407,7 +475,7 @@ describe('workflow-spec validation tests', (): void => {
                 ],
             });
 
-            expect(() => workflowSpec.toWorkflowSpec()).to.throw(
+            expect(() => workflowSpec.toWorkflowSpec()).to.not.throw(
                 'B references a template named C and is missing artifact argument(s) (D)',
             );
         });
@@ -613,10 +681,10 @@ describe('workflow-spec validation tests', (): void => {
             );
         });
 
-        it('fails validation when argument not included in workflowstep, and is defined on template as input artifact', (): void => {
+        it('fails validation when argument not included in workflowstep, and is defined on template as input artifact and includes from', (): void => {
             const template = new Template('C', {
                 inputs: new Inputs({
-                    artifacts: [new InputArtifact('D', {})],
+                    artifacts: [new InputArtifact('D', { from: 'somewhere' })],
                 }),
             });
             const workflowSpec = new WorkflowSpec({
@@ -639,7 +707,63 @@ describe('workflow-spec validation tests', (): void => {
             );
         });
 
-        it('fails validation when argument not included in workflowstep, and is defined on templateref as input artifact', (): void => {
+        it('fails validation when argument not included in workflowstep, and is defined on templateref as input artifact and includes from', (): void => {
+            const template = new Template('C', {
+                inputs: new Inputs({
+                    artifacts: [
+                        new InputArtifact('D', {
+                            from: 'somewhere',
+                        }),
+                    ],
+                }),
+            });
+            const workflowSpec = new WorkflowSpec({
+                additionalTemplates: [
+                    new Template('A', {
+                        steps: [
+                            [
+                                new WorkflowStep('B', {
+                                    template: template,
+                                }),
+                            ],
+                        ],
+                    }),
+                    template,
+                ],
+            });
+
+            expect(() => workflowSpec.toWorkflowSpec()).to.throw(
+                'B is missing artifact argument(s) (D) defined on template C',
+            );
+        });
+
+        it('does not fail validation when argument not included in workflowstep, and is defined on template as input artifact and does not include from', (): void => {
+            const template = new Template('C', {
+                inputs: new Inputs({
+                    artifacts: [new InputArtifact('D', {})],
+                }),
+            });
+            const workflowSpec = new WorkflowSpec({
+                additionalTemplates: [
+                    new Template('A', {
+                        dag: new DagTemplate({
+                            tasks: [
+                                new DagTask('B', {
+                                    template: template,
+                                }),
+                            ],
+                        }),
+                    }),
+                    template,
+                ],
+            });
+
+            expect(() => workflowSpec.toWorkflowSpec()).to.not.throw(
+                'B is missing artifact argument(s) (D) defined on template C',
+            );
+        });
+
+        it('does not fail validation when argument not included in workflowstep, and is defined on templateref as input artifact and does not include from', (): void => {
             const template = new Template('C', {
                 inputs: new Inputs({
                     artifacts: [new InputArtifact('D', {})],
@@ -660,7 +784,7 @@ describe('workflow-spec validation tests', (): void => {
                 ],
             });
 
-            expect(() => workflowSpec.toWorkflowSpec()).to.throw(
+            expect(() => workflowSpec.toWorkflowSpec()).to.not.throw(
                 'B is missing artifact argument(s) (D) defined on template C',
             );
         });

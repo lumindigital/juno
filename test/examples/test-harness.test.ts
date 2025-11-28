@@ -81,9 +81,9 @@ function getExamples(): Map<string, string> {
         const fileName = file.name.replace('.ts', '');
 
         // For some reason parentPath is null when running the example tests with a debugger. Uncommenting this will fix it.
-        // if (!file.parentPath) {
-        //     file.parentPath = './examples';
-        // }
+        if (!file.parentPath) {
+            file.parentPath = './examples';
+        }
 
         tests.set(fileName, file.parentPath);
     }

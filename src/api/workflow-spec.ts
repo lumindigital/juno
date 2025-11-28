@@ -382,6 +382,14 @@ export class WorkflowSpec {
             }
 
             if (!argumentParameters.find((x) => x.name === param.name)) {
+                if ((param as InputArtifact)?.isInputArtifact) {
+                    const inputArtifact = param as InputArtifact;
+
+                    if (!inputArtifact.from) {
+                        continue;
+                    }
+                }
+
                 missingArguments.push(param.name);
             }
         }

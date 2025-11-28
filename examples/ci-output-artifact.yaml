@@ -49,9 +49,7 @@ spec:
     container:
       image: golang:1.8
       command: [sh, -c]
-      args: ["
-        cd /go/src/github.com/golang/example/hello &&
-        go build -v ."]
+      args: ["cd /go/src/github.com/golang/example/hello && go build -v ."]
       volumeMounts:
       - name: workdir
         mountPath: /go
@@ -63,10 +61,7 @@ spec:
     container:
       image: "{{inputs.parameters.os-image}}"
       command: [sh, -c]
-      args: ["
-        uname -a ;
-        cat /etc/os-release ;
-        /go/src/github.com/golang/example/hello/hello"]
+      args: ["uname -a ; cat /etc/os-release ; /go/src/github.com/golang/example/hello/hello"]
       volumeMounts:
       - name: workdir
         mountPath: /go
