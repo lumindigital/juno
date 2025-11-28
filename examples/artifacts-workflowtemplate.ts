@@ -9,44 +9,45 @@ import { WorkflowTemplate } from '../src/api/workflow-template';
 import { IoArgoprojWorkflowV1Alpha1WorkflowTemplate } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1WorkflowTemplate> {
+    const setupNode = new ContainerNode('setup', {
+        args: ['mkdir -p /out/assets\n'],
+        command: ['sh', '-c'],
+        image: 'argoproj/argosay:v2',
+    });
+    const gnuplotNode = new ContainerNode('gnuplot', {
+        args: [
+            '-e',
+            "set xlabel 'Year'; set ylabel 'Mean';\nset grid;\nset datafile separator ',';\nset term png size 600,400;\nset output '/out/assets/global-temp.png';\nplot '/in/annual.csv' every 2::0 skip 1 using 2:3 title 'Global Temperature' with lines linewidth 2;\n",
+        ],
+        dependencies: [setupNode], //This should use the name of a container set
+        image: 'remuslazar/gnuplot',
+        name: 'gnuplot',
+    });
+    const mainNode = new ContainerNode('main', {
+        args: [
+            "cowsay \"hello world\" > /out/hello.txt\n\ncat > /out/hello.json <<EOF\n{\"hello\": {\"world\": true}}\nEOF\n\necho '* {font-family: sans-serif}' > /out/assets/styles.css\n\ncat > /out/index.html <<EOF\n<html>\n  <head>\n    <link rel='stylesheet' href='assets/styles.css' type='text/css'/>\n  </head>\n  <body>\n    <h1>Global Temperature</h1>\n    <img src='assets/global-temp.png'/>\n  </body>\n</html>\nEOF\n\ncat > /out/malicious.html <<EOF\n<html>\n  <body>\n    <script>alert(1)</script>\n    <p>This page attempts to run a script that shows an alert, but the Argo Server UI Content-Security-Policy will prevent that.</p>\n    <p>To check, open your Web Console and see that \"Blocked script execution ... because the document's frame is sandboxed.\" (or similar) is printed.</p>\n  </body>\n</html>\nEOF\n",
+        ],
+        command: ['sh', '-c'],
+        dependencies: [setupNode],
+        image: 'argoproj/argosay:v2',
+        name: 'main',
+    });
+
     const mainTemplate = new Template('main', {
-        containerSet: new ContainerSetTemplate(
-            [
-                new ContainerNode('setup', {
-                    args: ['mkdir -p /out/assets\n'],
-                    command: ['sh', '-c'],
-                    image: 'argoproj/argosay:v2',
-                }),
-                new ContainerNode('gnuplot', {
-                    args: [
-                        '-e',
-                        "set xlabel 'Year'; set ylabel 'Mean';\nset grid;\nset datafile separator ',';\nset term png size 600,400;\nset output '/out/assets/global-temp.png';\nplot '/in/annual.csv' every 2::0 skip 1 using 2:3 title 'Global Temperature' with lines linewidth 2;\n",
-                    ],
-                    dependencies: ['setup'], //This should use the name of a container set
-                    image: 'remuslazar/gnuplot',
-                    name: 'gnuplot',
-                }),
-                new ContainerNode('main', {
-                    args: [
-                        "cowsay \"hello world\" > /out/hello.txt\n\ncat > /out/hello.json <<EOF\n{\"hello\": {\"world\": true}}\nEOF\n\necho '* {font-family: sans-serif}' > /out/assets/styles.css\n\ncat > /out/index.html <<EOF\n<html>\n  <head>\n    <link rel='stylesheet' href='assets/styles.css' type='text/css'/>\n  </head>\n  <body>\n    <h1>Global Temperature</h1>\n    <img src='assets/global-temp.png'/>\n  </body>\n</html>\nEOF\n\ncat > /out/malicious.html <<EOF\n<html>\n  <body>\n    <script>alert(1)</script>\n    <p>This page attempts to run a script that shows an alert, but the Argo Server UI Content-Security-Policy will prevent that.</p>\n    <p>To check, open your Web Console and see that \"Blocked script execution ... because the document's frame is sandboxed.\" (or similar) is printed.</p>\n  </body>\n</html>\nEOF\n",
-                    ],
-                    command: ['sh', '-c'],
-                    dependencies: ['setup'],
-                    image: 'argoproj/argosay:v2',
-                    name: 'main',
-                }),
+        containerSet: new ContainerSetTemplate({
+            containers: [setupNode, gnuplotNode, mainNode],
+            volumeMounts: [
+                {
+                    mountPath: '/in',
+                    name: 'in',
+                },
+                {
+                    mountPath: '/out',
+                    name: 'out',
+                },
             ],
-            // volumeMounts: [
-            //     {
-            //         mountPath: '/in',
-            //         name: 'in',
-            //     },
-            //     {
-            //         mountPath: '/out',
-            //         name: 'out',
-            //     },
-            // ],
-        ),
+        }),
+
         inputs: new Inputs({
             artifacts: [
                 new InputArtifact('temps', {
