@@ -31,6 +31,7 @@ import { WorkflowStep } from './workflow-step.js';
 import { randomUUID } from 'crypto';
 
 export class BaseTemplate {
+    readonly isTemplate: boolean;
     readonly id: string;
     activeDeadlineSeconds?: IoK8SApimachineryPkgUtilIntstrIntOrString;
     affinity?: IoK8SApiCoreV1Affinity;
@@ -74,6 +75,7 @@ export class BaseTemplate {
     constructor(name: string, init?: Partial<Template>) {
         this.id = randomUUID();
         this.name = name;
+        this.isTemplate = true;
         Object.assign(this, init);
     }
 

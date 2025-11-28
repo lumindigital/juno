@@ -1,4 +1,5 @@
 import { Container } from '../src/api/container';
+import { RecursiveTemplate } from '../src/api/recursive-template';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -39,7 +40,7 @@ print(result)
                     when: '{{steps.flip-coin.outputs.result}} == heads',
                 }),
                 new WorkflowStep('tails', {
-                    template: coinflipTemplate,
+                    template: new RecursiveTemplate('coinflip'),
                     when: '{{steps.flip-coin.outputs.result}} == tails',
                 }),
             ],
