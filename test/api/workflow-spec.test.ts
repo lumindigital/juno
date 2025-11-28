@@ -15,6 +15,7 @@ import { LifecycleHook } from '../../src/api/lifecycle-hook';
 import { TaskResult } from '../../src/api/expression';
 import { WorkflowArguments } from '../../src/api/arguments';
 import { WorkflowTemplateReference } from '../../src/api/workflow-template-reference';
+import { RecursiveTemplate } from '../../src/api/recursive-template';
 
 describe('workflow-spec validation tests', (): void => {
     describe('workflow templates', (): void => {
@@ -626,6 +627,44 @@ describe('workflow-spec validation tests', (): void => {
                 'Task B on template A must include either a template, templateRef or inline template',
             );
         });
+
+        it('does not fail validation when recursive template is used', (): void => {
+            const workflowSpec = new WorkflowSpec({
+                additionalTemplates: [
+                    new Template('A', {
+                        dag: new DagTemplate({
+                            tasks: [
+                                new DagTask('B', {
+                                    template: new RecursiveTemplate('A'),
+                                }),
+                            ],
+                        }),
+                    }),
+                ],
+            });
+
+            expect(() => workflowSpec.toWorkflowSpec()).to.not.throw();
+        });
+
+        it('fails validation when recursive template is used and template is not included', (): void => {
+            const workflowSpec = new WorkflowSpec({
+                additionalTemplates: [
+                    new Template('A', {
+                        dag: new DagTemplate({
+                            tasks: [
+                                new DagTask('B', {
+                                    template: new RecursiveTemplate('MISSING_TEMPLATE'),
+                                }),
+                            ],
+                        }),
+                    }),
+                ],
+            });
+
+            expect(() => workflowSpec.toWorkflowSpec()).to.throw(
+                `Dag task B on template A references a recursive template MISSING_TEMPLATE not found in workflow templates`,
+            );
+        });
     });
 
     describe('workflowStep', (): void => {
@@ -806,6 +845,44 @@ describe('workflow-spec validation tests', (): void => {
 
             expect(() => workflowSpec.toWorkflowSpec()).to.throw(
                 'Step B on template A must include either a template, templateRef or inline template',
+            );
+        });
+
+        it('does not fail validation when recursive template is used', (): void => {
+            const workflowSpec = new WorkflowSpec({
+                additionalTemplates: [
+                    new Template('A', {
+                        steps: [
+                            [
+                                new WorkflowStep('B', {
+                                    template: new RecursiveTemplate('A'),
+                                }),
+                            ],
+                        ],
+                    }),
+                ],
+            });
+
+            expect(() => workflowSpec.toWorkflowSpec()).to.not.throw();
+        });
+
+        it('fails validation when recursive template is used and template is not included', (): void => {
+            const workflowSpec = new WorkflowSpec({
+                additionalTemplates: [
+                    new Template('A', {
+                        steps: [
+                            [
+                                new WorkflowStep('B', {
+                                    template: new RecursiveTemplate('MISSING_TEMPLATE'),
+                                }),
+                            ],
+                        ],
+                    }),
+                ],
+            });
+
+            expect(() => workflowSpec.toWorkflowSpec()).to.throw(
+                `Workflow step B on template A references a recursive template MISSING_TEMPLATE not found in workflow templates`,
             );
         });
     });

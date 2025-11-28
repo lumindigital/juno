@@ -7,6 +7,7 @@ import { Arguments } from './arguments.js';
 import { TaskOutput, StepOutput, simpleTag, StepOutputParameters, TaskOutputParameters } from './expression.js';
 import { LifecycleHook } from './lifecycle-hook.js';
 import { InputParameter } from './parameter.js';
+import { RecursiveTemplate } from './recursive-template.js';
 import { TemplateReference } from './template-reference.js';
 import { InlineTemplate, Template } from './template.js';
 
@@ -19,7 +20,7 @@ export class BaseTaskOrStep {
      * @deprecated Use `hooks` instead.
      */
     onExit?: Template;
-    template?: Template;
+    template?: Template | RecursiveTemplate;
     templateRef?: TemplateReference;
     when?: string;
     withItems?: IoArgoprojWorkflowV1Alpha1Item[];

@@ -30,6 +30,7 @@ import { DagTask } from './dag-task.js';
 import { WorkflowStep } from './workflow-step.js';
 import { ArgumentArtifact, InputArtifact } from './artifact.js';
 import { TaskAndResult } from './expression.js';
+import { RecursiveTemplate } from './recursive-template.js';
 
 /**
  * The juno workflow specification.
@@ -181,9 +182,49 @@ export class WorkflowSpec {
             throw new Error(`Duplicate template names found: ${dupeTemplateNames.join(', ')}`);
         }
 
+        this.validateRecursiveTemplates();
+
         this.templates = this.templates.sort((a, b) => a.name.localeCompare(b.name));
 
         this.validateVolumeClaimTemplates();
+    }
+
+    validateRecursiveTemplates() {
+        for (const template of this.templates) {
+            if (template && template.dag) {
+                for (const task of template.dag.tasks) {
+                    if ((task.template && (task.template as RecursiveTemplate))?.isRecursive) {
+                        const recursiveTemplate = task.template as RecursiveTemplate;
+
+                        const found = this.templates.find((x) => x.name === recursiveTemplate.templateName);
+                        if (!found) {
+                            throw new Error(
+                                `Dag task ${task.name} on template ${template.name} references a recursive template ${recursiveTemplate.templateName} not found in workflow templates`,
+                            );
+                        }
+
+                        //recursiveTemplates.push(task.template as RecursiveTemplate);
+                    }
+                }
+            }
+
+            if (template && template.steps) {
+                for (const stepGroup of template.steps) {
+                    for (const step of stepGroup) {
+                        if ((step.template && (step.template as RecursiveTemplate))?.isRecursive) {
+                            const recursiveTemplate = step.template as RecursiveTemplate;
+
+                            const found = this.templates.find((x) => x.name === recursiveTemplate.templateName);
+                            if (!found) {
+                                throw new Error(
+                                    `Workflow step ${step.name} on template ${template.name} references a recursive template ${recursiveTemplate.templateName} not found in workflow templates`,
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     validateTemplate(template: Template) {
@@ -198,6 +239,10 @@ export class WorkflowSpec {
         if (template && template.steps) {
             for (const step of template.steps) {
                 for (const task of step) {
+                    if ((task.template && (task.template as RecursiveTemplate))?.isRecursive) {
+                        continue;
+                    }
+
                     if (task.template && task.inline) {
                         throw new Error(
                             `Step ${task.name} on template ${template.name} cannot include both a template and an inline template`,
@@ -220,6 +265,10 @@ export class WorkflowSpec {
     validateDags(template: Template) {
         if (template && template.dag) {
             for (const task of template.dag.tasks) {
+                if ((task.template && (task.template as RecursiveTemplate))?.isRecursive) {
+                    continue;
+                }
+
                 if (task.template && task.inline) {
                     throw new Error(
                         `Task ${task.name} on template ${template.name} cannot include both a template and an inline template`,
@@ -326,25 +375,31 @@ export class WorkflowSpec {
             return;
         }
 
-        this.validateTemplate(task.template);
+        if ((task.template as RecursiveTemplate)?.isRecursive) {
+            return;
+        }
+
+        const template = task.template as Template;
+
+        this.validateTemplate(template);
 
         const missingParameterArguments = this.getMissingArguments(
-            task.template.inputs?.parameters ?? [],
+            template.inputs?.parameters ?? [],
             task.arguments?.parameters ?? [],
         );
         if (missingParameterArguments.length > 0) {
             throw new Error(
-                `${task.name} is missing parameter argument(s) (${missingParameterArguments.join(', ')}) defined on template ${task.template?.name}`,
+                `${task.name} is missing parameter argument(s) (${missingParameterArguments.join(', ')}) defined on template ${template?.name}`,
             );
         }
 
         const missingArtifactArguments = this.getMissingArguments(
-            task.template.inputs?.artifacts ?? [],
+            template.inputs?.artifacts ?? [],
             task.arguments?.artifacts ?? [],
         );
         if (missingArtifactArguments.length > 0) {
             throw new Error(
-                `${task.name} is missing artifact argument(s) (${missingArtifactArguments.join(', ')}) defined on template ${task.template?.name}`,
+                `${task.name} is missing artifact argument(s) (${missingArtifactArguments.join(', ')}) defined on template ${template?.name}`,
             );
         }
 

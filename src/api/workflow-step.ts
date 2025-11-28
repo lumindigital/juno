@@ -1,6 +1,8 @@
 import { IoArgoprojWorkflowV1Alpha1WorkflowStep } from '../workflow-interfaces/data-contracts.js';
 import { LifecycleHook } from './lifecycle-hook.js';
 import { BaseTaskOrStep } from './base-task-or-step.js';
+import { Template } from './template.js';
+import { RecursiveTemplate } from './recursive-template.js';
 export class WorkflowStep extends BaseTaskOrStep {
     readonly isWorkflowStep = true;
 
@@ -12,6 +14,13 @@ export class WorkflowStep extends BaseTaskOrStep {
     toWorkflowStep(): IoArgoprojWorkflowV1Alpha1WorkflowStep {
         this.validateMutuallyExclusive();
 
+        let templateName = undefined;
+        if (this.template && (this.template as Template).isTemplate) {
+            templateName = (this.template as Template).name;
+        } else if ((this.template as RecursiveTemplate)?.isRecursive) {
+            templateName = (this.template as RecursiveTemplate).templateName;
+        }
+
         return {
             arguments: this.arguments?.toArguments(),
             continueOn: this.continueOn,
@@ -19,7 +28,7 @@ export class WorkflowStep extends BaseTaskOrStep {
             inline: this.inline?.toTemplate(),
             name: this.name,
             onExit: this.onExit ? this.onExit?.name : undefined,
-            template: this.template ? this.template.name : undefined,
+            template: templateName,
             templateRef: this.templateRef?.toTemplateRef(),
             when: this.when,
             withItems: this.withItems,

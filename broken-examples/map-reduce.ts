@@ -1,15 +1,15 @@
-import { Arguments, WorkflowArguments } from '../src/api/arguments';
-import { InputArtifact, OutputArtifact } from '../src/api/artifact';
-import { DagTask } from '../src/api/dag-task';
-import { DagTemplate } from '../src/api/dag-template';
-import { Inputs } from '../src/api/inputs';
-import { Outputs } from '../src/api/outputs';
-import { InputParameter, WorkflowParameter } from '../src/api/parameter';
-import { Script } from '../src/api/script';
-import { Template } from '../src/api/template';
-import { Workflow } from '../src/api/workflow';
-import { WorkflowSpec } from '../src/api/workflow-spec';
-import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
+import { Arguments, WorkflowArguments } from '../../src/api/arguments';
+import { InputArtifact, OutputArtifact } from '../../src/api/artifact';
+import { DagTask } from '../../src/api/dag-task';
+import { DagTemplate } from '../../src/api/dag-template';
+import { Inputs } from '../../src/api/inputs';
+import { Outputs } from '../../src/api/outputs';
+import { InputParameter, WorkflowParameter } from '../../src/api/parameter';
+import { Script } from '../../src/api/script';
+import { Template } from '../../src/api/template';
+import { Workflow } from '../../src/api/workflow';
+import { WorkflowSpec } from '../../src/api/workflow-spec';
+import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const numPartsInputParameter = new InputParameter('numParts');
