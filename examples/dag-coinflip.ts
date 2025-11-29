@@ -7,7 +7,9 @@ import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
-import { and } from '../src/api/expression';
+import { and, simpleTag } from '../src/api/expression';
+import { RecursiveTemplate } from '../src/api/recursive-template';
+import { OutputResult } from '../src/api/artifact';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const flipCoinTemplate = new Template('flip-coin', {
@@ -29,29 +31,25 @@ print(result)
         }),
     });
 
-    const coinflipTemplate = new Template('coinflip', {
-        steps: [],
+    const flipCoinStep = new WorkflowStep('flip-coin', {
+        template: flipCoinTemplate,
     });
 
-    const conflipTemplateSteps = [
-        [
-            new WorkflowStep('flip-coin', {
-                template: flipCoinTemplate,
-            }),
+    const coinflipTemplate = new Template('coinflip', {
+        steps: [
+            [flipCoinStep],
+            [
+                new WorkflowStep('heads', {
+                    template: headsTemplate,
+                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads`,
+                }),
+                new WorkflowStep('tails', {
+                    template: new RecursiveTemplate('coinflip'),
+                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails`,
+                }),
+            ],
         ],
-        [
-            new WorkflowStep('heads', {
-                template: headsTemplate,
-                when: '{{steps.flip-coin.outputs.result}} == heads',
-            }),
-            new WorkflowStep('tails', {
-                template: coinflipTemplate,
-                when: '{{steps.flip-coin.outputs.result}} == tails',
-            }),
-        ],
-    ];
-
-    coinflipTemplate.steps = conflipTemplateSteps;
+    });
 
     const taskA = new DagTask('A', {
         template: coinflipTemplate,

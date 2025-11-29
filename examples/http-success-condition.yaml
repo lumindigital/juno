@@ -30,12 +30,12 @@ spec:
         parameters:
           - name: url
       http:
-        successCondition: "response.body contains \"google\"" # Succeed only if body contains "google", otherwise fail
+        successCondition: 'response.body contains "google"' # Succeed only if body contains "google", otherwise fail
         url: "{{inputs.parameters.url}}"
     - name: http-headers-contains-cloudflare
       inputs:
         parameters:
           - name: url
       http:
-        successCondition: "response.headers[\"Server\"][0] == \"cloudflare\"" # Succeed only if response header "Server" is "cloudflare"
+        successCondition: 'response.headers["Server"][0] == "cloudflare"' # Succeed only if response header "Server" is "cloudflare"
         url: "{{inputs.parameters.url}}"
