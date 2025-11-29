@@ -3,6 +3,7 @@ import { InputArtifact, OutputArtifact } from '../src/api/artifact';
 import { Container } from '../src/api/container';
 import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
 import { WorkflowParameter } from '../src/api/parameter';
@@ -12,6 +13,8 @@ import { WorkflowTemplate } from '../src/api/workflow-template';
 import { IoArgoprojWorkflowV1Alpha1WorkflowTemplate } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1WorkflowTemplate> {
+    const branchWorkflowParameter = new WorkflowParameter('branch', { value: 'master' });
+
     const cacheRestoreTemplate = new Template('cache-restore', {
         container: new Container({
             args: [
@@ -39,14 +42,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     optional: true,
                     path: '/mnt/GOMODCACHE',
                     s3: {
-                        key: 'github.com/golang/examples/{{workflow.parameters.branch}}/GOMODCACHE',
+                        key: `github.com/golang/examples/${simpleTag(branchWorkflowParameter)}/GOMODCACHE`,
                     },
                 }),
                 new InputArtifact('GOCACHE', {
                     optional: true,
                     path: '/mnt/GOCACHE',
                     s3: {
-                        key: 'github.com/golang/examples/{{workflow.parameters.branch}}/GOCACHE',
+                        key: `github.com/golang/examples/${simpleTag(branchWorkflowParameter)}/GOCACHE`,
                     },
                 }),
             ],
@@ -76,14 +79,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     optional: true,
                     path: '/go/pkg/mod',
                     s3: {
-                        key: 'github.com/golang/examples/{{workflow.parameters.branch}}/GOMODCACHE',
+                        key: `github.com/golang/examples/${simpleTag(branchWorkflowParameter)}/GOMODCACHE`,
                     },
                 }),
                 new OutputArtifact('GOCACHE', {
                     optional: true,
                     path: '/root/.cache/go-build',
                     s3: {
-                        key: 'github.com/golang/examples/{{workflow.parameters.branch}}/GOCACHE',
+                        key: `github.com/golang/examples/${simpleTag(branchWorkflowParameter)}/GOCACHE`,
                     },
                 }),
             ],
@@ -93,7 +96,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const cloneTemplate = new Template('clone', {
         container: new Container({
             args: [
-                'git clone -v -b "{{workflow.parameters.branch}}" --single-branch --depth 1 https://github.com/golang/example.git .\n',
+                `git clone -v -b "${simpleTag(branchWorkflowParameter)}" --single-branch --depth 1 https://github.com/golang/example.git .\n`,
             ],
             command: ['sh', '-euxc'],
             image: 'golang:1.18',
@@ -204,7 +207,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     },
                     path: '/go/src/github.com/golang/example/test-report.html',
                     s3: {
-                        key: '{{workflow.parameters.branch}}/test-report.html',
+                        key: `${simpleTag(branchWorkflowParameter)}/test-report.html`,
                     },
                 }),
             ],
@@ -254,7 +257,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [new WorkflowParameter('branch', { value: 'master' })],
+                parameters: [branchWorkflowParameter],
             }),
             entrypoint: mainTemplate,
             onExit: cacheStoreTemplate,

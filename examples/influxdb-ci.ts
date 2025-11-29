@@ -91,7 +91,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const testCovBaseTemplate = new Template('test-cov-base', {
         container: new Container({
             args: [
-                'cd /go/src/github.com/influxdata/influxdb && go get github.com/golang/dep/cmd/dep && dep ensure -vendor-only && go test -v -coverprofile /tmp/cov.out ./{{inputs.parameters.package}} && go tool cover -html=/tmp/cov.out -o /tmp/index.html',
+                `cd /go/src/github.com/influxdata/influxdb && go get github.com/golang/dep/cmd/dep && dep ensure -vendor-only && go test -v -coverprofile /tmp/cov.out ./${simpleTag(packageInputParameter)} && go tool cover -html=/tmp/cov.out -o /tmp/index.html`,
             ],
             command: ['/bin/sh', '-c'],
             image: 'golang:1.9.2',
@@ -153,7 +153,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const influxdbClientTemplate = new Template('influxdb-client', {
         container: new Container({
-            args: ['{{inputs.parameters.cmd}}'],
+            args: [simpleTag(cmdInputParameter)],
             command: ['/bin/sh', '-c'],
             image: 'appropriate/curl:latest',
             resources: {
@@ -279,20 +279,22 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         template: checkoutTemplate,
     });
 
+    const buildStep = new WorkflowStep('build', {
+        arguments: new Arguments({
+            artifacts: [
+                sourceInputArtifact.toArgumentArtifact({
+                    from: simpleTag({ workflowStep: checkoutStep, output: sourceOutputArtifact }),
+                }),
+            ],
+        }),
+        template: buildTemplate,
+    });
+
     const influxdbCiTemplate = new Template('influxdb-ci', {
         steps: [
             [checkoutStep],
             [
-                new WorkflowStep('build', {
-                    arguments: new Arguments({
-                        artifacts: [
-                            sourceInputArtifact.toArgumentArtifact({
-                                from: simpleTag({ workflowStep: checkoutStep, output: sourceOutputArtifact }),
-                            }),
-                        ],
-                    }),
-                    template: buildTemplate,
-                }),
+                buildStep,
                 new WorkflowStep('test-unit', {
                     arguments: new Arguments({
                         artifacts: [
@@ -319,7 +321,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             influxdInputArtifact.toArgumentArtifact({
-                                from: '{{steps.build.outputs.artifacts.influxd}}',
+                                valueFromExpressionArgs: { workflowStep: buildStep, output: influxdOutputArtifact },
                             }),
                         ],
                     }),

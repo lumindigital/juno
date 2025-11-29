@@ -5,7 +5,7 @@ import { DagTemplate } from '../src/api/dag-template';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
-import { InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter, WorkflowParameter } from '../src/api/parameter';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -141,11 +141,11 @@ with open("/mnt/out/total.json" , "w") as f:
             artifacts: [
                 partInputArtifact.toArgumentArtifact({
                     s3: {
-                        key: '{{workflow.name}}/parts/{{item}}.json',
+                        key: `{{workflow.name}}/parts/${simpleTag(new FromItemProperty())}.json`,
                     },
                 }),
             ],
-            parameters: [partIdInputParameter.toArgumentParameter({ value: '{{item}}' })],
+            parameters: [partIdInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() })],
         }),
         depends: splitTask,
         template: mapTemplate,

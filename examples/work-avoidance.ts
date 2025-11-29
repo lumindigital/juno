@@ -1,9 +1,10 @@
 import { Arguments } from '../src/api/arguments';
 import { InputArtifact, OutputArtifact } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
-import { InputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -56,7 +57,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         script: new Script({
             command: ['sh', '-eux'],
             image: 'busybox',
-            source: `marker=/work/markers/$(date +%Y-%m-%d)-echo-{{inputs.parameters.num}}
+            source: `marker=/work/markers/$(date +%Y-%m-%d)-echo-${simpleTag(numInputParameter)}
 if [ -e  \${marker} ]; then
   echo "work already done"
   exit 0
@@ -122,7 +123,9 @@ touch \${marker}
             [
                 new WorkflowStep('echo', {
                     arguments: new Arguments({
-                        parameters: [numInputParameter.toArgumentParameter({ value: '{{item}}' })],
+                        parameters: [
+                            numInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() }),
+                        ],
                     }),
                     template: echoTemplate,
                     withSequence: {

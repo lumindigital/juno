@@ -1,4 +1,6 @@
+import { OutputResult } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { RecursiveTemplate } from '../src/api/recursive-template';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
@@ -27,21 +29,21 @@ print(result)
         }),
     });
 
+    const flipCoinStep = new WorkflowStep('flip-coin', {
+        template: flipCoinTemplate,
+    });
+
     const coinflipTemplate = new Template('coinflip', {
         steps: [
-            [
-                new WorkflowStep('flip-coin', {
-                    template: flipCoinTemplate,
-                }),
-            ],
+            [flipCoinStep],
             [
                 new WorkflowStep('heads', {
                     template: headsTemplate,
-                    when: '{{steps.flip-coin.outputs.result}} == heads',
+                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads`,
                 }),
                 new WorkflowStep('tails', {
                     template: new RecursiveTemplate('coinflip'),
-                    when: '{{steps.flip-coin.outputs.result}} == tails',
+                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails`,
                 }),
             ],
         ],
