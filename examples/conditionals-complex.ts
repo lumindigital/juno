@@ -1,4 +1,6 @@
+import { OutputResult } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
@@ -56,26 +58,26 @@ print(result)
             [
                 new WorkflowStep('heads', {
                     template: headsTemplate,
-                    when: '{{steps.flip-coin.outputs.result}} == heads',
+                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads`,
                 }),
                 new WorkflowStep('tails', {
                     template: tailsTemplate,
-                    when: '{{steps.flip-coin.outputs.result}} == tails',
+                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails`,
                 }),
             ],
             [flipAgainStep],
             [
                 new WorkflowStep('complex-condition', {
                     template: headsTailsOrTwiceTailsTemplate,
-                    when: '( {{steps.flip-coin.outputs.result}} == heads && {{steps.flip-again.outputs.result}} == tails ) || ( {{steps.flip-coin.outputs.result}} == tails && {{steps.flip-again.outputs.result}} == tails )',
+                    when: `( ${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads && ${simpleTag({ workflowStep: flipAgainStep, output: new OutputResult() })} == tails ) || ( ${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails && ${simpleTag({ workflowStep: flipAgainStep, output: new OutputResult() })} == tails )`,
                 }),
                 new WorkflowStep('heads-regex', {
                     template: headsTemplate,
-                    when: '{{steps.flip-again.outputs.result}} =~ hea',
+                    when: `${simpleTag({ workflowStep: flipAgainStep, output: new OutputResult() })} =~ hea`,
                 }),
                 new WorkflowStep('tails-regex', {
                     template: tailsTemplate,
-                    when: '{{steps.flip-again.outputs.result}} =~ tai',
+                    when: `${simpleTag({ workflowStep: flipAgainStep, output: new OutputResult() })} =~ tai`,
                 }),
             ],
         ],

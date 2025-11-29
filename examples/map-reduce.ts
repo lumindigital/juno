@@ -1,17 +1,20 @@
-import { Arguments, WorkflowArguments } from '../../src/api/arguments';
-import { InputArtifact, OutputArtifact } from '../../src/api/artifact';
-import { DagTask } from '../../src/api/dag-task';
-import { DagTemplate } from '../../src/api/dag-template';
-import { Inputs } from '../../src/api/inputs';
-import { Outputs } from '../../src/api/outputs';
-import { InputParameter, WorkflowParameter } from '../../src/api/parameter';
-import { Script } from '../../src/api/script';
-import { Template } from '../../src/api/template';
-import { Workflow } from '../../src/api/workflow';
-import { WorkflowSpec } from '../../src/api/workflow-spec';
-import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
+import { Arguments, WorkflowArguments } from '../src/api/arguments';
+import { OutputArtifact, InputArtifact, OutputResult } from '../src/api/artifact';
+import { DagTask } from '../src/api/dag-task';
+import { DagTemplate } from '../src/api/dag-template';
+import { simpleTag } from '../src/api/expression';
+import { Inputs } from '../src/api/inputs';
+import { Outputs } from '../src/api/outputs';
+import { InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { Script } from '../src/api/script';
+import { Template } from '../src/api/template';
+import { Workflow } from '../src/api/workflow';
+import { WorkflowSpec } from '../src/api/workflow-spec';
+import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const numPartsWorkflowParameter = new WorkflowParameter('numParts', { value: '4' });
+
     const numPartsInputParameter = new InputParameter('numParts');
 
     const splitTemplate = new Template('split', {
@@ -38,7 +41,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 import os
 import sys
 os.mkdir("/mnt/out")
-partIds = list(map(lambda x: str(x), range({{inputs.parameters.numParts}})))
+partIds = list(map(lambda x: str(x), range(${simpleTag(numPartsInputParameter)})))
 for i, partId in enumerate(partIds, start=1):
   with open("/mnt/out/" + partId + ".json", "w") as f:
     json.dump({"foo": i}, f)
@@ -65,7 +68,7 @@ json.dump(partIds, sys.stdout)
                     },
                     path: '/mnt/out/part.json',
                     s3: {
-                        key: '{{workflow.name}}/results/{{inputs.parameters.partId}}.json',
+                        key: `{{workflow.name}}/results/${simpleTag(partIdInputParameter)}.json`,
                     },
                 }),
             ],
@@ -128,7 +131,7 @@ with open("/mnt/out/total.json" , "w") as f:
 
     const splitTask = new DagTask('split', {
         arguments: new Arguments({
-            parameters: [numPartsInputParameter.toArgumentParameter({ value: '{{workflow.parameters.numParts}}' })],
+            parameters: [numPartsInputParameter.toArgumentParameter({ value: simpleTag(numPartsWorkflowParameter) })],
         }),
         template: splitTemplate,
     });
@@ -146,7 +149,7 @@ with open("/mnt/out/total.json" , "w") as f:
         }),
         depends: splitTask,
         template: mapTemplate,
-        withParam: '{{tasks.split.outputs.result}}',
+        withParam: simpleTag({ dagTask: splitTask, output: new OutputResult() }),
     });
 
     const mainTemplate = new Template('main', {
@@ -173,7 +176,7 @@ with open("/mnt/out/total.json" , "w") as f:
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [new WorkflowParameter('numParts', { value: '4' })],
+                parameters: [numPartsWorkflowParameter],
             }),
             entrypoint: mainTemplate,
         }),
