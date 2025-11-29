@@ -1,9 +1,10 @@
 import { Arguments } from '../src/api/arguments';
 import { InputArtifact, OutputArtifact } from '../src/api/artifact';
 import { Container } from '../src/api/container';
+import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
-import { InputParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -42,7 +43,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         container: new Container({
             args: ['uname -a ; cat /etc/os-release ; /go/src/github.com/golang/example/hello/hello'],
             command: ['sh', '-c'],
-            image: '{{inputs.parameters.os-image}}',
+            image: simpleTag(osImageInputParameter),
             volumeMounts: [
                 {
                     mountPath: '/go',
@@ -85,7 +86,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new WorkflowStep('test', {
                     arguments: new Arguments({
                         parameters: [
-                            osImageInputParameter.toArgumentParameter({ value: '{{item.image}}:{{item.tag}}' }),
+                            osImageInputParameter.toArgumentParameter({
+                                value: `${simpleTag(new FromItemProperty('image'))}:${simpleTag(new FromItemProperty('tag'))}`,
+                            }),
                         ],
                     }),
                     template: runHelloTemplate,
