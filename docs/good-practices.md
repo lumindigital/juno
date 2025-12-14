@@ -16,5 +16,5 @@ Juno tries hard to eliminate many of the places where magic strings exist. That 
 While the global variables are nice its a good practice to prefer passing global variables in as an input
 
 ## DAG Entrypoint
-Make you entrypoint a DAG with a single task that runs the actual work. If you follow the previous advice about preferring local variables, the entrypoint dag should be the only place you reference any global variables.
+Make your entrypoint a DAG with a single task that runs the actual work. If you follow the previous advice about preferring local variables, the entrypoint dag should be the only place you reference any global variables.
 
