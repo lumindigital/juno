@@ -107,7 +107,7 @@ export class InputArtifact extends Artifact {
         super(name, init);
     }
 
-    toArgumentArtifact(init?: Partial<Artifact>): ArgumentArtifact {
+    toArgumentArtifact(init?: Partial<InputArtifact>): ArgumentArtifact {
         return new ArgumentArtifact(this.name, init);
     }
 }

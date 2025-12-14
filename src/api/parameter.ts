@@ -70,11 +70,11 @@ export class InputParameter extends Parameter {
         super(name, init);
     }
 
-    toArgumentParameter(init?: Partial<Parameter>): ArgumentParameter {
+    toArgumentParameter(init?: Partial<InputParameter>): ArgumentParameter {
         return new ArgumentParameter(this.name, init);
     }
 
-    toWorkflowParameter(init?: Partial<Parameter>): WorkflowParameter {
+    toWorkflowParameter(init?: Partial<InputParameter>): WorkflowParameter {
         return new WorkflowParameter(this.name, init);
     }
 }

@@ -52,7 +52,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         ],
                     }),
                     template: acquireLockTemplate,
-                    withParam: '["1","2","3","4","5"]',
+                    withParamExpression: '["1","2","3","4","5"]',
                 }),
                 new WorkflowStep('synchronization-acquire-lock1', {
                     arguments: new Arguments({
@@ -63,7 +63,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         ],
                     }),
                     template: acquireLock1Template,
-                    withParam: '["1","2","3","4","5"]',
+                    withParamExpression: '["1","2","3","4","5"]',
                 }),
             ],
         ],

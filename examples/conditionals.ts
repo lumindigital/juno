@@ -2,7 +2,7 @@ import { WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
 import { expressionTag, hyphenParameter, simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -49,7 +49,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
                 parameters: [
-                    new WorkflowParameter('should-print', {
+                    shouldPrintInputParameter.toWorkflowParameter({
                         value: 'true',
                     }),
                 ],

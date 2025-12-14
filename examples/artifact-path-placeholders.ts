@@ -4,7 +4,7 @@ import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
-import { InputParameter, OutputParameter, WorkflowParameter } from '../src/api/parameter';
+import { InputParameter, OutputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -12,7 +12,6 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/d
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const linesCountInputParameter = new InputParameter('lines-count');
-    const linesCountWorkflowParameter = new WorkflowParameter('lines-count', { value: '3' });
     const textInputArtifact = new InputArtifact('text', {
         path: '/inputs/text/data',
     });
@@ -59,7 +58,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         },
                     }),
                 ],
-                parameters: [linesCountWorkflowParameter],
+                parameters: [
+                    linesCountInputParameter.toWorkflowParameter({
+                        value: '3',
+                    }),
+                ],
             }),
             entrypoint: headLinesTemplate,
         }),

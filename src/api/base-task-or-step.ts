@@ -24,7 +24,13 @@ export class BaseTaskOrStep {
     templateRef?: TemplateReference;
     when?: string;
     withItems?: IoArgoprojWorkflowV1Alpha1Item[];
-    withParam?: string | InputParameter | TaskOutput | StepOutput | StepOutputParameters | TaskOutputParameters;
+    withParamExpression?:
+        | string
+        | InputParameter
+        | TaskOutput
+        | StepOutput
+        | StepOutputParameters
+        | TaskOutputParameters;
     withSequence?: IoArgoprojWorkflowV1Alpha1Sequence;
 
     readonly name: string;

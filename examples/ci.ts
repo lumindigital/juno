@@ -3,7 +3,7 @@ import { InputArtifact } from '../src/api/artifact';
 import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { FromItemProperty, InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -101,7 +101,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [new WorkflowParameter('revision', { value: 'cfe12d6' })],
+                parameters: [revisionInputParameter.toWorkflowParameter({ value: 'cfe12d6' })],
             }),
             entrypoint: ciExampleTemplate,
             volumeClaimTemplates: [

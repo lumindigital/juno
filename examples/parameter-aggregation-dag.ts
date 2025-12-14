@@ -83,7 +83,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         depends: oddOrEvenTask,
         template: divideBy2Template,
         when: `${simpleTag(new FromItemProperty('evenness'))} == even`,
-        withParam: { dagTaskOutputParameter: oddOrEvenTask },
+        withParamExpression: { dagTaskOutputParameter: oddOrEvenTask },
     });
 
     const parameterAggregationTemplate = new Template('parameter-aggregation', {
@@ -123,7 +123,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     }),
                     depends: divideBy2Task,
                     template: printMessageTemplate,
-                    withParam: { dagTask: divideBy2Task, output: new OutputResult() },
+                    withParamExpression: { dagTask: divideBy2Task, output: new OutputResult() },
                 }),
             ],
         }),

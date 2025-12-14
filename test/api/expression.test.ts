@@ -282,11 +282,11 @@ describe('expression tests', (): void => {
     });
 
     describe('hyphenExpression', (): void => {
-        it('handles hypenated input artifact ', (): void => {
-            expect(hyphenParameter(new InputArtifact('A', {}))).to.equal('inputs.artifacts.A');
+        it('handles hyphenated input artifact ', (): void => {
+            expect(hyphenParameter(new InputArtifact('A-A', {}))).to.equal("inputs.artifacts['A-A']");
         });
 
-        it('handles hypenated input parameter', (): void => {
+        it('handles non-hyphenated input parameter', (): void => {
             expect(hyphenParameter(new InputParameter('A', {}))).to.equal('inputs.parameters.A');
         });
 

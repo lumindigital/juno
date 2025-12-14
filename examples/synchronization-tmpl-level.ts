@@ -40,7 +40,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         ],
                     }),
                     template: acquireLockTemplate,
-                    withParam: '["1","2","3","4","5"]',
+                    withParamExpression: '["1","2","3","4","5"]',
                 }),
             ],
         ],
