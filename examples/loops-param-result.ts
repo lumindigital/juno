@@ -55,7 +55,7 @@ json.dump([i for i in range(20, 31)], sys.stdout)
                         ],
                     }),
                     template: sleepNSecTemplate,
-                    withParam: { workflowStep: generateStep, output: new OutputResult() },
+                    withParamExpression: { workflowStep: generateStep, output: new OutputResult() },
                 }),
             ],
         ],

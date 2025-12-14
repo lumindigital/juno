@@ -149,7 +149,7 @@ with open("/mnt/out/total.json" , "w") as f:
         }),
         depends: splitTask,
         template: mapTemplate,
-        withParam: simpleTag({ dagTask: splitTask, output: new OutputResult() }),
+        withParamExpression: simpleTag({ dagTask: splitTask, output: new OutputResult() }),
     });
 
     const mainTemplate = new Template('main', {

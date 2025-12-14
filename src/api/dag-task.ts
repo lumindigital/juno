@@ -46,7 +46,7 @@ export class DagTask extends BaseTaskOrStep {
             templateRef: this.templateRef?.toTemplateRef(),
             when: this.when,
             withItems: this.withItems,
-            withParam: this.toWithParam(this.withParam),
+            withParam: this.toWithParam(this.withParamExpression),
             withSequence: this.withSequence,
         };
     }

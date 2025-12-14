@@ -64,7 +64,7 @@ print(json.dumps(res))
                     }),
                     template: divideBy2Template,
                     when: `${simpleTag(new FromItemProperty('evenness'))} == even`,
-                    withParam: { workflowStep: oddOrEvenStep, output: new OutputResult() },
+                    withParamExpression: { workflowStep: oddOrEvenStep, output: new OutputResult() },
                 }),
             ],
         ],

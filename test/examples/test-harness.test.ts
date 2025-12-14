@@ -64,7 +64,6 @@ describe('example tests', (): void => {
 });
 
 function getExamples(): Map<string, string> {
-    console.log(process.cwd());
     const tests = new Map<string, string>();
 
     const files = readdirSync('./examples', { withFileTypes: true, recursive: true });
@@ -79,12 +78,6 @@ function getExamples(): Map<string, string> {
         }
 
         const fileName = file.name.replace('.ts', '');
-
-        // For some reason parentPath is null when running the example tests with a debugger. Uncommenting this will fix it.
-        if (!file.parentPath) {
-            file.parentPath = './examples';
-        }
-
         tests.set(fileName, file.parentPath);
     }
 

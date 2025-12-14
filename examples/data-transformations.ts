@@ -78,7 +78,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         ],
                     }),
                     template: processLogsTemplate,
-                    withParam: simpleTag({ workflowStep: listLogFilesStep, output: new OutputResult() }),
+                    withParamExpression: simpleTag({ workflowStep: listLogFilesStep, output: new OutputResult() }),
                 }),
             ],
         ],

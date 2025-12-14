@@ -45,7 +45,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         parameters: [fooInputParameter.toArgumentParameter({ value: expressionTag('item') })],
                     }),
                     template: pod0Template,
-                    withParam: '{{=toJson(filter([1, 3], {# > 1}))}}',
+                    withParamExpression: '{{=toJson(filter([1, 3], {# > 1}))}}',
                 }),
             ],
         }),

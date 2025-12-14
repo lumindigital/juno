@@ -2,7 +2,7 @@ import { WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -10,9 +10,6 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/d
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageInputParameter = new InputParameter('message');
-    const workflowParameter = new WorkflowParameter('message', {
-        value: 'hello world',
-    });
 
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
@@ -31,7 +28,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [workflowParameter],
+                parameters: [
+                    messageInputParameter.toWorkflowParameter({
+                        value: 'hello world',
+                    }),
+                ],
             }),
             entrypoint: printMessageTemplate,
         }),

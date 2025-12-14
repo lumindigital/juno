@@ -2,7 +2,7 @@ import { Arguments, WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { FromItemProperty, InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -46,7 +46,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         ],
                     }),
                     template: unitStepTemplate,
-                    withParam: stepParamsInputParameter,
+                    withParamExpression: stepParamsInputParameter,
                 }),
             ],
         ],
@@ -59,7 +59,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
                 parameters: [
-                    new WorkflowParameter('step_params', {
+                    stepParamsInputParameter.toWorkflowParameter({
                         value: '[\n  { "exit_code": 0, "message": "succeeds 1" },\n  { "exit_code": 0, "message": "succeeds 2" },\n  { "exit_code": 0, "message": "succeeds 3" },\n  { "exit_code": 1, "message": "will fail and stop here" },\n  { "exit_code": 0, "message": "will not run" },\n  { "exit_code": 0, "message": "will not run" }\n]\n',
                     }),
                 ],

@@ -4,7 +4,7 @@ import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
 import { Outputs } from '../src/api/outputs';
-import { InputParameter, OutputParameter, WorkflowParameter } from '../src/api/parameter';
+import { InputParameter, OutputParameter } from '../src/api/parameter';
 import { RecursiveTemplate } from '../src/api/recursive-template';
 import { Script } from '../src/api/script';
 import { Template } from '../src/api/template';
@@ -14,7 +14,6 @@ import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
-    const numWorkflowParameter = new WorkflowParameter('num', { value: '5' });
     const aInputParameter = new InputParameter('a');
     const opInputParameter = new InputParameter('op');
     const bInputParameter = new InputParameter('b');
@@ -178,7 +177,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const fibMainWorkflowStep = new WorkflowStep('fibonaccimain', {
         arguments: new Arguments({
-            parameters: [numInputParameter.toArgumentParameter({ valueFromExpressionArgs: numWorkflowParameter })],
+            parameters: [
+                numInputParameter.toArgumentParameter({
+                    valueFromExpressionArgs: numInputParameter.toWorkflowParameter({}),
+                }),
+            ],
         }),
         template: fibonacciTemplate,
     });
@@ -212,7 +215,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [numWorkflowParameter],
+                parameters: [numInputParameter.toWorkflowParameter({ value: '5' })],
             }),
             entrypoint: mainTemplate,
             additionalTemplates: [return1Template],

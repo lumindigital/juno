@@ -2,7 +2,7 @@ import { Arguments, WorkflowArguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
 import { simpleTag } from '../src/api/expression';
 import { Inputs } from '../src/api/inputs';
-import { FromItemProperty, InputParameter, WorkflowParameter } from '../src/api/parameter';
+import { FromItemProperty, InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
@@ -43,7 +43,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         ],
                     }),
                     template: catOsReleaseTemplate,
-                    withParam: simpleTag(osListInputParameter),
+                    withParamExpression: simpleTag(osListInputParameter),
                 }),
             ],
         ],
@@ -56,7 +56,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
                 parameters: [
-                    new WorkflowParameter('os-list', {
+                    osListInputParameter.toWorkflowParameter({
                         value: '[\n  { "image": "debian", "tag": "9.1" },\n  { "image": "debian", "tag": "8.9" },\n  { "image": "alpine", "tag": "3.6" },\n  { "image": "ubuntu", "tag": "17.10" }\n]\n',
                     }),
                 ],
