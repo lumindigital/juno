@@ -136,7 +136,7 @@ metadata:
 
     return new Workflow({
         metadata: {
-            generateName: 'daemoned-stateful-set-with-service-',
+            generateName: 'daemon-stateful-set-with-service-',
         },
         spec: new WorkflowSpec({
             entrypoint: createWaitAndTestTemplate,

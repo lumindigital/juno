@@ -147,11 +147,11 @@ export function paren(input: string): string {
 }
 
 /**
- * Takes a string an wraps it in expression tags.
+ * Takes a string and wraps it in expression tags.
  *
  * @param input - A valid argoworkflow expression string
  *
- * @returns A string wrapped in expression tags {{=string}}.  Note: this does not handle hypenated parameters. Wrap any hyphenated parameters using {@link hyphenParameter} for that.
+ * @returns A string wrapped in expression tags {{=string}}.  Note: this does not handle hyphenated parameters. Wrap any hyphenated parameters using {@link hyphenParameter} for that.
  * @public
  */
 export function expressionTag(input: string): string {

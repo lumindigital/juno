@@ -22,7 +22,7 @@ spec:
           key: test/mydirectory/ # this is path in the bucket
           # accessKeySecret and secretKeySecret are secret selectors.
           # It references the k8s secret named 'my-oss-credentials'.
-          # This secret is expected to have have the keys 'accessKey'
+          # This secret is expected to have the keys 'accessKey'
           # and 'secretKey', containing the base64 encoded credentials
           # to the bucket.
           accessKeySecret:

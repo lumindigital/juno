@@ -53,7 +53,7 @@ spec:
             value: "{{item}}"
         withParam: "{{tasks.divide-by-2.outputs.result}}"
 
-  # odd-or-even accepts a number and returns whether or not that number is odd or even
+  # odd-or-even accepts a number and returns whether that number is odd or even
   - name: odd-or-even
     inputs:
       parameters:
