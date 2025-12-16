@@ -1,5 +1,5 @@
 # Quick Start
-You can use the [example project](https://github.com/lumindigital/juno-workflow-example) as a base for your own juno-workflows project, or you can roll you own
+You can use the [example project](https://github.com/lumindigital/juno-workflow-example) as a base for your own juno-workflows project, or you can roll your own
 
 If you wish to create a project from scratch, you can use the following guidelines
 
