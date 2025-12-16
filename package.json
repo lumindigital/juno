@@ -65,7 +65,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "provenance": false,
+    "provenance": true,
     "tag": "latest"
   },
   "repository": {
