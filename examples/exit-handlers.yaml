@@ -3,7 +3,7 @@
 # an exit handler, reference the name of a template in 'spec.onExit'.
 # Some common use cases of exit handlers are:
 # - sending notifications of workflow status (e.g. e-mail/slack)
-# - posting the pass/fail status to a webhook result (e.g. github build result)
+# - posting the pass/fail status to a webhook result (e.g. GitHub build result)
 # - cleaning up workflow artifacts
 # - resubmitting or submitting another workflow
 apiVersion: argoproj.io/v1alpha1

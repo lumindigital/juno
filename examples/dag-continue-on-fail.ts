@@ -60,7 +60,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     return new Workflow({
         metadata: {
-            generateName: 'dag-contiue-on-fail-',
+            generateName: 'dag-continue-on-fail-',
         },
         spec: new WorkflowSpec({
             entrypoint: workflowTemplate,

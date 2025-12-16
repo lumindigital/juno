@@ -72,7 +72,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     return new Workflow({
         metadata: {
-            generateName: 'exit-hanlder-dag-level-',
+            generateName: 'exit-handler-dag-level-',
         },
         spec: new WorkflowSpec({
             entrypoint: mainTemplate,

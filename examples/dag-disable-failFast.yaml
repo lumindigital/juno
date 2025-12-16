@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: dag-primay-branch-
+  generateName: dag-primary-branch-
 spec:
   entrypoint: statis
   templates:

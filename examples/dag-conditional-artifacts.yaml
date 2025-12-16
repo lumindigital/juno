@@ -8,7 +8,7 @@ metadata:
     workflows.argoproj.io/description: |
       Conditional artifacts provides a way to choose the output artifacts based on an expression.
 
-      In this example the DAG template has two tasks which will run conditionall using `when`.
+      In this example the DAG template has two tasks which will run conditionally using `when`.
 
       Based on the condition one of steps may not execute. The step template output's artifact will be set to the
       executed step's output artifacts.

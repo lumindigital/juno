@@ -19,7 +19,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             [
                 new WorkflowStep('sleep', {
                     template: sleepTemplate,
-                    withItems: ['this', 'workflow', 'should', 'take', 'at', 'least', 60, 'seconds', 'to', 'complete'],
+                    withItems: ['this', 'workflow', 'should', 'take', 'at', 'least', '60', 'seconds', 'to', 'complete'],
                 }),
             ],
         ],

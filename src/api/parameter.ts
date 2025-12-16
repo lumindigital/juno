@@ -55,7 +55,7 @@ class Parameter {
         }
 
         if (count > 1) {
-            throw new Error(`value, valueFrom, amnd valueFromExpressionArgs are mutually exclusive on ${this.name}`);
+            throw new Error(`value, valueFrom, and valueFromExpressionArgs are mutually exclusive on ${this.name}`);
         }
     }
 

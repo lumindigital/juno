@@ -24,7 +24,7 @@ spec:
         withParam: "{{steps.odd-or-even.outputs.result}}"
         when: "{{item.evenness}} == even"
 
-  # odd-or-even accepts a number and returns whether or not that number is odd or even
+  # odd-or-even accepts a number and returns whether that number is odd or even
   - name: odd-or-even
     inputs:
       parameters:

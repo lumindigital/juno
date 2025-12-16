@@ -77,7 +77,7 @@ print("heads" if random.randint(0,1) == 0 else "tails")
         metadata: {
             annotations: {
                 'workflows.argoproj.io/description':
-                    'Conditional artifacts provide a way to choose the output artifacts based on expression.\n\nIn this example the main template has two steps which will run conditionall using `when` .\n\nBased on the `when` condition one of step will not execute. The main template\'s output artifact named "result"\nwill be set to the executed step\'s output.\n',
+                    'Conditional artifacts provide a way to choose the output artifacts based on expression.\n\nIn this example the main template has two steps which will run conditionally using `when` .\n\nBased on the `when` condition one of step will not execute. The main template\'s output artifact named "result"\nwill be set to the executed step\'s output.\n',
                 'workflows.argoproj.io/version': '>= 3.1.0',
             },
             generateName: 'conditional-artifacts-',
