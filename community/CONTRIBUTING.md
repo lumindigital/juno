@@ -55,11 +55,6 @@ Tests can be ran with the following command
 npm run test
 ```
 
-### Debugging Tests
-Note: There is currently an issue with debugging the tests in vscode. The test harness at `test/examples/test-harness.test.ts` line 84 sets the path when debugging.
-Seems to be a bug with either nodejs or vscode. Haven't had time to track it down though.
-
-
 ## Regenerating Interfaces
 If your updating the interfaces for Argo, you will need to do the following
 
