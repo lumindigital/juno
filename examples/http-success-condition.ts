@@ -60,9 +60,6 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         ],
     });
 
-    // Keep reference to ensure template is included in output
-    void httpHeadersContainsCloudflareTemplate;
-
     return new Workflow({
         metadata: {
             annotations: {

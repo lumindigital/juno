@@ -16,7 +16,7 @@ Juno reduces your usage of magic strings and provides types and validation to ma
 * Check out the [Quick Start Guide](docs/guides/quick-start.md) on creating a hello world project.
 * Review the [Examples](examples) folder for common patterns
 
-
 ### Documentation
 [View the docs](docs/index.md)
+
 
