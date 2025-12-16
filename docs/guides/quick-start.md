@@ -5,7 +5,7 @@ If you wish to create a project from scratch, you can use the following guidelin
 
 ## Requirements
 You will need an LTS release of Node.js in order to use Juno.
-Juno uses the lastest version of typescript
+Juno uses the latest version of typescript
 
 The example project setup below uses the [yamlfmt](https://github.com/google/yamlfmt) command line tool to format the output.
 
