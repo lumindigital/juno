@@ -23,7 +23,7 @@ spec:
               key: path/in/bucket
               # serviceAccountKeySecret is a secret selector.
               # It references the k8s secret named 'my-gcs-credentials'.
-              # This secret is expected to have the key 'serviceAccountKey',
+              # This secret is expected to have have the key 'serviceAccountKey',
               # containing the base64 encoded Google Cloud Service Account Key (json)
               # to the bucket.
               #
