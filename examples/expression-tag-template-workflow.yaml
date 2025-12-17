@@ -28,7 +28,7 @@ spec:
       container:
         image: argoproj/argosay:v2
         # in this example, we use `asInt` to cast a parameter (which are ALWAYS strings) to an int so we can
-        # multiply by 10
+        # multiple by 10
         args:
           - echo
           - |

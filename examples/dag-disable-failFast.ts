@@ -74,7 +74,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     return new Workflow({
         metadata: {
-            generateName: 'dag-primary-branch-',
+            generateName: 'dag-primay-branch-',
         },
         spec: new WorkflowSpec({
             entrypoint: statisTemplate,

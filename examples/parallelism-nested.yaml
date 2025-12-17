@@ -1,7 +1,7 @@
 # Example with vertical and horizontal scalability
 #
 # Imagine we have 'M' workers which work in parallel,
-# each worker should perform 'N' loops sequentially
+# each worker should performs 'N' loops sequentially
 #
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow

@@ -66,7 +66,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         metadata: {
             annotations: {
                 'workflows.argoproj.io/description':
-                    'This workflow demonstrates collecting outputs (specifically the stdout result) from a pod.\n\nSpecifically, you must have a container named "main".\n',
+                    'This workflow demonstrates collecting outputs (specifically the stdout result) from a pod.\n\nSpecifially, you must have a container named "main".\n',
                 'workflows.argoproj.io/version': '>= 3.1.0',
             },
             generateName: 'outputs-result-',

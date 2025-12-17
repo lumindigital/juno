@@ -53,7 +53,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     return new Workflow({
         metadata: {
             annotations: {
-                'workflows.argoproj.io/description': 'Http template will demonstrate http template functionality\n',
+                'workflows.argoproj.io/description': 'Http template will demostrate http template functionality\n',
                 'workflows.argoproj.io/version': '>= 3.2.0',
             },
             generateName: 'http-template-',

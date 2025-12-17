@@ -18,7 +18,7 @@ spec:
           # For private repositories, create a k8s secret containing the git credentials and
           # reference the secret keys in the secret selectors: usernameSecret, passwordSecret,
           # or sshPrivateKeySecret.
-          # NOTE: when authenticating via sshPrivateKeySecret, the repo URL should supply in its
+          # NOTE: when authenticating via sshPrivateKeySecret, the repo URL should supplied in its
           # SSH format (e.g. git@github.com:argoproj/argo-workflows.git). Similarly, when authenticating via
           # basic auth, the URL should be in its HTTP form (e.g. https://github.com/argoproj/argo-workflows.git)
           # usernameSecret:
@@ -33,7 +33,7 @@ spec:
           #
           # insecureIgnoreHostKey disables SSH strict host key checking during the git clone
           # NOTE: this is unnecessary for the well-known public SSH keys from the major git
-          # providers (GitHub, Bitbucket, Gitlab, Azure) as these keys are already baked into
+          # providers (github, bitbucket, gitlab, azure) as these keys are already baked into
           # the executor image which performs the clone.
           # insecureIgnoreHostKey: true
           #

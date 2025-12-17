@@ -42,7 +42,7 @@ spec:
           key: path/in/bucket/hello_world.txt.tgz
 
           # accessKeySecret and secretKeySecret are secret selectors. It references the k8s secret
-          # named 'my-s3-credentials'. This secret is expected to have the keys 'accessKey'
+          # named 'my-s3-credentials'. This secret is expected to have have the keys 'accessKey'
           # and 'secretKey', containing the base64 encoded credentials to the bucket.
           accessKeySecret:
             name: my-s3-credentials

@@ -73,7 +73,7 @@ print("heads" if random.randint(0,1) == 0 else "tails")
         metadata: {
             annotations: {
                 'workflows.argoproj.io/description':
-                    "Conditional parameters provide a way to choose the output parameters based on expression.\n\nIn this example DAG template has two task which will run conditionally based on `when`.\n\nBased on this condition one of task may not execute. The template's output parameter will be set to the\nexecuted task's output result.\n",
+                    "Conditional parameters provide a way to choose the output parameters based on expression.\n\nIn this example DAG template has two task which will run conditionally based on `when`.\n\nBased on this condition one of task may not execute. The template's output parameter will be set to the\nexecuted taks's output result.\n",
                 'workflows.argoproj.io/version': '>= 3.1.0',
             },
             generateName: 'dag-conditional-parameter-',

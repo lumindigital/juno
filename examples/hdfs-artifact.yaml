@@ -1,5 +1,5 @@
 # This example demonstrates the use of hdfs as the store for artifacts. This example assumes the following:
-# 1. you have hdfs running in the same namespace as where this workflow will be run, and you have created a repo with the name "generic-local"
+# 1. you have hdfs running in the same namespace as where this workflow will be run and you have created a repo with the name "generic-local"
 # 2. you have created a kubernetes secret for storing hdfs username/password. To create kubernetes secret required for this example,
 # run the following command:
 # $ kubectl create secret generic my-hdfs-credentials --from-literal=username=<YOUR-ARTIFACTORY-USERNAME> --from-literal=password=<YOUR-ARTIFACTORY-PASSWORD>
