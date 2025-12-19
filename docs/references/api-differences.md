@@ -161,7 +161,7 @@ See the [Coinflip Recursive Example](../../examples/coinflip-recursive.ts) for a
 
 ## Script
 ### EnvironmentVariable
-See [EnvironmentVariable](##EnvironmentVariable) for details about api changes to environment variables.
+See [EnvironmentVariable](#EnvironmentVariable) for details about api changes to environment variables.
 
 ## Template Reference
 `TemplateReference` is used by `templateRef` when referencing a template in another workflow. Juno recommends avoiding the use of templateRef if possible.
@@ -186,10 +186,10 @@ See the [Cluster WorkflowTemplate Dag Example](../../examples/cluster-workflow-t
 ## WorkflowSpec
 ### additionalTemplates
 `additionalTemplates` is used to specify additional templates that are child templates of the entrypoint templates.
-This is useful when have a shared template that isn't meant to be ran directly.
+This is useful when have a shared template that isn't meant to be run directly.
 
 See the [Http Success Condition Example](../../examples/http-success-condition.ts) for an example of a workflow that uses this pattern.
 
 ### templates
 Templates are no longer specified on the workflow spec. Juno will walk the entrypoint template and any templates it requires and adds them automatically to the workflow spec.
-If for some reason you need to add templates to a workflow you use the [additionalTemplates](###additionalTemplates)  property
+If for some reason you need to add templates to a workflow you use the [additionalTemplates](#additionalTemplates)  property
