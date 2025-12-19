@@ -39,18 +39,18 @@ Before beginning work, please make sure the issue you are working on has been as
 This workflow uses the [Conventional Commits](https://www.conventionalcommits.org) specification for commit messages.
 
 The Workflow is as follows
-1. Fork the Juno repository under your github username.
+1. Fork the Juno repository under your GitHub username.
 2. Create a branch in your forked repository.
-4. Commit changes required to the branch you created on step 2.
-5. Verify that tests and pre-commit passes
-6. Push your branch to your forked repository.
-7. Create a Pull Request from your remote fork pointing to the HEAD branch (usually `master` branch) of the target repository.
-8. Check the github build and ensure that all checks are green.
+3. Commit changes required to the branch you created on step 2.
+4. Verify that tests and pre-commit passes
+5. Push your branch to your forked repository.
+6. Create a Pull Request from your remote fork pointing to the HEAD branch (usually `master` branch) of the target repository.
+7. Check the GitHub build and ensure that all checks are green.
 
 
 ## Testing
 If your adding new functionality or modifying existing functionality and there is currently not tests, please add them as part of your pull request.
-Tests can be ran with the following command
+Tests can be run with the following command:
 ```bash
 npm run test
 ```
