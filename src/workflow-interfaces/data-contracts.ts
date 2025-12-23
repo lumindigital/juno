@@ -2455,7 +2455,7 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ResourceFilter 
     /**
      * Fields provide field filters similar to K8s field selector
      * (see https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/).
-     * Unlike K8s field selector, it supports arbitrary fileds like "spec.serviceAccountName",
+     * Unlike K8s field selector, it supports arbitrary fields like "spec.serviceAccountName",
      * and the value could be a string or a regex.
      * Same as K8s field selector, operator "=", "==" and "!=" are supported.
      * +optional
@@ -3301,7 +3301,7 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerTemplate
      */
     conditions?: string;
     /**
-     * Criteria to reset the conditons
+     * Criteria to reset the conditions
      * +optional
      */
     conditionsReset?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ConditionsResetCriteria[];
@@ -4411,7 +4411,7 @@ export interface IoArgoprojWorkflowV1Alpha1NodeStatus {
     finishedAt?: IoK8SApimachineryPkgApisMetaV1Time;
     /** HostNodeName name of the Kubernetes node on which the Pod is running, if applicable */
     hostNodeName?: string;
-    /** ID is a unique identifier of a node within the worklow It is implemented as a hash of the node name, which makes the ID deterministic */
+    /** ID is a unique identifier of a node within the workflow. It is implemented as a hash of the node name, which makes the ID deterministic */
     id: string;
     /** Inputs captures input parameter values and artifact locations supplied to this template invocation */
     inputs?: IoArgoprojWorkflowV1Alpha1Inputs;

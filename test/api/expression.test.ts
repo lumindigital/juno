@@ -162,7 +162,7 @@ describe('expression tests', (): void => {
             ).to.equal('inputs.artifacts.InputA.path');
         });
 
-        it('returns workflow output artifiact when type is WorkflowOutputParameter', (): void => {
+        it('returns workflow output artifact when type is WorkflowOutputParameter', (): void => {
             expect(
                 getVariableReference({
                     workflowOutput: new OutputArtifact('OutputA', { globalName: 'GlobalOutputA' }),
@@ -308,7 +308,7 @@ describe('expression tests', (): void => {
             ).to.equal("steps['Step-A'].outputs.artifacts['Param-A']");
         });
 
-        it('handles hyphen when input type is OutputParameter and task is a dag task and hypenated', (): void => {
+        it('handles hyphen when input type is OutputParameter and task is a dag task and hyphenated', (): void => {
             expect(
                 hyphenParameter({
                     dagTask: new DagTask('Dag-A', {}),
@@ -317,7 +317,7 @@ describe('expression tests', (): void => {
             ).to.equal("tasks['Dag-A'].outputs.parameters['Param-A']");
         });
 
-        it('handles hyphen when input type is OutputArtifact and task is a dag task and hypenated', (): void => {
+        it('handles hyphen when input type is OutputArtifact and task is a dag task and hyphenated', (): void => {
             expect(
                 hyphenParameter({
                     dagTask: new DagTask('Dag-A', {}),
