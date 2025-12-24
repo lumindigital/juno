@@ -4,7 +4,7 @@
 [![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/@lumindigital/juno)
 
 
-<img src=docs/assets/juno-logo.jpg width="15%" alt="Juno mascot">
+<img src=docs/assets/juno-logo.png width="25%" alt="Juno mascot">
 
 ## What is Juno?
 Juno is an un-official typescript project that makes it easier to construct [Argo Workflows](https://github.com/argoproj/argo-workflows)
