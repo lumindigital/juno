@@ -4,11 +4,12 @@ import { DagTemplate } from '../src/api/dag-template';
 import { Container } from '../src/api/container';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../src/api/parameter';
-import { and, simpleTag } from '../src/api/expression';
+import { simpleTag } from '../src/api/expression';
 import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
+import { and } from '../src/api/expr-api';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const target = new WorkflowParameter('target', {

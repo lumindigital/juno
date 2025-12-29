@@ -7,9 +7,10 @@ import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { WorkflowStep } from '../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
-import { and, simpleTag } from '../src/api/expression';
+import { simpleTag } from '../src/api/expression';
 import { RecursiveTemplate } from '../src/api/recursive-template';
 import { OutputResult } from '../src/api/artifact';
+import { and } from '../src/api/expr-api';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const flipCoinTemplate = new Template('flip-coin', {

@@ -5,7 +5,8 @@ import { Template } from '../src/api/template';
 import { Workflow } from '../src/api/workflow';
 import { WorkflowSpec } from '../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../src/workflow-interfaces/data-contracts';
-import { and, TaskResult } from '../src/api/expression';
+import { TaskResult } from '../src/api/expression';
+import { and } from '../src/api/expr-api';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const helloWorldTemplate = new Template('hello-world', {
