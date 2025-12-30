@@ -80,6 +80,7 @@
     "prepack": "oclif manifest && oclif readme",
     "pretest": "npm run build",
     "test": "c8 --reporter=lcov --report-dir ./test-output/coverage mocha --forbid-only \"test/**/*.test.ts\"",
+    "testExample": "`# USE TEST_NAME=NAME_OF_TEST in front of this command to run a single test` mocha ./test/examples/test-harness.test.ts",
     "version": "oclif readme && git add README.md",
     "interfaces": "swagger-typescript-api -p ../argo-workflows/api/openapi-spec/swagger.json -o ./src/workflow-interfaces --modular --sort-types --clean-output --no-client --patch",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx}\"",

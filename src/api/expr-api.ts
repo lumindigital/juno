@@ -1,4 +1,4 @@
-import { ExpressionArgs, getVariableReference } from './expression.js';
+import { ExpressionArgs, hyphenParameter } from './expression.js';
 
 /**
  * Adds a logical AND between multiple expressions.
@@ -18,7 +18,12 @@ export function and(inputs: (string | ExpressionArgs)[]): string {
 
         const input = inputs[i];
 
-        result += getVariableReference(input);
+        if (typeof input === 'string') {
+            result += input;
+            continue;
+        }
+
+        result += hyphenParameter(input);
     }
 
     return result;
@@ -42,7 +47,12 @@ export function or(inputs: (string | ExpressionArgs)[]): string {
 
         const input = inputs[i];
 
-        result += getVariableReference(input);
+        if (typeof input === 'string') {
+            result += input;
+            continue;
+        }
+
+        result += hyphenParameter(input);
     }
 
     return result;
@@ -57,7 +67,11 @@ export function or(inputs: (string | ExpressionArgs)[]): string {
  * @public
  */
 export function not(input: string | ExpressionArgs): string {
-    return `!${getVariableReference(input)}`;
+    if (typeof input === 'string') {
+        return `!${input}`;
+    }
+
+    return `!${hyphenParameter(input)}`;
 }
 
 /**
@@ -72,6 +86,58 @@ export function paren(input: string): string {
     return `( ${input} )`;
 }
 
-export function equals(left: string | ExpressionArgs, right: string | ExpressionArgs): string {
-    return `${getVariableReference(left)} == ${getVariableReference(right)}`;
+export function equals(left: string | ExpressionArgs | boolean, right: string | ExpressionArgs | boolean): string {
+    return comparison('==', left, right);
+}
+
+export function notEquals(left: string | ExpressionArgs | boolean, right: string | ExpressionArgs | boolean): string {
+    return comparison('!=', left, right);
+}
+
+export function greaterThan(left: string | ExpressionArgs | boolean, right: string | ExpressionArgs | boolean): string {
+    return comparison('>', left, right);
+}
+
+export function lessThan(left: string | ExpressionArgs | boolean, right: string | ExpressionArgs | boolean): string {
+    return comparison('<', left, right);
+}
+
+export function greaterThanOrEqual(
+    left: string | ExpressionArgs | boolean,
+    right: string | ExpressionArgs | boolean,
+): string {
+    return comparison('>=', left, right);
+}
+
+export function lessThanOrEqual(
+    left: string | ExpressionArgs | boolean,
+    right: string | ExpressionArgs | boolean,
+): string {
+    return comparison('<=', left, right);
+}
+
+export function ternary(
+    condition: string | ExpressionArgs | boolean,
+    whenTrue: string | ExpressionArgs | boolean,
+    whenFalse: string | ExpressionArgs | boolean,
+): string {
+    const conditionOutput =
+        typeof condition === 'string' || typeof condition === 'boolean' ? `'${condition}'` : hyphenParameter(condition);
+    const whenTrueOutput =
+        typeof whenTrue === 'string' || typeof whenTrue === 'boolean' ? `'${whenTrue}'` : hyphenParameter(whenTrue);
+    const whenFalseOutput =
+        typeof whenFalse === 'string' || typeof whenFalse === 'boolean' ? `'${whenFalse}'` : hyphenParameter(whenFalse);
+
+    return `${conditionOutput} ? ${whenTrueOutput} : ${whenFalseOutput}`;
+}
+
+function comparison(
+    operator: string,
+    left: string | ExpressionArgs | boolean,
+    right: string | ExpressionArgs | boolean,
+): string {
+    const leftSide = typeof left === 'string' || typeof left === 'boolean' ? `'${left}'` : hyphenParameter(left);
+    const rightSide = typeof right === 'string' || typeof right === 'boolean' ? `'${right}'` : hyphenParameter(right);
+
+    return `${leftSide} ${operator} ${rightSide}`;
 }

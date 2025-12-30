@@ -54,9 +54,9 @@ describe('example tests', (): void => {
             // This removes the undefined values from the object. And is what the cli will likely do as well
             const result2 = parse(JSON.stringify(result));
 
-            // logger.info(stringify(result2));
+            //logger.info(stringify(result2, null, 2));
 
-            expect(result2, path).to.deep.equal(workflow);
+            expect(result2, `${path}`).to.deep.equal(workflow);
         }
 
         logger.warn(`Ran ${tests.size} tests successfully`);
@@ -69,6 +69,12 @@ function getExamples(): Map<string, string> {
     const files = readdirSync('./examples', { withFileTypes: true, recursive: true });
 
     for (const file of files) {
+        if (process.env.TEST_NAME) {
+            if (!file.name.includes(process.env.TEST_NAME)) {
+                continue;
+            }
+        }
+
         if (!file.isFile) {
             continue;
         }

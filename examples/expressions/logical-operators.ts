@@ -26,12 +26,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [andParameter, orParameter, parenParameter, notParameter, combinedParameter],
         }),
         script: new Script({
-            //args: ['hello world'],
-            source: `echo "AND: ${simpleTag(andParameter)}"
-                    echo "OR: ${simpleTag(orParameter)}"
-                    echo "PAREN: ${simpleTag(parenParameter)}"
-                    echo "NOT: ${simpleTag(notParameter)}"
-                    echo "COMBINED: ${simpleTag(combinedParameter)}"
+            command: ['/bin/sh'],
+            source: `if [ "${simpleTag(andParameter)}" !== true ]; then exit 12; fi
+                    if [ "${simpleTag(orParameter)}" !== true ]; then exit 13; fi
+                    if [ "${simpleTag(parenParameter)}" !== true ]; then exit 14; fi
+                    if [ "${simpleTag(notParameter)}" !== true ]; then exit 15; fi
+                    if [ "${simpleTag(combinedParameter)}" !== true ]; then exit 16; fi
 `,
             image: 'busybox',
         }),
@@ -44,19 +44,19 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             andParameter.toArgumentParameter({
-                                value: `${expressionTag(equals(and([trueParam, falseParam]), 'false'))}`,
+                                value: `${expressionTag(and([equals(trueParam, true), equals(falseParam, false)]))}`,
                             }),
                             orParameter.toArgumentParameter({
-                                value: `${expressionTag(equals(or([trueParam, falseParam]), 'true'))}`,
+                                value: `${expressionTag(or([equals(trueParam, true), equals(falseParam, true)]))}`,
                             }),
                             parenParameter.toArgumentParameter({
-                                value: `${expressionTag(equals(or([trueParam, falseParam]), 'true'))}`,
+                                value: `${expressionTag(paren(or([equals(trueParam, true), equals(falseParam, false)])))}`,
                             }),
                             notParameter.toArgumentParameter({
-                                value: `${expressionTag(equals(not(falseParam), 'true'))}`,
+                                value: `${expressionTag(not(paren(equals(falseParam, true))))}`,
                             }),
                             combinedParameter.toArgumentParameter({
-                                value: `${expressionTag(equals(and([paren(or([trueParam, falseParam])), not(falseParam)]), 'true'))}`,
+                                value: `${expressionTag(and([paren(or([equals(trueParam, true), equals(falseParam, false)])), not(paren(equals(falseParam, true)))]))}`,
                             }),
                         ],
                     }),
@@ -71,7 +71,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             annotations: {
                 'workflows.argoproj.io/description': `This is a simple hello world example.\n`,
             },
-            generateName: 'hello-world-',
+            generateName: 'logical-operators-',
             labels: {
                 'workflows.argoproj.io/archive-strategy': 'false',
             },

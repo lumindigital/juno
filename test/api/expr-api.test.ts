@@ -39,10 +39,6 @@ describe('expr api tests', (): void => {
             const dagTaskB = new DagTask('B', {});
             const dagTaskC = new DagTask('C', {});
 
-            // const templateA = new Template('A', {});
-            // // const templateB = new Template('B', {});
-            // const templateC = new Template('C', {});
-
             const result = and([paren(or([dagTaskA, { task: dagTaskB, result: TaskResult.Succeeded }])), dagTaskC]);
             expect(result).to.equal('( A || B.Succeeded ) && C');
         });
