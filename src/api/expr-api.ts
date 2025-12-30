@@ -1,4 +1,4 @@
-import { ExpressionArgs, hyphenParameter } from './expression.js';
+import { ExpressionArgs, getVariableReference, hyphenParameter } from './expression.js';
 
 /**
  * Adds a logical AND between multiple expressions.
@@ -122,12 +122,23 @@ export function ternary(
     whenFalse: string | ExpressionArgs | boolean,
 ): string {
     const conditionOutput =
-        typeof condition === 'string' || typeof condition === 'boolean' ? `'${condition}'` : hyphenParameter(condition);
+        typeof condition === 'string'
+            ? `${condition}`
+            : typeof condition === 'boolean'
+              ? `'${condition}'`
+              : getVariableReference(condition);
     const whenTrueOutput =
-        typeof whenTrue === 'string' || typeof whenTrue === 'boolean' ? `'${whenTrue}'` : hyphenParameter(whenTrue);
+        typeof whenTrue === 'string'
+            ? `${whenTrue}`
+            : typeof whenTrue === 'boolean'
+              ? `'${whenTrue}'`
+              : getVariableReference(whenTrue);
     const whenFalseOutput =
-        typeof whenFalse === 'string' || typeof whenFalse === 'boolean' ? `'${whenFalse}'` : hyphenParameter(whenFalse);
-
+        typeof whenFalse === 'string'
+            ? `${whenFalse}`
+            : typeof whenFalse === 'boolean'
+              ? `'${whenFalse}'`
+              : getVariableReference(whenFalse);
     return `${conditionOutput} ? ${whenTrueOutput} : ${whenFalseOutput}`;
 }
 
@@ -136,8 +147,14 @@ function comparison(
     left: string | ExpressionArgs | boolean,
     right: string | ExpressionArgs | boolean,
 ): string {
-    const leftSide = typeof left === 'string' || typeof left === 'boolean' ? `'${left}'` : hyphenParameter(left);
-    const rightSide = typeof right === 'string' || typeof right === 'boolean' ? `'${right}'` : hyphenParameter(right);
+    const leftSide =
+        typeof left === 'string' ? `${left}` : typeof left === 'boolean' ? `'${left}'` : getVariableReference(left);
+    const rightSide =
+        typeof right === 'string'
+            ? `${right}`
+            : typeof right === 'boolean'
+              ? `'${right}'`
+              : getVariableReference(right);
 
     return `${leftSide} ${operator} ${rightSide}`;
 }
