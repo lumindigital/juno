@@ -4,7 +4,12 @@ export type ExpressionTemplateInputs =
     | LogicalExpression
     | ParenExpression
     | CastExpressions;
-export type CastExpressions = IntCastExpression | FloatCastExpression | StringCastExpression | JsonCastExpression;
+export type CastExpressions =
+    | IntCastExpression
+    | FloatCastExpression
+    | StringCastExpression
+    | JsonCastExpression
+    | NilCoalescingExpression;
 
 export interface SimpleTemplateTag {
     output: string;
@@ -24,6 +29,11 @@ export interface ComparisonExpression {
 export interface TernaryExpression {
     output: string;
     isTernaryExpression: true;
+}
+
+export interface NilCoalescingExpression {
+    output: string;
+    isNilCoalescingExpression: true;
 }
 
 export interface HyphenatedExpressionArgs {

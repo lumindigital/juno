@@ -1,4 +1,9 @@
-import { ComparisonExpression, HyphenatedExpressionArgs, TernaryExpression } from './interfaces.js';
+import {
+    ComparisonExpression,
+    HyphenatedExpressionArgs,
+    NilCoalescingExpression,
+    TernaryExpression,
+} from './interfaces.js';
 
 export function ternary(
     condition: ComparisonExpression,
@@ -34,5 +39,23 @@ export function ternary(
     return {
         output: `${conditionalOutput} ? ${whenTrueOutput} : ${whenFalseOutput}`,
         isTernaryExpression: true,
+    };
+}
+
+export function nilCoalescing(
+    condition: HyphenatedExpressionArgs,
+    whenNil: string | HyphenatedExpressionArgs,
+): NilCoalescingExpression {
+    let nilResult: string;
+
+    if (typeof whenNil === 'string') {
+        nilResult = `'${whenNil}'`;
+    } else {
+        nilResult = whenNil.output;
+    }
+
+    return {
+        output: `${condition.output} ?? ${nilResult}`,
+        isNilCoalescingExpression: true,
     };
 }

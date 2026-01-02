@@ -11,25 +11,37 @@ import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
-import { ternary } from '../../src/api/expressions/conditional';
+import { nilCoalescing, ternary } from '../../src/api/expressions/conditional';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const ternaryStringOutputParameter = new InputParameter('ternary-string-output-param');
     const ternaryExpressionArgsOutputParameter = new InputParameter('ternary-expression-args-output-param');
     const nestedTernaryParameter = new InputParameter('nested-ternary-param');
+    const nilCoalescingStringParameter = new InputParameter('nil-coalescing-string-param');
+    const nilCoalescingHyphenatedParameter = new InputParameter('nil-coalescing-hyphenated-param');
 
     const trueParam = new WorkflowParameter('true-param', { value: 'true' });
     const falseParam = new WorkflowParameter('false-param', { value: 'false' });
+    // technically this shouldn't work as we should validate that emptyParam is missing. However we cannot do that so its a good way to test nil
+    const emptyParam = new WorkflowParameter('missing-param', { value: 'true' });
 
     const conditionalTemplate = new Template('conditional', {
         inputs: new Inputs({
-            parameters: [ternaryStringOutputParameter, ternaryExpressionArgsOutputParameter, nestedTernaryParameter],
+            parameters: [
+                ternaryStringOutputParameter,
+                ternaryExpressionArgsOutputParameter,
+                nestedTernaryParameter,
+                nilCoalescingStringParameter,
+                nilCoalescingHyphenatedParameter,
+            ],
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
             source: `if [ "${simpleTag(ternaryStringOutputParameter).output}" != true ]; then exit 12; fi
                      if [ "${simpleTag(ternaryExpressionArgsOutputParameter).output}" != true ]; then exit 13; fi
                      if [ "${simpleTag(nestedTernaryParameter).output}" != true ]; then exit 14; fi
+                     if [ "${simpleTag(nilCoalescingStringParameter).output}" != "defaultValue" ]; then exit 15; fi
+                     if [ "${simpleTag(nilCoalescingHyphenatedParameter).output}" != "true" ]; then exit 16; fi
 `,
             image: 'busybox',
         }),
@@ -79,6 +91,19 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                             hyphenateExpressionArgs(trueParam),
                                             hyphenateExpressionArgs(falseParam),
                                         ),
+                                    ),
+                                ),
+                            }),
+                            nilCoalescingStringParameter.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    nilCoalescing(hyphenateExpressionArgs(emptyParam), 'defaultValue'),
+                                ),
+                            }),
+                            nilCoalescingHyphenatedParameter.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    nilCoalescing(
+                                        hyphenateExpressionArgs(emptyParam),
+                                        hyphenateExpressionArgs(trueParam),
                                     ),
                                 ),
                             }),
