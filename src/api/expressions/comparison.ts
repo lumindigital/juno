@@ -1,4 +1,11 @@
-import { ComparisonExpression, HyphenatedExpressionArgs, SimpleTemplateTag } from './interfaces.js';
+import {
+    CastExpressions,
+    ComparisonExpression,
+    FloatCastExpression,
+    HyphenatedExpressionArgs,
+    IntCastExpression,
+    SimpleTemplateTag,
+} from './interfaces.js';
 
 const enum Comparators {
     EQUALS = '==',
@@ -23,35 +30,35 @@ export function notEquals<T extends HyphenatedExpressionArgs | SimpleTemplateTag
     return comparison(Comparators.NOT_EQUALS, left, right);
 }
 
-export function greaterThan<T extends HyphenatedExpressionArgs | SimpleTemplateTag>(
+export function greaterThan<T extends IntCastExpression | FloatCastExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.GREATER_THAN, left, right);
 }
 
-export function lessThan<T extends HyphenatedExpressionArgs | SimpleTemplateTag>(
+export function lessThan<T extends IntCastExpression | FloatCastExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.LESS_THAN, left, right);
 }
 
-export function greaterThanOrEqual<T extends HyphenatedExpressionArgs | SimpleTemplateTag>(
+export function greaterThanOrEqual<T extends IntCastExpression | FloatCastExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.GREATER_THAN_OR_EQUAL, left, right);
 }
 
-export function lessThanOrEqual<T extends HyphenatedExpressionArgs | SimpleTemplateTag>(
+export function lessThanOrEqual<T extends IntCastExpression | FloatCastExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.LESS_THAN_OR_EQUAL, left, right);
 }
 
-function comparison<T extends HyphenatedExpressionArgs | SimpleTemplateTag>(
+function comparison<T extends HyphenatedExpressionArgs | SimpleTemplateTag | CastExpressions>(
     operator: Comparators,
     left: T,
     right: T | boolean | string,

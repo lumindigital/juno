@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways comparison expressions can be used.
+  generateName: comparison-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: true-param
+        value: "true"
+      - name: false-param
+        value: "false"
+      - name: one-param
+        value: "1"
+      - name: two-param
+        value: "2"
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: equals-ternary-param
+                  value: "{{=workflow.parameters['true-param'] == workflow.parameters['true-param'] ? 'true' : 'false'}}"
+                - name: not-equals-ternary-param
+                  value: "{{=workflow.parameters['true-param'] != workflow.parameters['false-param'] ? workflow.parameters['true-param'] : workflow.parameters['false-param']}}"
+                - name: greater-than-ternary-param
+                  value: "{{=asInt(workflow.parameters['two-param']) > asInt(workflow.parameters['one-param']) ? 'true' : 'false'}}"
+                - name: less-than-ternary-param
+                  value: "{{=asInt(workflow.parameters['one-param']) < asInt(workflow.parameters['two-param']) ? 'true' : 'false'}}"
+                - name: greater-than-equal-ternary-param
+                  value: "{{=asInt(workflow.parameters['one-param']) >= asInt(workflow.parameters['one-param']) ? 'true' : 'false'}}"
+                - name: less-than-equal-ternary-param
+                  value: "{{=asInt(workflow.parameters['one-param']) <= asInt(workflow.parameters['two-param']) ? 'true' : 'false'}}"
+            name: comparison-task
+            template: comparison
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: equals-ternary-param
+          - name: not-equals-ternary-param
+          - name: greater-than-ternary-param
+          - name: less-than-ternary-param
+          - name: greater-than-equal-ternary-param
+          - name: less-than-equal-ternary-param
+      name: comparison
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source:  >
+          if [ "{{inputs.parameters.equals-ternary-param}}" != true ]; then exit 12; fi
+                               if [ "{{inputs.parameters.not-equals-ternary-param}}" != true ]; then exit 13; fi
+                               if [ "{{inputs.parameters.greater-than-ternary-param}}" != true ]; then exit 14; fi
+                               if [ "{{inputs.parameters.less-than-ternary-param}}" != true ]; then exit 15; fi
+                               if [ "{{inputs.parameters.greater-than-equal-ternary-param}}" != true ]; then exit 16; fi
+                               if [ "{{inputs.parameters.less-than-equal-ternary-param}}" != true ]; then exit 17; fi

@@ -10,6 +10,7 @@ import {
 import { DagTask } from '../../../src/api/dag-task';
 import { OutputParameter } from '../../../src/api/parameter';
 import { hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
+import { asFloat, asInt } from '../../../src/api/expressions/cast';
 
 describe('comparison tests', (): void => {
     const expressionArg1 = { dagTask: new DagTask('A', {}), output: new OutputParameter('output1') };
@@ -17,6 +18,12 @@ describe('comparison tests', (): void => {
 
     const simpleTemplateTag1 = simpleTag(expressionArg1);
     const simpleTemplateTag2 = simpleTag(expressionArg2);
+
+    const asIntExpression1 = asInt(hyphenateExpressionArgs(expressionArg1));
+    const asIntExpression2 = asInt(hyphenateExpressionArgs(expressionArg2));
+
+    const asFloatExpression1 = asFloat(hyphenateExpressionArgs(expressionArg1));
+    const asFloatExpression2 = asFloat(hyphenateExpressionArgs(expressionArg2));
 
     const expressionArg3 = { dagTask: new DagTask('A-1', {}), output: new OutputParameter('output-1') };
     const expressionArg4 = { dagTask: new DagTask('B-1', {}), output: new OutputParameter('output-2') };
@@ -77,106 +84,66 @@ describe('comparison tests', (): void => {
     });
 
     describe('greaterThan', (): void => {
-        it('returns successfully when comparing simpleTags', (): void => {
-            const result = greaterThan(simpleTemplateTag1, simpleTemplateTag2);
+        it('returns successfully when comparing int', (): void => {
+            const result = greaterThan(asIntExpression1, asIntExpression2);
             expect(result.output).to.equal(
-                '{{tasks.A.outputs.parameters.output1}} > {{tasks.B.outputs.parameters.output2}}',
+                `asInt(tasks.A.outputs.parameters.output1) > asInt(tasks.B.outputs.parameters.output2)`,
             );
         });
 
-        it('returns successfully when comparing hyphenateExpressionArgs', (): void => {
-            const result = greaterThan(hyphenatedExpressionArgs1, hyphenatedExpressionArgs2);
+        it('returns successfully when comparing float', (): void => {
+            const result = greaterThan(asFloatExpression1, asFloatExpression2);
             expect(result.output).to.equal(
-                `tasks['A-1'].outputs.parameters['output-1'] > tasks['B-1'].outputs.parameters['output-2']`,
+                `asFloat(tasks.A.outputs.parameters.output1) > asFloat(tasks.B.outputs.parameters.output2)`,
             );
-        });
-
-        it('returns successfully when comparing simpleTag and boolean', (): void => {
-            const result = greaterThan(simpleTemplateTag1, true);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} > 'true'`);
-        });
-
-        it('returns successfully when comparing simpleTag and string', (): void => {
-            const result = greaterThan(simpleTemplateTag1, `'true'`);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} > 'true'`);
         });
     });
 
     describe('lessThan', (): void => {
-        it('returns successfully when comparing simpleTags', (): void => {
-            const result = lessThan(simpleTemplateTag1, simpleTemplateTag2);
+        it('returns successfully when comparing int', (): void => {
+            const result = lessThan(asIntExpression1, asIntExpression2);
             expect(result.output).to.equal(
-                '{{tasks.A.outputs.parameters.output1}} < {{tasks.B.outputs.parameters.output2}}',
+                `asInt(tasks.A.outputs.parameters.output1) < asInt(tasks.B.outputs.parameters.output2)`,
             );
         });
 
-        it('returns successfully when comparing hyphenateExpressionArgs', (): void => {
-            const result = lessThan(hyphenatedExpressionArgs1, hyphenatedExpressionArgs2);
+        it('returns successfully when comparing float', (): void => {
+            const result = lessThan(asFloatExpression1, asFloatExpression2);
             expect(result.output).to.equal(
-                `tasks['A-1'].outputs.parameters['output-1'] < tasks['B-1'].outputs.parameters['output-2']`,
+                `asFloat(tasks.A.outputs.parameters.output1) < asFloat(tasks.B.outputs.parameters.output2)`,
             );
-        });
-
-        it('returns successfully when comparing simpleTag and boolean', (): void => {
-            const result = lessThan(simpleTemplateTag1, true);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} < 'true'`);
-        });
-
-        it('returns successfully when comparing simpleTag and string', (): void => {
-            const result = lessThan(simpleTemplateTag1, `'true'`);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} < 'true'`);
         });
     });
 
     describe('greaterThanOrEqual', (): void => {
-        it('returns successfully when comparing simpleTags', (): void => {
-            const result = greaterThanOrEqual(simpleTemplateTag1, simpleTemplateTag2);
+        it('returns successfully when comparing int', (): void => {
+            const result = greaterThanOrEqual(asIntExpression1, asIntExpression2);
             expect(result.output).to.equal(
-                '{{tasks.A.outputs.parameters.output1}} >= {{tasks.B.outputs.parameters.output2}}',
+                `asInt(tasks.A.outputs.parameters.output1) >= asInt(tasks.B.outputs.parameters.output2)`,
             );
         });
 
-        it('returns successfully when comparing hyphenateExpressionArgs', (): void => {
-            const result = greaterThanOrEqual(hyphenatedExpressionArgs1, hyphenatedExpressionArgs2);
+        it('returns successfully when comparing float', (): void => {
+            const result = greaterThanOrEqual(asFloatExpression1, asFloatExpression2);
             expect(result.output).to.equal(
-                `tasks['A-1'].outputs.parameters['output-1'] >= tasks['B-1'].outputs.parameters['output-2']`,
+                `asFloat(tasks.A.outputs.parameters.output1) >= asFloat(tasks.B.outputs.parameters.output2)`,
             );
-        });
-
-        it('returns successfully when comparing simpleTag and boolean', (): void => {
-            const result = greaterThanOrEqual(simpleTemplateTag1, true);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} >= 'true'`);
-        });
-
-        it('returns successfully when comparing simpleTag and string', (): void => {
-            const result = greaterThanOrEqual(simpleTemplateTag1, `'true'`);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} >= 'true'`);
         });
     });
 
     describe('lessThanOrEqual', (): void => {
-        it('returns successfully when comparing simpleTags', (): void => {
-            const result = lessThanOrEqual(simpleTemplateTag1, simpleTemplateTag2);
+        it('returns successfully when comparing int', (): void => {
+            const result = lessThanOrEqual(asIntExpression1, asIntExpression2);
             expect(result.output).to.equal(
-                '{{tasks.A.outputs.parameters.output1}} <= {{tasks.B.outputs.parameters.output2}}',
+                `asInt(tasks.A.outputs.parameters.output1) <= asInt(tasks.B.outputs.parameters.output2)`,
             );
         });
 
-        it('returns successfully when comparing hyphenateExpressionArgs', (): void => {
-            const result = lessThanOrEqual(hyphenatedExpressionArgs1, hyphenatedExpressionArgs2);
+        it('returns successfully when comparing float', (): void => {
+            const result = lessThanOrEqual(asFloatExpression1, asFloatExpression2);
             expect(result.output).to.equal(
-                `tasks['A-1'].outputs.parameters['output-1'] <= tasks['B-1'].outputs.parameters['output-2']`,
+                `asFloat(tasks.A.outputs.parameters.output1) <= asFloat(tasks.B.outputs.parameters.output2)`,
             );
-        });
-
-        it('returns successfully when comparing simpleTag and boolean', (): void => {
-            const result = lessThanOrEqual(simpleTemplateTag1, true);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} <= 'true'`);
-        });
-
-        it('returns successfully when comparing simpleTag and string', (): void => {
-            const result = lessThanOrEqual(simpleTemplateTag1, `'true'`);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} <= 'true'`);
         });
     });
 });

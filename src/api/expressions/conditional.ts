@@ -1,9 +1,9 @@
-import { ComparisonExpression, HyphenatedExpressionArgs, SimpleTemplateTag, TernaryExpression } from './interfaces.js';
+import { ComparisonExpression, HyphenatedExpressionArgs, TernaryExpression } from './interfaces.js';
 
 export function ternary(
     condition: ComparisonExpression,
-    whenTrue: string | SimpleTemplateTag | HyphenatedExpressionArgs | TernaryExpression,
-    whenFalse: string | SimpleTemplateTag | HyphenatedExpressionArgs | TernaryExpression,
+    whenTrue: string | HyphenatedExpressionArgs | TernaryExpression,
+    whenFalse: string | HyphenatedExpressionArgs | TernaryExpression,
 ): TernaryExpression {
     const conditionalOutput = condition.output;
 

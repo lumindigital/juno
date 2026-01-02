@@ -23,17 +23,17 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const trueParam = new WorkflowParameter('true-param', { value: 'true' });
     const falseParam = new WorkflowParameter('false-param', { value: 'false' });
 
-    const logicalOperatorsTemplate = new Template('logical-operators', {
+    const logicalTemplate = new Template('logical', {
         inputs: new Inputs({
             parameters: [andParameter, orParameter, parenParameter, notParameter, combinedParameter],
         }),
         script: new Script({
-            command: ['/bin/sh'],
-            source: `if [ "${simpleTag(andParameter).output}" !== true ]; then exit 12; fi
-                    if [ "${simpleTag(orParameter).output}" !== true ]; then exit 13; fi
-                    if [ "${simpleTag(parenParameter).output}" !== true ]; then exit 14; fi
-                    if [ "${simpleTag(notParameter).output}" !== true ]; then exit 15; fi
-                    if [ "${simpleTag(combinedParameter).output}" !== true ]; then exit 16; fi
+            command: ['/bin/sh', '-e'],
+            source: `if [ "${simpleTag(andParameter).output}" != true ]; then exit 12; fi
+                    if [ "${simpleTag(orParameter).output}" != true ]; then exit 13; fi
+                    if [ "${simpleTag(parenParameter).output}" != true ]; then exit 14; fi
+                    if [ "${simpleTag(notParameter).output}" != true ]; then exit 15; fi
+                    if [ "${simpleTag(combinedParameter).output}" != true ]; then exit 16; fi
 `,
             image: 'busybox',
         }),
@@ -42,7 +42,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const entryPointTemplate = new Template('entrypoint', {
         dag: new DagTemplate({
             tasks: [
-                new DagTask('logical-operators-task', {
+                new DagTask('logical-task', {
                     arguments: new Arguments({
                         parameters: [
                             andParameter.toArgumentParameter({
@@ -69,7 +69,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             }),
                         ],
                     }),
-                    template: logicalOperatorsTemplate,
+                    template: logicalTemplate,
                 }),
             ],
         }),
@@ -78,9 +78,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     return new Workflow({
         metadata: {
             annotations: {
-                'workflows.argoproj.io/description': `This is a simple hello world example.\n`,
+                'workflows.argoproj.io/description': `This is an example of some of the different ways logical expressions can be used.\n`,
             },
-            generateName: 'logical-operators-',
+            generateName: 'logical-',
             labels: {
                 'workflows.argoproj.io/archive-strategy': 'false',
             },

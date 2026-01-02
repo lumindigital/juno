@@ -1,4 +1,10 @@
-export type ExpressionTemplateInputs = ComparisonExpression | TernaryExpression | LogicalExpression | ParenExpression;
+export type ExpressionTemplateInputs =
+    | ComparisonExpression
+    | TernaryExpression
+    | LogicalExpression
+    | ParenExpression
+    | CastExpressions;
+export type CastExpressions = IntCastExpression | FloatCastExpression | StringCastExpression | JsonCastExpression;
 
 export interface SimpleTemplateTag {
     output: string;
@@ -33,4 +39,24 @@ export interface LogicalExpression {
 export interface ParenExpression {
     output: string;
     isParenExpression: true;
+}
+
+export interface IntCastExpression {
+    output: string;
+    isIntCastExpression: true;
+}
+
+export interface FloatCastExpression {
+    output: string;
+    isFloatCastExpression: true;
+}
+
+export interface StringCastExpression {
+    output: string;
+    isStringCastExpression: true;
+}
+
+export interface JsonCastExpression {
+    output: string;
+    isJsonCastExpression: true;
 }

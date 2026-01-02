@@ -3,8 +3,8 @@ kind: Workflow
 metadata:
   annotations:
     workflows.argoproj.io/description: |
-      This is a simple hello world example.
-  generateName: logical-operators-
+      This is an example of some of the different ways logical expressions can be used.
+  generateName: logical-
   labels:
     workflows.argoproj.io/archive-strategy: 'false'
 spec:
@@ -30,8 +30,8 @@ spec:
                   value: "{{=!( workflow.parameters['false-param'] == 'true' )}}"
                 - name: combined-param
                   value: "{{=( workflow.parameters['true-param'] == 'true' || workflow.parameters['false-param'] == 'false' ) && !( workflow.parameters['false-param'] == 'true' )}}"
-            name: logical-operators-task
-            template: logical-operators
+            name: logical-task
+            template: logical
       name: entrypoint
     - inputs:
         parameters:
@@ -40,13 +40,15 @@ spec:
           - name: paren-param
           - name: not-param
           - name: combined-param
-      name: logical-operators
+      name: logical
       script:
-        command: ['/bin/sh']
+        command:
+          - '/bin/sh'
+          - '-e'
         image: busybox
         source: >
-          if [ "{{inputs.parameters.and-param}}" !== true ]; then exit 12; fi
-                              if [ "{{inputs.parameters.or-param}}" !== true ]; then exit 13; fi
-                              if [ "{{inputs.parameters.paren-param}}" !== true ]; then exit 14; fi
-                              if [ "{{inputs.parameters.not-param}}" !== true ]; then exit 15; fi
-                              if [ "{{inputs.parameters.combined-param}}" !== true ]; then exit 16; fi
+          if [ "{{inputs.parameters.and-param}}" != true ]; then exit 12; fi
+                              if [ "{{inputs.parameters.or-param}}" != true ]; then exit 13; fi
+                              if [ "{{inputs.parameters.paren-param}}" != true ]; then exit 14; fi
+                              if [ "{{inputs.parameters.not-param}}" != true ]; then exit 15; fi
+                              if [ "{{inputs.parameters.combined-param}}" != true ]; then exit 16; fi

@@ -5,7 +5,7 @@ import { OutputParameter } from '../../../src/api/parameter';
 import { hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
 import { equals } from '../../../src/api/expressions/comparison';
 
-describe('comparison tests', (): void => {
+describe('conditional tests', (): void => {
     const expressionArg1 = { dagTask: new DagTask('A', {}), output: new OutputParameter('output1') };
     const expressionArg2 = { dagTask: new DagTask('B', {}), output: new OutputParameter('output2') };
 
@@ -19,13 +19,6 @@ describe('comparison tests', (): void => {
             const result = ternary(comparison, 'trueValue', 'falseValue');
             expect(result.output).to.equal(
                 `{{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? 'trueValue' : 'falseValue'`,
-            );
-        });
-
-        it('returns successfully when using simple template tags for whenTrue and whenFalse', (): void => {
-            const result = ternary(comparison, simpleTemplateTag1, simpleTemplateTag2);
-            expect(result.output).to.equal(
-                `{{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? {{tasks.A.outputs.parameters.output1}} : {{tasks.B.outputs.parameters.output2}}`,
             );
         });
 
