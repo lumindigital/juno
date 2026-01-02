@@ -1,8 +1,10 @@
 import { Arguments, WorkflowArguments } from '../../src/api/arguments';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
-import { and, equals, not, or, paren } from '../../src/api/expr-api';
-import { expressionTag, hyphenParameter, simpleTag } from '../../src/api/expression';
+import { or, and, paren, not } from '../../src/api/expressions/logical';
+import { equals } from '../../src/api/expressions/comparison';
+import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../src/api/expressions/tag';
+
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../../src/api/parameter';
 import { Script } from '../../src/api/script';
@@ -27,11 +29,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh'],
-            source: `if [ "${simpleTag(andParameter)}" !== true ]; then exit 12; fi
-                    if [ "${simpleTag(orParameter)}" !== true ]; then exit 13; fi
-                    if [ "${simpleTag(parenParameter)}" !== true ]; then exit 14; fi
-                    if [ "${simpleTag(notParameter)}" !== true ]; then exit 15; fi
-                    if [ "${simpleTag(combinedParameter)}" !== true ]; then exit 16; fi
+            source: `if [ "${simpleTag(andParameter).output}" !== true ]; then exit 12; fi
+                    if [ "${simpleTag(orParameter).output}" !== true ]; then exit 13; fi
+                    if [ "${simpleTag(parenParameter).output}" !== true ]; then exit 14; fi
+                    if [ "${simpleTag(notParameter).output}" !== true ]; then exit 15; fi
+                    if [ "${simpleTag(combinedParameter).output}" !== true ]; then exit 16; fi
 `,
             image: 'busybox',
         }),
@@ -44,19 +46,26 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             andParameter.toArgumentParameter({
-                                value: `${expressionTag(and([equals(hyphenParameter(trueParam), true), equals(hyphenParameter(falseParam), false)]))}`,
+                                value: `${
+                                    expressionTag(
+                                        and([
+                                            equals(hyphenateExpressionArgs(trueParam), true),
+                                            equals(hyphenateExpressionArgs(falseParam), false),
+                                        ]),
+                                    ).output
+                                }`,
                             }),
                             orParameter.toArgumentParameter({
-                                value: `${expressionTag(or([equals(hyphenParameter(trueParam), true), equals(hyphenParameter(falseParam), true)]))}`,
+                                value: `${expressionTag(or([equals(hyphenateExpressionArgs(trueParam), true), equals(hyphenateExpressionArgs(falseParam), true)])).output}`,
                             }),
                             parenParameter.toArgumentParameter({
-                                value: `${expressionTag(paren(or([equals(hyphenParameter(trueParam), true), equals(hyphenParameter(falseParam), false)])))}`,
+                                value: `${expressionTag(paren(or([equals(hyphenateExpressionArgs(trueParam), true), equals(hyphenateExpressionArgs(falseParam), false)]))).output}`,
                             }),
                             notParameter.toArgumentParameter({
-                                value: `${expressionTag(not(paren(equals(hyphenParameter(falseParam), true))))}`,
+                                value: `${expressionTag(not(equals(hyphenateExpressionArgs(falseParam), true))).output}`,
                             }),
                             combinedParameter.toArgumentParameter({
-                                value: `${expressionTag(and([paren(or([equals(hyphenParameter(trueParam), true), equals(hyphenParameter(falseParam), false)])), not(paren(equals(hyphenParameter(falseParam), true)))]))}`,
+                                value: `${expressionTag(and([paren(or([equals(hyphenateExpressionArgs(trueParam), true), equals(hyphenateExpressionArgs(falseParam), false)])), not(equals(hyphenateExpressionArgs(falseParam), true))])).output}`,
                             }),
                         ],
                     }),

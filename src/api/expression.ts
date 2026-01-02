@@ -77,12 +77,20 @@ export enum TaskResult {
 /**
  * Takes a string an wraps it in expression tags.
  *
- * @param input - A valid argoworkflow expression string
+ * @param input - A valid argo workflow expression string
  *
- * @returns A string wrapped in expression tags {{=string}}.  Note: this does not handle hypenated parameters. Wrap any hyphenated parameters using {@link hyphenParameter} for that.
+ * @returns A string wrapped in expression tags {{=string}}.  Note: this does not handle hyphenated parameters. Wrap any hyphenated parameters using {@link hyphenParameter} for that.
  * @public
  */
 export function expressionTag(input: string): string {
+    if (input.includes('{{=') && input.includes('}}')) {
+        throw new Error(`expressionTag input ${input} already contains expression tags`);
+    }
+
+    if (input.includes('{{') && input.includes('}}')) {
+        throw new Error(`expressionTag input ${input} cannot contain simple tags`);
+    }
+
     return `{{=${input}}}`;
 }
 
@@ -106,6 +114,16 @@ export function hyphenParameter(input: ExpressionArgs): string {
  * @public
  */
 export function simpleTag(input: ExpressionArgs | string): string {
+    if (typeof input == 'string') {
+        if (input.includes('{{') && input.includes('}}')) {
+            throw new Error(`simpleTag input ${input} cannot contain simple tags`);
+        }
+
+        if (input.includes('{{=') && input.includes('}}')) {
+            throw new Error(`simpleTag input ${input} cannot contain expression tags`);
+        }
+    }
+
     return `{{${getVariableReference(input)}}}`;
 }
 
