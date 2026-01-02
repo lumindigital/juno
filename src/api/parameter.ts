@@ -3,6 +3,7 @@ import {
     IoArgoprojWorkflowV1Alpha1ValueFrom,
 } from '../workflow-interfaces/data-contracts.js';
 import { ExpressionArgs, simpleTag } from './expression.js';
+import { ExpressionTemplateTag } from './expressions/interfaces.js';
 
 class Parameter {
     default?: string;
@@ -14,6 +15,7 @@ class Parameter {
     value?: string;
     valueFrom?: IoArgoprojWorkflowV1Alpha1ValueFrom;
     valueFromExpressionArgs?: ExpressionArgs;
+    valueFromExpressionTag?: ExpressionTemplateTag;
 
     constructor(name: string, init?: Partial<Parameter>) {
         this.name = name;
@@ -27,6 +29,10 @@ class Parameter {
 
         if (this.valueFromExpressionArgs) {
             value = simpleTag(this.valueFromExpressionArgs);
+        }
+
+        if (this.valueFromExpressionTag) {
+            value = this.valueFromExpressionTag.output;
         }
 
         return {
@@ -54,8 +60,14 @@ class Parameter {
             count++;
         }
 
+        if (this.valueFromExpressionTag) {
+            count++;
+        }
+
         if (count > 1) {
-            throw new Error(`value, valueFrom, amnd valueFromExpressionArgs are mutually exclusive on ${this.name}`);
+            throw new Error(
+                `value, valueFrom, valueFromExpressionArgs, and valueFromExpressionTag are mutually exclusive on ${this.name}`,
+            );
         }
     }
 

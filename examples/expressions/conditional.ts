@@ -42,22 +42,27 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             ternaryStringOutputParameter.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
-                                        ternary(
-                                            equals(
-                                                hyphenateExpressionArgs(trueParam),
-                                                hyphenateExpressionArgs(trueParam),
-                                            ),
-                                            'true',
-                                            'false',
-                                        ),
-                                    ).output
-                                }`,
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        equals(hyphenateExpressionArgs(trueParam), hyphenateExpressionArgs(trueParam)),
+                                        'true',
+                                        'false',
+                                    ),
+                                ),
                             }),
                             ternaryExpressionArgsOutputParameter.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        equals(hyphenateExpressionArgs(trueParam), hyphenateExpressionArgs(trueParam)),
+                                        hyphenateExpressionArgs(trueParam),
+                                        hyphenateExpressionArgs(falseParam),
+                                    ),
+                                ),
+                            }),
+                            nestedTernaryParameter.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        equals(hyphenateExpressionArgs(trueParam), hyphenateExpressionArgs(trueParam)),
                                         ternary(
                                             equals(
                                                 hyphenateExpressionArgs(trueParam),
@@ -66,36 +71,16 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                             hyphenateExpressionArgs(trueParam),
                                             hyphenateExpressionArgs(falseParam),
                                         ),
-                                    ).output
-                                }`,
-                            }),
-                            nestedTernaryParameter.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
                                         ternary(
                                             equals(
                                                 hyphenateExpressionArgs(trueParam),
                                                 hyphenateExpressionArgs(trueParam),
                                             ),
-                                            ternary(
-                                                equals(
-                                                    hyphenateExpressionArgs(trueParam),
-                                                    hyphenateExpressionArgs(trueParam),
-                                                ),
-                                                hyphenateExpressionArgs(trueParam),
-                                                hyphenateExpressionArgs(falseParam),
-                                            ),
-                                            ternary(
-                                                equals(
-                                                    hyphenateExpressionArgs(trueParam),
-                                                    hyphenateExpressionArgs(trueParam),
-                                                ),
-                                                hyphenateExpressionArgs(trueParam),
-                                                hyphenateExpressionArgs(falseParam),
-                                            ),
+                                            hyphenateExpressionArgs(trueParam),
+                                            hyphenateExpressionArgs(falseParam),
                                         ),
-                                    ).output
-                                }`,
+                                    ),
+                                ),
                             }),
                         ],
                     }),

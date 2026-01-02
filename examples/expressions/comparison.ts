@@ -65,88 +65,73 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             equalsTernaryParameters.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
-                                        ternary(
-                                            equals(
-                                                hyphenateExpressionArgs(trueParam),
-                                                hyphenateExpressionArgs(trueParam),
-                                            ),
-                                            'true',
-                                            'false',
-                                        ),
-                                    ).output
-                                }`,
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        equals(hyphenateExpressionArgs(trueParam), hyphenateExpressionArgs(trueParam)),
+                                        'true',
+                                        'false',
+                                    ),
+                                ),
                             }),
                             notEqualsTernaryParameter.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
-                                        ternary(
-                                            notEquals(
-                                                hyphenateExpressionArgs(trueParam),
-                                                hyphenateExpressionArgs(falseParam),
-                                            ),
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        notEquals(
                                             hyphenateExpressionArgs(trueParam),
                                             hyphenateExpressionArgs(falseParam),
                                         ),
-                                    ).output
-                                }`,
+                                        hyphenateExpressionArgs(trueParam),
+                                        hyphenateExpressionArgs(falseParam),
+                                    ),
+                                ),
                             }),
                             greaterThanTernaryParameter.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
-                                        ternary(
-                                            greaterThan(
-                                                asInt(hyphenateExpressionArgs(twoParam)),
-                                                asInt(hyphenateExpressionArgs(oneParam)),
-                                            ),
-                                            'true',
-                                            'false',
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        greaterThan(
+                                            asInt(hyphenateExpressionArgs(twoParam)),
+                                            asInt(hyphenateExpressionArgs(oneParam)),
                                         ),
-                                    ).output
-                                }`,
+                                        'true',
+                                        'false',
+                                    ),
+                                ),
                             }),
                             lessThanTernaryParameter.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
-                                        ternary(
-                                            lessThan(
-                                                asInt(hyphenateExpressionArgs(oneParam)),
-                                                asInt(hyphenateExpressionArgs(twoParam)),
-                                            ),
-                                            'true',
-                                            'false',
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        lessThan(
+                                            asInt(hyphenateExpressionArgs(oneParam)),
+                                            asInt(hyphenateExpressionArgs(twoParam)),
                                         ),
-                                    ).output
-                                }`,
+                                        'true',
+                                        'false',
+                                    ),
+                                ),
                             }),
                             greaterThanEqualTernaryParameter.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
-                                        ternary(
-                                            greaterThanOrEqual(
-                                                asInt(hyphenateExpressionArgs(oneParam)),
-                                                asInt(hyphenateExpressionArgs(oneParam)),
-                                            ),
-                                            'true',
-                                            'false',
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        greaterThanOrEqual(
+                                            asInt(hyphenateExpressionArgs(oneParam)),
+                                            asInt(hyphenateExpressionArgs(oneParam)),
                                         ),
-                                    ).output
-                                }`,
+                                        'true',
+                                        'false',
+                                    ),
+                                ),
                             }),
                             lessThanEqualTernaryParameter.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
-                                        ternary(
-                                            lessThanOrEqual(
-                                                asInt(hyphenateExpressionArgs(oneParam)),
-                                                asInt(hyphenateExpressionArgs(twoParam)),
-                                            ),
-                                            'true',
-                                            'false',
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        lessThanOrEqual(
+                                            asInt(hyphenateExpressionArgs(oneParam)),
+                                            asInt(hyphenateExpressionArgs(twoParam)),
                                         ),
-                                    ).output
-                                }`,
+                                        'true',
+                                        'false',
+                                    ),
+                                ),
                             }),
                         ],
                     }),

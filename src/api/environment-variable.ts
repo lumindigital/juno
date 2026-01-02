@@ -1,5 +1,6 @@
 import { IoK8SApiCoreV1EnvVar, IoK8SApiCoreV1EnvVarSource } from '../workflow-interfaces/data-contracts.js';
 import { simpleTag } from './expression.js';
+import { ExpressionTemplateTag } from './expressions/interfaces.js';
 import { InputParameter } from './parameter.js';
 
 export class EnvironmentVariable {
@@ -7,6 +8,7 @@ export class EnvironmentVariable {
     value?: string;
     valueFrom?: IoK8SApiCoreV1EnvVarSource;
     valueFromInputParameter?: InputParameter;
+    valueFromExpressionTag?: ExpressionTemplateTag;
     constructor(name: string, init: Partial<EnvironmentVariable>) {
         this.name = name;
 
@@ -20,6 +22,8 @@ export class EnvironmentVariable {
 
         if (this.valueFromInputParameter) {
             value = simpleTag(this.valueFromInputParameter);
+        } else if (this.valueFromExpressionTag) {
+            value = this.valueFromExpressionTag.output;
         }
 
         return {
@@ -43,9 +47,13 @@ export class EnvironmentVariable {
             count++;
         }
 
+        if (this.valueFromExpressionTag) {
+            count++;
+        }
+
         if (count !== 1) {
             throw new Error(
-                `Exactly one of value, valueFrom, or valueFromInputParameter must be specified on environment variable ${this.name}`,
+                `Exactly one of value, valueFrom, valueFromInputParameter, or valueFromExpressionTag must be specified on environment variable ${this.name}`,
             );
         }
     }

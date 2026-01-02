@@ -46,14 +46,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             andParameter.toArgumentParameter({
-                                value: `${
-                                    expressionTag(
-                                        and([
-                                            equals(hyphenateExpressionArgs(trueParam), true),
-                                            equals(hyphenateExpressionArgs(falseParam), false),
-                                        ]),
-                                    ).output
-                                }`,
+                                valueFromExpressionTag: expressionTag(
+                                    and([
+                                        equals(hyphenateExpressionArgs(trueParam), true),
+                                        equals(hyphenateExpressionArgs(falseParam), false),
+                                    ]),
+                                ),
                             }),
                             orParameter.toArgumentParameter({
                                 value: `${expressionTag(or([equals(hyphenateExpressionArgs(trueParam), true), equals(hyphenateExpressionArgs(falseParam), true)])).output}`,

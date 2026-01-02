@@ -13,6 +13,7 @@ import {
     IoArgoprojWorkflowV1Alpha1S3Artifact,
 } from '../workflow-interfaces/data-contracts.js';
 import { ExpressionArgs, simpleTag } from './expression.js';
+import { ExpressionTemplateTag } from './expressions/interfaces.js';
 
 export class Artifact {
     archive?: IoArgoprojWorkflowV1Alpha1ArchiveStrategy;
@@ -38,6 +39,7 @@ export class Artifact {
     s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
     subPath?: string;
     valueFromExpressionArgs?: ExpressionArgs;
+    valueFromExpressionTag?: ExpressionTemplateTag;
 
     constructor(name: string, init?: Partial<Artifact>) {
         this.name = name;
@@ -52,6 +54,8 @@ export class Artifact {
             from = this.from;
         } else if (this.valueFromExpressionArgs) {
             from = simpleTag(this.valueFromExpressionArgs);
+        } else if (this.valueFromExpressionTag) {
+            from = this.valueFromExpressionTag.output;
         }
 
         return {
@@ -94,8 +98,14 @@ export class Artifact {
             count++;
         }
 
+        if (this.valueFromExpressionTag) {
+            count++;
+        }
+
         if (count > 1) {
-            throw new Error(`from, valueFromExpressionArgs, and fromExpression are mutually exclusive on ${this.name}`);
+            throw new Error(
+                `from, valueFromExpressionArgs, valueFromExpressionTag, and fromExpression are mutually exclusive on ${this.name}`,
+            );
         }
     }
 }
