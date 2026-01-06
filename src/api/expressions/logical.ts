@@ -7,7 +7,7 @@ import {
     LogicalExpression,
     ParenExpression,
     SimpleTemplateTag,
-} from './interfaces.js';
+} from './classes.js';
 
 export type LogicalExpressionInputs =
     | SimpleTemplateTag
@@ -33,7 +33,7 @@ export function and(inputs: LogicalExpressionInputs[]): LogicalExpression {
         } else if (input && (input as TaskAndResult)?.task) {
             output = getVariableReference(input as TaskAndResult);
         } else {
-            output = (input as LogicalExpression).output;
+            output = (input as LogicalExpression).toString();
         }
 
         if (i < inputs.length - 1) {
@@ -41,7 +41,7 @@ export function and(inputs: LogicalExpressionInputs[]): LogicalExpression {
         }
         result += output;
     }
-    return { output: result, isLogicalExpression: true };
+    return new LogicalExpression(result);
 }
 
 export function or(inputs: LogicalExpressionInputs[]): LogicalExpression {
@@ -58,7 +58,7 @@ export function or(inputs: LogicalExpressionInputs[]): LogicalExpression {
         } else if (input && (input as TaskAndResult)?.task) {
             output = getVariableReference(input as TaskAndResult);
         } else {
-            output = (input as LogicalExpression).output;
+            output = (input as LogicalExpression).toString();
         }
 
         if (i < inputs.length - 1) {
@@ -66,26 +66,17 @@ export function or(inputs: LogicalExpressionInputs[]): LogicalExpression {
         }
         result += output;
     }
-    return { output: result, isLogicalExpression: true };
+    return new LogicalExpression(result);
 }
 
 export function not(input: LogicalExpressionInputs): LogicalExpression {
     if (input && (input as ParenExpression)?.isParenExpression) {
-        return {
-            output: `!${(input as ParenExpression).output}`,
-            isLogicalExpression: true,
-        };
+        return new LogicalExpression(`!${(input as ParenExpression).toString()}`);
     }
 
-    return {
-        output: `!${paren(input as LogicalExpression).output}`,
-        isLogicalExpression: true,
-    };
+    return new LogicalExpression(`!${paren(input as LogicalExpression).toString()}`);
 }
 
 export function paren(input: LogicalExpression): ParenExpression {
-    return {
-        output: `( ${input.output} )`,
-        isParenExpression: true,
-    };
+    return new ParenExpression(`( ${input.toString()} )`);
 }

@@ -12,8 +12,9 @@ import {
     IoArgoprojWorkflowV1Alpha1RawArtifact,
     IoArgoprojWorkflowV1Alpha1S3Artifact,
 } from '../workflow-interfaces/data-contracts.js';
-import { ExpressionArgs, simpleTag } from './expression.js';
-import { ExpressionTemplateTag } from './expressions/interfaces.js';
+import { ExpressionArgs } from './expression.js';
+import { ExpressionTemplateTag } from './expressions/classes.js';
+import { simpleTag } from './expressions/tag.js';
 
 export class Artifact {
     archive?: IoArgoprojWorkflowV1Alpha1ArchiveStrategy;
@@ -53,9 +54,9 @@ export class Artifact {
         if (this.from) {
             from = this.from;
         } else if (this.valueFromExpressionArgs) {
-            from = simpleTag(this.valueFromExpressionArgs);
+            from = simpleTag(this.valueFromExpressionArgs).toString();
         } else if (this.valueFromExpressionTag) {
-            from = this.valueFromExpressionTag.output;
+            from = this.valueFromExpressionTag.toString();
         }
 
         return {

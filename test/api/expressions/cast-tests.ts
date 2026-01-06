@@ -11,7 +11,7 @@ describe('cast tests', (): void => {
             const hyphenatedExpressionArgs = hyphenateExpressionArgs(expressionArg);
 
             const result = asInt(hyphenatedExpressionArgs);
-            expect(result.output).to.equal(`asInt(tasks['A-1'].outputs.parameters['output-1'])`);
+            expect(result.toString()).to.equal(`asInt(tasks['A-1'].outputs.parameters['output-1'])`);
         });
     });
 
@@ -21,7 +21,7 @@ describe('cast tests', (): void => {
             const hyphenatedExpressionArgs = hyphenateExpressionArgs(expressionArg);
 
             const result = asFloat(hyphenatedExpressionArgs);
-            expect(result.output).to.equal(`asFloat(tasks['A-1'].outputs.parameters['output-1'])`);
+            expect(result.toString()).to.equal(`asFloat(tasks['A-1'].outputs.parameters['output-1'])`);
         });
     });
 
@@ -31,7 +31,7 @@ describe('cast tests', (): void => {
             const hyphenatedExpressionArgs = hyphenateExpressionArgs(expressionArg);
 
             const result = toJson(hyphenatedExpressionArgs);
-            expect(result.output).to.equal(`toJson(tasks['A-1'].outputs.parameters['output-1'])`);
+            expect(result.toString()).to.equal(`toJson(tasks['A-1'].outputs.parameters['output-1'])`);
         });
     });
 });

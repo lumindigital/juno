@@ -1,9 +1,6 @@
 import { ExpressionArgs, getVariableReference } from '../expression.js';
-import { JsonPathExpression } from './interfaces.js';
+import { JsonPathExpression } from './classes.js';
 
 export function jsonPath(input: ExpressionArgs, value: string): JsonPathExpression {
-    return {
-        output: `jsonpath(${getVariableReference(input)}, '${value}')`,
-        isJsonPathExpression: true,
-    };
+    return new JsonPathExpression(`jsonpath(${getVariableReference(input)}, '${value}')`);
 }

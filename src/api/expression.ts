@@ -74,59 +74,6 @@ export enum TaskResult {
     Daemoned = 'Daemoned',
 }
 
-/**
- * Takes a string an wraps it in expression tags.
- *
- * @param input - A valid argo workflow expression string
- *
- * @returns A string wrapped in expression tags {{=string}}.  Note: this does not handle hyphenated parameters. Wrap any hyphenated parameters using {@link hyphenParameter} for that.
- * @public
- */
-export function expressionTag(input: string): string {
-    if (input.includes('{{=') && input.includes('}}')) {
-        throw new Error(`expressionTag input ${input} already contains expression tags`);
-    }
-
-    if (input.includes('{{') && input.includes('}}')) {
-        throw new Error(`expressionTag input ${input} cannot contain simple tags`);
-    }
-
-    return `{{=${input}}}`;
-}
-
-/**
- * Takes a {@link ExpressionArgs} and converts it to a string that works with expressions
- *
- * @param input - A valid {@link ExpressionArgs} object
- *
- * @returns A string representation of the parameter argument. Any hyphenated parameters will be converted to the bracket notation.
- * @public
- */
-export function hyphenParameter(input: ExpressionArgs): string {
-    return hyphen(getVariableReference(input));
-}
-
-/**
- * Takes a {@link ExpressionArgs} or string and wraps it in simple expression tags.
- * @param input - A valid {@link ExpressionArgs} or string
- *
- * @returns A string wrapped in expression tags
- * @public
- */
-export function simpleTag(input: ExpressionArgs | string): string {
-    if (typeof input == 'string') {
-        if (input.includes('{{') && input.includes('}}')) {
-            throw new Error(`simpleTag input ${input} cannot contain simple tags`);
-        }
-
-        if (input.includes('{{=') && input.includes('}}')) {
-            throw new Error(`simpleTag input ${input} cannot contain expression tags`);
-        }
-    }
-
-    return `{{${getVariableReference(input)}}}`;
-}
-
 export function getVariableReference(expressionArgs: ExpressionArgs | string): string {
     if (typeof expressionArgs === 'string') {
         return expressionArgs;
@@ -288,26 +235,6 @@ export function getVariableReference(expressionArgs: ExpressionArgs | string): s
             throw new Error('Unsupported expression args');
         }
     }
-}
-
-function hyphen(input: string): string {
-    const split = input.split('.');
-    let output = split[0];
-
-    for (let i = 1; i < split.length; i++) {
-        if (split[i].includes('[')) {
-            output = output.concat(`.${split[i]}`);
-            continue;
-        }
-
-        if (split[i].includes('-')) {
-            output = output.concat(`['${split[i]}']`);
-            continue;
-        }
-        output = output.concat(`.${split[i]}`);
-    }
-
-    return output;
 }
 
 function getExpressionType(expressionArgs: ExpressionArgs): ExpressionType {

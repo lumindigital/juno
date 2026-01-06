@@ -4,32 +4,20 @@ import {
     IntCastExpression,
     JsonCastExpression,
     StringCastExpression,
-} from './interfaces.js';
+} from './classes.js';
 
 export function asInt(input: HyphenatedExpressionArgs): IntCastExpression {
-    return {
-        output: `asInt(${input.output})`,
-        isIntCastExpression: true,
-    };
+    return new IntCastExpression(`asInt(${input})`);
 }
 
 export function asFloat(input: HyphenatedExpressionArgs): FloatCastExpression {
-    return {
-        output: `asFloat(${input.output})`,
-        isFloatCastExpression: true,
-    };
+    return new FloatCastExpression(`asFloat(${input})`);
 }
 
 export function asString(input: HyphenatedExpressionArgs): StringCastExpression {
-    return {
-        output: `string(${input.output})`,
-        isStringCastExpression: true,
-    };
+    return new StringCastExpression(`asString(${input})`);
 }
 
 export function toJson(input: HyphenatedExpressionArgs): JsonCastExpression {
-    return {
-        output: `toJson(${input.output})`,
-        isJsonCastExpression: true,
-    };
+    return new JsonCastExpression(`toJson(${input})`);
 }

@@ -4,17 +4,14 @@ import {
     ExpressionTemplateTag,
     HyphenatedExpressionArgs,
     SimpleTemplateTag,
-} from './interfaces.js';
+} from './classes.js';
 
 export type UndefinedExpressionArg = {
     string: string;
 };
 
 export function expressionTag(input: ExpressionTagTemplateInputs): ExpressionTemplateTag {
-    return {
-        output: `{{=${input.output}}}`,
-        isExpressionTagExpression: true,
-    };
+    return new ExpressionTemplateTag(`{{=${input}}}`);
 }
 
 export function simpleTag(input: ExpressionArgs | UndefinedExpressionArg): SimpleTemplateTag {
@@ -23,14 +20,11 @@ export function simpleTag(input: ExpressionArgs | UndefinedExpressionArg): Simpl
             ? (input as UndefinedExpressionArg).string
             : getVariableReference(input as ExpressionArgs);
 
-    return { output: `{{${output}}}`, isSimpleTagExpression: true };
+    return new SimpleTemplateTag(`{{${output}}}`);
 }
 
 export function hyphenateExpressionArgs(input: ExpressionArgs): HyphenatedExpressionArgs {
-    return {
-        output: hyphen(getVariableReference(input)),
-        isHyphenatedExpressionArgs: true,
-    };
+    return new HyphenatedExpressionArgs(hyphen(getVariableReference(input)));
 }
 
 function hyphen(input: string): string {

@@ -34,66 +34,66 @@ describe('comparison tests', (): void => {
     describe('equals', (): void => {
         it('returns successfully when comparing simpleTags', (): void => {
             const result = equals(simpleTemplateTag1, simpleTemplateTag2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 '{{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}}',
             );
         });
 
         it('returns successfully when comparing hyphenateExpressionArgs', (): void => {
             const result = equals(hyphenatedExpressionArgs1, hyphenatedExpressionArgs2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `tasks['A-1'].outputs.parameters['output-1'] == tasks['B-1'].outputs.parameters['output-2']`,
             );
         });
 
         it('returns successfully when comparing simpleTag and boolean', (): void => {
             const result = equals(simpleTemplateTag1, true);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} == 'true'`);
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} == 'true'`);
         });
 
         it('returns successfully when comparing simpleTag and string', (): void => {
             const result = equals(simpleTemplateTag1, `'true'`);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} == 'true'`);
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} == 'true'`);
         });
     });
 
     describe('notEquals', (): void => {
         it('returns successfully when comparing simpleTags', (): void => {
             const result = notEquals(simpleTemplateTag1, simpleTemplateTag2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 '{{tasks.A.outputs.parameters.output1}} != {{tasks.B.outputs.parameters.output2}}',
             );
         });
 
         it('returns successfully when comparing hyphenateExpressionArgs', (): void => {
             const result = notEquals(hyphenatedExpressionArgs1, hyphenatedExpressionArgs2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `tasks['A-1'].outputs.parameters['output-1'] != tasks['B-1'].outputs.parameters['output-2']`,
             );
         });
 
         it('returns successfully when comparing simpleTag and boolean', (): void => {
             const result = notEquals(simpleTemplateTag1, true);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} != 'true'`);
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} != 'true'`);
         });
 
         it('returns successfully when comparing simpleTag and string', (): void => {
             const result = notEquals(simpleTemplateTag1, `'true'`);
-            expect(result.output).to.equal(`{{tasks.A.outputs.parameters.output1}} != 'true'`);
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} != 'true'`);
         });
     });
 
     describe('greaterThan', (): void => {
         it('returns successfully when comparing int', (): void => {
             const result = greaterThan(asIntExpression1, asIntExpression2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `asInt(tasks.A.outputs.parameters.output1) > asInt(tasks.B.outputs.parameters.output2)`,
             );
         });
 
         it('returns successfully when comparing float', (): void => {
             const result = greaterThan(asFloatExpression1, asFloatExpression2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `asFloat(tasks.A.outputs.parameters.output1) > asFloat(tasks.B.outputs.parameters.output2)`,
             );
         });
@@ -102,14 +102,14 @@ describe('comparison tests', (): void => {
     describe('lessThan', (): void => {
         it('returns successfully when comparing int', (): void => {
             const result = lessThan(asIntExpression1, asIntExpression2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `asInt(tasks.A.outputs.parameters.output1) < asInt(tasks.B.outputs.parameters.output2)`,
             );
         });
 
         it('returns successfully when comparing float', (): void => {
             const result = lessThan(asFloatExpression1, asFloatExpression2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `asFloat(tasks.A.outputs.parameters.output1) < asFloat(tasks.B.outputs.parameters.output2)`,
             );
         });
@@ -118,14 +118,14 @@ describe('comparison tests', (): void => {
     describe('greaterThanOrEqual', (): void => {
         it('returns successfully when comparing int', (): void => {
             const result = greaterThanOrEqual(asIntExpression1, asIntExpression2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `asInt(tasks.A.outputs.parameters.output1) >= asInt(tasks.B.outputs.parameters.output2)`,
             );
         });
 
         it('returns successfully when comparing float', (): void => {
             const result = greaterThanOrEqual(asFloatExpression1, asFloatExpression2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `asFloat(tasks.A.outputs.parameters.output1) >= asFloat(tasks.B.outputs.parameters.output2)`,
             );
         });
@@ -134,14 +134,14 @@ describe('comparison tests', (): void => {
     describe('lessThanOrEqual', (): void => {
         it('returns successfully when comparing int', (): void => {
             const result = lessThanOrEqual(asIntExpression1, asIntExpression2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `asInt(tasks.A.outputs.parameters.output1) <= asInt(tasks.B.outputs.parameters.output2)`,
             );
         });
 
         it('returns successfully when comparing float', (): void => {
             const result = lessThanOrEqual(asFloatExpression1, asFloatExpression2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `asFloat(tasks.A.outputs.parameters.output1) <= asFloat(tasks.B.outputs.parameters.output2)`,
             );
         });

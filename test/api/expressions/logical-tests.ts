@@ -3,6 +3,7 @@ import { and, not, or, paren } from '../../../src/api/expressions/logical';
 import { DagTask } from '../../../src/api/dag-task';
 import { TaskResult } from '../../../src/api/expression';
 import { WorkflowStep } from '../../../src/api/workflow-step';
+import { LogicalExpression, ParenExpression } from '../../../src/api/expressions/classes';
 
 describe('logical tests', (): void => {
     const dagTask = new DagTask('B', {});
@@ -12,46 +13,34 @@ describe('logical tests', (): void => {
 
     describe('and', (): void => {
         it('returns successfully', (): void => {
-            const result = and([
-                { output: 'A', isLogicalExpression: true },
-                dagTask,
-                dagTaskResult,
-                workflowStep,
-                workflowStepResult,
-            ]);
-            expect(result.output).to.equal('A && B && B.Succeeded && C && C.Succeeded');
+            const result = and([new LogicalExpression('A'), dagTask, dagTaskResult, workflowStep, workflowStepResult]);
+            expect(result.toString()).to.equal('A && B && B.Succeeded && C && C.Succeeded');
         });
     });
 
     describe('or', (): void => {
         it('returns successfully', (): void => {
-            const result = or([
-                { output: 'A', isLogicalExpression: true },
-                dagTask,
-                dagTaskResult,
-                workflowStep,
-                workflowStepResult,
-            ]);
-            expect(result.output).to.equal('A || B || B.Succeeded || C || C.Succeeded');
+            const result = or([new LogicalExpression('A'), dagTask, dagTaskResult, workflowStep, workflowStepResult]);
+            expect(result.toString()).to.equal('A || B || B.Succeeded || C || C.Succeeded');
         });
     });
 
     describe('not', (): void => {
         it('returns successfully when not a paren', (): void => {
-            const result = not({ output: 'A && B', isLogicalExpression: true });
-            expect(result.output).to.equal('!( A && B )');
+            const result = not(new LogicalExpression('A && B'));
+            expect(result.toString()).to.equal('!( A && B )');
         });
 
         it('returns successfully when input is a paren', (): void => {
-            const result = not({ output: '( A && B )', isParenExpression: true });
-            expect(result.output).to.equal('!( A && B )');
+            const result = not(new ParenExpression('( A && B )'));
+            expect(result.toString()).to.equal('!( A && B )');
         });
     });
 
     describe('paren', (): void => {
         it('returns successfully', (): void => {
-            const result = paren({ output: 'A || B', isLogicalExpression: true });
-            expect(result.output).to.equal('( A || B )');
+            const result = paren(new LogicalExpression('A || B'));
+            expect(result.toString()).to.equal('( A || B )');
         });
     });
 });

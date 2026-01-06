@@ -25,14 +25,14 @@ describe('conditional tests', (): void => {
     describe('ternary', (): void => {
         it('returns successfully when using strings for whenTrue and whenFalse', (): void => {
             const result = ternary(comparison, 'trueValue', 'falseValue');
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `{{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? 'trueValue' : 'falseValue'`,
             );
         });
 
         it('returns successfully when using hyphenated tags for whenTrue and whenFalse', (): void => {
             const result = ternary(comparison, hyphenatedExpressionArgs1, hyphenatedExpressionArgs2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `{{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? tasks['A-1'].outputs.parameters['output-1'] : tasks['B-1'].outputs.parameters['output-2']`,
             );
         });
@@ -41,7 +41,7 @@ describe('conditional tests', (): void => {
             const innerTernaryTrue = ternary(comparison, 'innerTrue', 'innerFalse');
             const innerTernaryFalse = ternary(comparison, 'innerTrue', 'innerFalse');
             const result = ternary(comparison, innerTernaryTrue, innerTernaryFalse);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `{{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? {{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? 'innerTrue' : 'innerFalse' : {{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? 'innerTrue' : 'innerFalse'`,
             );
         });
@@ -50,14 +50,14 @@ describe('conditional tests', (): void => {
     describe('nil coalescing', (): void => {
         it('returns successfully when using hyphenated expression args for condition and whenNil', (): void => {
             const result = nilCoalescing(hyphenatedExpressionArgs1, hyphenatedExpressionArgs2);
-            expect(result.output).to.equal(
+            expect(result.toString()).to.equal(
                 `tasks['A-1'].outputs.parameters['output-1'] ?? tasks['B-1'].outputs.parameters['output-2']`,
             );
         });
 
         it('returns successfully when using hyphenated expression args for condition and string for whenNil', (): void => {
             const result = nilCoalescing(hyphenatedExpressionArgs1, 'defaultValue');
-            expect(result.output).to.equal(`tasks['A-1'].outputs.parameters['output-1'] ?? 'defaultValue'`);
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] ?? 'defaultValue'`);
         });
     });
 });

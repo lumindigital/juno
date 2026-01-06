@@ -30,7 +30,7 @@ export class WorkflowStep extends BaseTaskOrStep {
             onExit: this.onExit ? this.onExit?.name : undefined,
             template: templateName,
             templateRef: this.templateRef?.toTemplateRef(),
-            when: this.when,
+            when: this.toWhenParam(),
             withItems: this.withItems,
             withParam: this.toWithParam(this.withParamExpression),
             withSequence: this.withSequence,

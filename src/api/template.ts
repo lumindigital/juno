@@ -91,7 +91,7 @@ export class BaseTemplate {
             container: this.container?.toContainer(),
             containerSet: this.containerSet?.toContainerSetTemplate(),
             daemon: this.daemon,
-            dag: this.dag?.toDagTemplate(),
+            dag: this.dag?.toDagTemplate(this.name ?? ''),
             data: this.data,
             executor: this.executor,
             failFast: this.failFast,

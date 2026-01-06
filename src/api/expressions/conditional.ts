@@ -3,23 +3,23 @@ import {
     HyphenatedExpressionArgs,
     NilCoalescingExpression,
     TernaryExpression,
-} from './interfaces.js';
+} from './classes.js';
 
 export function ternary(
     condition: ComparisonExpression,
     whenTrue: string | HyphenatedExpressionArgs | TernaryExpression,
     whenFalse: string | HyphenatedExpressionArgs | TernaryExpression,
 ): TernaryExpression {
-    const conditionalOutput = condition.output;
+    const conditionalOutput = condition.toString();
 
     let whenTrueOutput: string;
 
     if (typeof whenTrue === 'string') {
         whenTrueOutput = `'${whenTrue}'`;
-    } else if ((whenTrue as TernaryExpression)?.output != null) {
-        whenTrueOutput = (whenTrue as TernaryExpression).output;
+    } else if ((whenTrue as TernaryExpression)?.toString() != null) {
+        whenTrueOutput = (whenTrue as TernaryExpression).toString();
     } else if ((whenTrue as HyphenatedExpressionArgs)?.isHyphenatedExpressionArgs) {
-        whenTrueOutput = (whenTrue as HyphenatedExpressionArgs).output;
+        whenTrueOutput = (whenTrue as HyphenatedExpressionArgs).toString();
     } else {
         throw new Error(`Invalid type for whenTrue parameter ${whenTrue} in ternary expression`);
     }
@@ -28,18 +28,15 @@ export function ternary(
 
     if (typeof whenFalse === 'string') {
         whenFalseOutput = `'${whenFalse}'`;
-    } else if ((whenFalse as TernaryExpression)?.output != null) {
-        whenFalseOutput = (whenFalse as TernaryExpression).output;
+    } else if ((whenFalse as TernaryExpression)?.toString() != null) {
+        whenFalseOutput = (whenFalse as TernaryExpression).toString();
     } else if ((whenFalse as HyphenatedExpressionArgs)?.isHyphenatedExpressionArgs) {
-        whenFalseOutput = (whenFalse as HyphenatedExpressionArgs).output;
+        whenFalseOutput = (whenFalse as HyphenatedExpressionArgs).toString();
     } else {
         throw new Error(`Invalid type for whenFalse parameter ${whenFalse} in ternary expression`);
     }
 
-    return {
-        output: `${conditionalOutput} ? ${whenTrueOutput} : ${whenFalseOutput}`,
-        isTernaryExpression: true,
-    };
+    return new TernaryExpression(`${conditionalOutput} ? ${whenTrueOutput} : ${whenFalseOutput}`);
 }
 
 export function nilCoalescing(
@@ -51,11 +48,8 @@ export function nilCoalescing(
     if (typeof whenNil === 'string') {
         nilResult = `'${whenNil}'`;
     } else {
-        nilResult = whenNil.output;
+        nilResult = whenNil.toString();
     }
 
-    return {
-        output: `${condition.output} ?? ${nilResult}`,
-        isNilCoalescingExpression: true,
-    };
+    return new NilCoalescingExpression(`${condition.toString()} ?? ${nilResult}`);
 }

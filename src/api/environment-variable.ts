@@ -1,6 +1,6 @@
 import { IoK8SApiCoreV1EnvVar, IoK8SApiCoreV1EnvVarSource } from '../workflow-interfaces/data-contracts.js';
-import { simpleTag } from './expression.js';
-import { ExpressionTemplateTag } from './expressions/interfaces.js';
+import { ExpressionTemplateTag } from './expressions/classes.js';
+import { simpleTag } from './expressions/tag.js';
 import { InputParameter } from './parameter.js';
 
 export class EnvironmentVariable {
@@ -21,9 +21,9 @@ export class EnvironmentVariable {
         let value = this.value;
 
         if (this.valueFromInputParameter) {
-            value = simpleTag(this.valueFromInputParameter);
+            value = simpleTag(this.valueFromInputParameter).toString();
         } else if (this.valueFromExpressionTag) {
-            value = this.valueFromExpressionTag.output;
+            value = this.valueFromExpressionTag.toString();
         }
 
         return {

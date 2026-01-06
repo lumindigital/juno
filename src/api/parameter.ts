@@ -2,8 +2,9 @@ import {
     IoArgoprojWorkflowV1Alpha1Parameter,
     IoArgoprojWorkflowV1Alpha1ValueFrom,
 } from '../workflow-interfaces/data-contracts.js';
-import { ExpressionArgs, simpleTag } from './expression.js';
-import { ExpressionTemplateTag } from './expressions/interfaces.js';
+import { ExpressionArgs } from './expression.js';
+import { ExpressionTemplateTag } from './expressions/classes.js';
+import { simpleTag } from './expressions/tag.js';
 
 class Parameter {
     default?: string;
@@ -28,11 +29,11 @@ class Parameter {
         let value = this.value;
 
         if (this.valueFromExpressionArgs) {
-            value = simpleTag(this.valueFromExpressionArgs);
+            value = simpleTag(this.valueFromExpressionArgs).toString();
         }
 
         if (this.valueFromExpressionTag) {
-            value = this.valueFromExpressionTag.output;
+            value = this.valueFromExpressionTag.toString();
         }
 
         return {

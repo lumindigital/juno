@@ -6,7 +6,7 @@ import {
     IntCastExpression,
     JsonPathExpression,
     SimpleTemplateTag,
-} from './interfaces.js';
+} from './classes.js';
 
 const enum Comparators {
     EQUALS = '==',
@@ -64,7 +64,7 @@ function comparison<T extends HyphenatedExpressionArgs | SimpleTemplateTag | Cas
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
-    const leftSide = left.output;
+    const leftSide = left.toString();
     let rightSide: string;
 
     if (typeof right === 'boolean') {
@@ -73,11 +73,8 @@ function comparison<T extends HyphenatedExpressionArgs | SimpleTemplateTag | Cas
     } else if (typeof right === 'string') {
         rightSide = `${right}`;
     } else {
-        rightSide = right.output;
+        rightSide = right.toString();
     }
 
-    return {
-        output: `${leftSide} ${operator} ${rightSide}`,
-        isComparisonExpression: true,
-    };
+    return new ComparisonExpression(`${leftSide} ${operator} ${rightSide}`);
 }
