@@ -4,6 +4,7 @@ import {
     FloatCastExpression,
     HyphenatedExpressionArgs,
     IntCastExpression,
+    JsonPathExpression,
     SimpleTemplateTag,
 } from './interfaces.js';
 
@@ -16,49 +17,49 @@ const enum Comparators {
     LESS_THAN_OR_EQUAL = '<=',
 }
 
-export function equals<T extends HyphenatedExpressionArgs | SimpleTemplateTag>(
+export function equals<T extends HyphenatedExpressionArgs | SimpleTemplateTag | JsonPathExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.EQUALS, left, right);
 }
 
-export function notEquals<T extends HyphenatedExpressionArgs | SimpleTemplateTag>(
+export function notEquals<T extends HyphenatedExpressionArgs | SimpleTemplateTag | JsonPathExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.NOT_EQUALS, left, right);
 }
 
-export function greaterThan<T extends IntCastExpression | FloatCastExpression>(
+export function greaterThan<T extends IntCastExpression | FloatCastExpression | JsonPathExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.GREATER_THAN, left, right);
 }
 
-export function lessThan<T extends IntCastExpression | FloatCastExpression>(
+export function lessThan<T extends IntCastExpression | FloatCastExpression | JsonPathExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.LESS_THAN, left, right);
 }
 
-export function greaterThanOrEqual<T extends IntCastExpression | FloatCastExpression>(
+export function greaterThanOrEqual<T extends IntCastExpression | FloatCastExpression | JsonPathExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.GREATER_THAN_OR_EQUAL, left, right);
 }
 
-export function lessThanOrEqual<T extends IntCastExpression | FloatCastExpression>(
+export function lessThanOrEqual<T extends IntCastExpression | FloatCastExpression | JsonPathExpression>(
     left: T,
     right: T | boolean | string,
 ): ComparisonExpression {
     return comparison(Comparators.LESS_THAN_OR_EQUAL, left, right);
 }
 
-function comparison<T extends HyphenatedExpressionArgs | SimpleTemplateTag | CastExpressions>(
+function comparison<T extends HyphenatedExpressionArgs | SimpleTemplateTag | CastExpressions | JsonPathExpression>(
     operator: Comparators,
     left: T,
     right: T | boolean | string,

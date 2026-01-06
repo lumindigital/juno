@@ -70,3 +70,8 @@ export interface JsonCastExpression {
     output: string;
     isJsonCastExpression: true;
 }
+
+export interface JsonPathExpression {
+    output: string;
+    isJsonPathExpression: true;
+}
