@@ -23,8 +23,8 @@ class Parameter {
         Object.assign(this, init);
     }
 
-    toParameter(): IoArgoprojWorkflowV1Alpha1Parameter {
-        this.validateMutuallyExclusive();
+    toParameter(templateName: string): IoArgoprojWorkflowV1Alpha1Parameter {
+        this.validateMutuallyExclusive(templateName);
 
         let value = this.value;
 
@@ -47,7 +47,7 @@ class Parameter {
         };
     }
 
-    validateMutuallyExclusive() {
+    validateMutuallyExclusive(templateName: string) {
         let count = 0;
         if (this.value || this.value === '') {
             count++;
@@ -67,7 +67,7 @@ class Parameter {
 
         if (count > 1) {
             throw new Error(
-                `value, valueFrom, valueFromExpressionArgs, and valueFromExpressionTag are mutually exclusive on ${this.name}`,
+                `value, valueFrom, valueFromExpressionArgs, and valueFromExpressionTag are mutually exclusive on parameter ${this.name} on ${templateName}`,
             );
         }
     }

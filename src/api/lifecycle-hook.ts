@@ -41,7 +41,7 @@ export class LifecycleHook {
         }
 
         return {
-            arguments: this.arguments?.toArguments(),
+            arguments: this.arguments?.toArguments(`lifecycle-hook-${this.name}`),
             expression: this.expression,
             template: this.template?.name,
             templateRef: this.templateRef?.toTemplateRef(),

@@ -8,6 +8,6 @@ describe('parameter validation tests', (): void => {
             valueFromExpressionArgs: { dagTask: new DagTask('A', {}), output: 'someOutput' },
         });
 
-        expect(() => input.toParameter()).to.not.throw();
+        expect(() => input.toParameter('workflow')).to.not.throw();
     });
 });

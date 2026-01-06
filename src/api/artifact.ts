@@ -47,8 +47,8 @@ export class Artifact {
         Object.assign(this, init);
     }
 
-    toArtifact(): IoArgoprojWorkflowV1Alpha1Artifact {
-        this.validateMutuallyExclusive();
+    toArtifact(templateName: string): IoArgoprojWorkflowV1Alpha1Artifact {
+        this.validateMutuallyExclusive(templateName);
 
         let from;
         if (this.from) {
@@ -85,7 +85,7 @@ export class Artifact {
         };
     }
 
-    validateMutuallyExclusive() {
+    validateMutuallyExclusive(templateName: string) {
         let count = 0;
         if (this.from || this.from === '') {
             count++;
@@ -105,7 +105,7 @@ export class Artifact {
 
         if (count > 1) {
             throw new Error(
-                `from, valueFromExpressionArgs, valueFromExpressionTag, and fromExpression are mutually exclusive on ${this.name}`,
+                `from, valueFromExpressionArgs, valueFromExpressionTag, and fromExpression are mutually exclusive on artifact ${this.name} on ${templateName}`,
             );
         }
     }

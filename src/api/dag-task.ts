@@ -39,7 +39,7 @@ export class DagTask extends BaseTaskOrStep {
         }
 
         return {
-            arguments: this.arguments?.toArguments(),
+            arguments: this.arguments?.toArguments(`dag-task-${this.name}`),
             continueOn: this.continueOn,
             dependencies: this.dependencies?.map((dep) => {
                 if (typeof dep === 'string') {

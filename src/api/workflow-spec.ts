@@ -459,7 +459,7 @@ export class WorkflowSpec {
             activeDeadlineSeconds: this.activeDeadlineSeconds,
             affinity: this.affinity,
             archiveLogs: this.archiveLogs,
-            arguments: this.arguments?.toArguments(),
+            arguments: this.arguments?.toArguments('workflow'),
             artifactGC: this.artifactGC,
             artifactRepositoryRef: this.artifactRepositoryRef,
             automountServiceAccountToken: this.automountServiceAccountToken,

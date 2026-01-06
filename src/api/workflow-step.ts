@@ -22,7 +22,7 @@ export class WorkflowStep extends BaseTaskOrStep {
         }
 
         return {
-            arguments: this.arguments?.toArguments(),
+            arguments: this.arguments?.toArguments(`workflow-step-${this.name}`),
             continueOn: this.continueOn,
             hooks: this.hooks ? LifecycleHook.convertLifecycleHooksRecord(this.hooks) : undefined,
             inline: this.inline?.toTemplate(),
