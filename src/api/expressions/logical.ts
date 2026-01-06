@@ -1,3 +1,6 @@
+import { DagTask } from '../dag-task.js';
+import { getVariableReference, TaskAndResult } from '../expression.js';
+import { WorkflowStep } from '../workflow-step.js';
 import {
     ComparisonExpression,
     HyphenatedExpressionArgs,
@@ -11,15 +14,58 @@ export type LogicalExpressionInputs =
     | HyphenatedExpressionArgs
     | ComparisonExpression
     | LogicalExpression
-    | ParenExpression;
+    | ParenExpression
+    | DagTask
+    | WorkflowStep
+    | TaskAndResult;
 
 export function and(inputs: LogicalExpressionInputs[]): LogicalExpression {
-    const result = inputs.map((x) => x.output).join(' && ');
+    let result = '';
+
+    for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i];
+        let output: string;
+
+        if (input && (input as DagTask)?.isDagTask) {
+            output = (input as DagTask).name;
+        } else if (input && (input as WorkflowStep)?.isWorkflowStep) {
+            output = (input as WorkflowStep).name;
+        } else if (input && (input as TaskAndResult)?.task) {
+            output = getVariableReference(input as TaskAndResult);
+        } else {
+            output = (input as LogicalExpression).output;
+        }
+
+        if (i < inputs.length - 1) {
+            output += ' && ';
+        }
+        result += output;
+    }
     return { output: result, isLogicalExpression: true };
 }
 
 export function or(inputs: LogicalExpressionInputs[]): LogicalExpression {
-    const result = inputs.map((x) => x.output).join(' || ');
+    let result = '';
+
+    for (let i = 0; i < inputs.length; i++) {
+        const input = inputs[i];
+        let output: string;
+
+        if (input && (input as DagTask)?.isDagTask) {
+            output = (input as DagTask).name;
+        } else if (input && (input as WorkflowStep)?.isWorkflowStep) {
+            output = (input as WorkflowStep).name;
+        } else if (input && (input as TaskAndResult)?.task) {
+            output = getVariableReference(input as TaskAndResult);
+        } else {
+            output = (input as LogicalExpression).output;
+        }
+
+        if (i < inputs.length - 1) {
+            output += ' || ';
+        }
+        result += output;
+    }
     return { output: result, isLogicalExpression: true };
 }
 
