@@ -1,7 +1,7 @@
 import { Arguments } from '../../src/api/arguments';
 import { InputArtifact, OutputArtifact } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { FromItemProperty, InputParameter } from '../../src/api/parameter';
@@ -43,7 +43,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         container: new Container({
             args: ['uname -a ; cat /etc/os-release ; /go/src/github.com/golang/example/hello/hello'],
             command: ['sh', '-c'],
-            image: simpleTag(osImageInputParameter),
+            image: simpleTag(osImageInputParameter).toString(),
             volumeMounts: [
                 {
                     mountPath: '/go',

@@ -1,7 +1,7 @@
 import { Arguments } from '../../src/api/arguments';
 import { OutputResult } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter } from '../../src/api/parameter';
 import { Script } from '../../src/api/script';
@@ -27,7 +27,7 @@ print(i)
 
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
-            args: ['echo result was: ' + simpleTag(messageInputParameter)],
+            args: ['echo result was: ' + simpleTag(messageInputParameter).toString()],
             command: ['sh', '-c'],
             image: 'alpine:latest',
         }),

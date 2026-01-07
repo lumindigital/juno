@@ -1,6 +1,6 @@
 import { Arguments, WorkflowArguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { FromItemProperty, InputParameter } from '../../src/api/parameter';
 import { Template } from '../../src/api/template';
@@ -43,7 +43,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         ],
                     }),
                     template: catOsReleaseTemplate,
-                    withParamExpression: simpleTag(osListInputParameter),
+                    withParamExpression: osListInputParameter,
                 }),
             ],
         ],

@@ -1,7 +1,9 @@
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { equals } from '../../src/api/expressions/comparison';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Outputs } from '../../src/api/outputs';
 import { OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -11,9 +13,9 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interface
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const randIntValue = new OutputParameter('rand-int-value', {
         globalName: 'rand-int-value',
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             path: '/tmp/rand_int.txt',
-        },
+        }),
     });
 
     const randomIntTemplate = new Template('random-int', {
@@ -28,15 +30,15 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     help: 'Value of the int emitted by random-int at step level',
                     histogram: {
                         buckets: [2.01, 4.01, 6.01, 8.01, 10.01],
-                        value: simpleTag(randIntValue),
+                        value: simpleTag(randIntValue).toString(),
                     },
                     name: 'random_int_step_histogram',
-                    when: `${simpleTag('status')} == Succeeded`,
+                    when: equals(simpleTag({ string: 'status' }), 'Succeeded').toString(),
                 },
                 {
                     gauge: {
                         realtime: true,
-                        value: `${simpleTag('duration')}`,
+                        value: simpleTag({ string: 'duration' }).toString(),
                     },
                     help: 'Duration gauge by name',
                     labels: [
@@ -74,7 +76,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         },
                         {
                             key: 'status',
-                            value: `${simpleTag('status')}`,
+                            value: `${simpleTag({ string: 'status' })}`,
                         },
                     ],
                     name: 'result_counter',
@@ -89,7 +91,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 {
                     gauge: {
                         realtime: true,
-                        value: `${simpleTag('duration')}`,
+                        value: simpleTag({ string: 'duration' }).toString(),
                     },
                     help: 'Duration gauge by name',
                     labels: [
@@ -127,7 +129,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     {
                         gauge: {
                             realtime: true,
-                            value: `${simpleTag('workflow.duration')}`,
+                            value: simpleTag({ string: 'workflow.duration' }).toString(),
                         },
                         help: 'Duration gauge by name',
                         labels: [

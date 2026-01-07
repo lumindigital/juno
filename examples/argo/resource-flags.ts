@@ -1,4 +1,4 @@
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';

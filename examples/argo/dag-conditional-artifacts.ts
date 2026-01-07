@@ -1,14 +1,15 @@
 import { OutputArtifact, OutputResult } from '../../src/api/artifact';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
-import { getVariableReference, hyphenParameter, simpleTag } from '../../src/api/expression';
+import { ternary } from '../../src/api/expressions/conditional';
+import { hyphenateExpressionArgs, simpleTag } from '../../src/api/expressions/tag';
+import { equals } from '../../src/api/expressions/comparison';
 import { Outputs } from '../../src/api/outputs';
 import { Script } from '../../src/api/script';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
-
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const flipCoinTemplate = new Template('flip-coin', {
         script: new Script({
@@ -57,12 +58,12 @@ print("heads" if random.randint(0,1) == 0 else "tails")
     const headsTask = new DagTask('heads', {
         depends: flipCoinTask,
         template: headsTemplate,
-        when: `${simpleTag({ dagTask: flipCoinTask, output: new OutputResult() })} == heads`,
+        whenExpression: equals(simpleTag({ dagTask: flipCoinTask, output: new OutputResult() }), 'heads'),
     });
     const tailsTask = new DagTask('tails', {
         depends: flipCoinTask,
         template: tailsTemplate,
-        when: `${simpleTag({ dagTask: flipCoinTask, output: new OutputResult() })} == tails`,
+        whenExpression: equals(simpleTag({ dagTask: flipCoinTask, output: new OutputResult() }), 'tails'),
     });
 
     const mainTemplate = new Template('main', {
@@ -72,7 +73,11 @@ print("heads" if random.randint(0,1) == 0 else "tails")
         outputs: new Outputs({
             artifacts: [
                 new OutputArtifact('result', {
-                    fromExpression: `${hyphenParameter({ dagTask: flipCoinTask, output: new OutputResult() })} == 'heads' ? ${getVariableReference({ dagTask: headsTask, output: resultArtifact })} : ${getVariableReference({ dagTask: tailsTask, output: resultArtifact })}`,
+                    fromExpression: ternary(
+                        equals(hyphenateExpressionArgs({ dagTask: flipCoinTask, output: new OutputResult() }), 'heads'),
+                        hyphenateExpressionArgs({ dagTask: headsTask, output: resultArtifact }),
+                        hyphenateExpressionArgs({ dagTask: tailsTask, output: resultArtifact }),
+                    ).toString(),
                 }),
             ],
         }),

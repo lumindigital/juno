@@ -3,7 +3,7 @@ import { Container } from '../../src/api/container';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
 import { EnvironmentVariable } from '../../src/api/environment-variable';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../../src/api/parameter';
 import { Template } from '../../src/api/template';

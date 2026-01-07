@@ -47,12 +47,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `if [ "${simpleTag(equalsTernaryParameters).output}" != true ]; then exit 12; fi
-                     if [ "${simpleTag(notEqualsTernaryParameter).output}" != true ]; then exit 13; fi
-                     if [ "${simpleTag(greaterThanTernaryParameter).output}" != true ]; then exit 14; fi
-                     if [ "${simpleTag(lessThanTernaryParameter).output}" != true ]; then exit 15; fi
-                     if [ "${simpleTag(greaterThanEqualTernaryParameter).output}" != true ]; then exit 16; fi
-                     if [ "${simpleTag(lessThanEqualTernaryParameter).output}" != true ]; then exit 17; fi
+            source: `if [ "${simpleTag(equalsTernaryParameters)}" != true ]; then exit 12; fi
+                     if [ "${simpleTag(notEqualsTernaryParameter)}" != true ]; then exit 13; fi
+                     if [ "${simpleTag(greaterThanTernaryParameter)}" != true ]; then exit 14; fi
+                     if [ "${simpleTag(lessThanTernaryParameter)}" != true ]; then exit 15; fi
+                     if [ "${simpleTag(greaterThanEqualTernaryParameter)}" != true ]; then exit 16; fi
+                     if [ "${simpleTag(lessThanEqualTernaryParameter)}" != true ]; then exit 17; fi
 `,
             image: 'busybox',
         }),

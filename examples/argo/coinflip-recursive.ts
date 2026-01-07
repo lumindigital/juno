@@ -1,7 +1,7 @@
 import { OutputResult } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { equals } from '../../src/api/expr-api';
-import { simpleTag } from '../../src/api/expression';
+import { equals } from '../../src/api/expressions/comparison';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { RecursiveTemplate } from '../../src/api/recursive-template';
 import { Script } from '../../src/api/script';
 import { Template } from '../../src/api/template';
@@ -40,11 +40,17 @@ print(result)
             [
                 new WorkflowStep('heads', {
                     template: headsTemplate,
-                    when: `${equals(simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }), 'heads')}`,
+                    whenExpression: equals(
+                        simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }),
+                        'heads',
+                    ),
                 }),
                 new WorkflowStep('tails', {
                     template: new RecursiveTemplate('coinflip'),
-                    when: `${equals(simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }), 'tails')}`,
+                    whenExpression: equals(
+                        simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }),
+                        'tails',
+                    ),
                 }),
             ],
         ],

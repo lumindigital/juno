@@ -1,9 +1,10 @@
 import { Arguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { InputParameter, OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -14,14 +15,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const messageInputParameter = new InputParameter('message');
 
     const messageOutputParameter = new OutputParameter('message', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             supplied: {},
-        },
+        }),
     });
 
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
-            args: [simpleTag(messageInputParameter)],
+            args: [simpleTag(messageInputParameter).toString()],
             command: ['echo'],
             image: 'busybox',
         }),

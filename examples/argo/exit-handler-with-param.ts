@@ -1,10 +1,11 @@
 import { Arguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { LifecycleHook } from '../../src/api/lifecycle-hook';
 import { Outputs } from '../../src/api/outputs';
 import { InputParameter, OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Script } from '../../src/api/script';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -22,10 +23,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         outputs: new Outputs({
             parameters: [
                 new OutputParameter('result', {
-                    valueFrom: {
+                    valueFrom: new ParameterValueFrom({
                         default: 'Foobar',
                         path: '/tmp/hello_world.txt',
-                    },
+                    }),
                 }),
             ],
         }),
@@ -61,10 +62,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             arguments: new Arguments({
                 parameters: [
                     messageInputParameter.toArgumentParameter({
-                        value: simpleTag({
+                        valueFromExpressionArgs: {
                             output: outputTemplate.outputs?.parameters?.[0] as OutputParameter,
                             workflowStep: mainTemplate.steps?.[0][0],
-                        }),
+                        },
                     }),
                 ],
             }),

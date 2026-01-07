@@ -2,10 +2,10 @@ import { Arguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
-import { expressionTag } from '../../src/api/expression';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { InputParameter, OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -29,9 +29,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         outputs: new Outputs({
             parameters: [
                 new OutputParameter('output', {
-                    valueFrom: {
+                    valueFrom: new ParameterValueFrom({
                         path: '/output',
-                    },
+                    }),
                 }),
             ],
         }),
@@ -42,7 +42,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             tasks: [
                 new DagTask('task-0', {
                     arguments: new Arguments({
-                        parameters: [fooInputParameter.toArgumentParameter({ value: expressionTag('item') })],
+                        parameters: [fooInputParameter.toArgumentParameter({ value: '{{=item}}' })],
                     }),
                     template: pod0Template,
                     withParamExpression: '{{=toJson(filter([1, 3], {# > 1}))}}',

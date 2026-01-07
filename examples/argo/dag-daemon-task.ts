@@ -3,13 +3,13 @@ import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter } from '../../src/api/parameter';
-import { simpleTag } from '../../src/api/expression';
 import { Container } from '../../src/api/container';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
-import { and } from '../../src/api/expr-api';
+import { simpleTag } from '../../src/api/expressions/tag';
+import { and } from '../../src/api/expressions/logical';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const influxdbTemplate = new Template('influxdb', {
@@ -31,7 +31,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const influxdbClientTemplate = new Template('influxdb-client', {
         container: new Container({
-            args: [simpleTag(cmdInputParameter)],
+            args: [simpleTag(cmdInputParameter).toString()],
             command: ['sh', '-c'],
             image: 'appropriate/curl:latest',
         }),

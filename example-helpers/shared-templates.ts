@@ -2,8 +2,8 @@ import { Arguments } from '../src/api/arguments';
 import { Container } from '../src/api/container';
 import { DagTask } from '../src/api/dag-task';
 import { DagTemplate } from '../src/api/dag-template';
-import { and } from '../src/api/expr-api';
-import { simpleTag } from '../src/api/expression';
+import { and } from '../src/api/expressions/logical';
+import { simpleTag } from '../src/api/expressions/tag';
 import { Inputs } from '../src/api/inputs';
 import { InputParameter } from '../src/api/parameter';
 import { Template } from '../src/api/template';
@@ -22,7 +22,7 @@ export class SharedTemplates {
         container: new Container({
             image: 'busybox',
             command: ['echo'],
-            args: [simpleTag(this.messageInputParameter)],
+            args: [simpleTag(this.messageInputParameter).toString()],
         }),
     });
 

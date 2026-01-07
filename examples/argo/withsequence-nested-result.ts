@@ -1,5 +1,5 @@
 import { OutputResult } from '../../src/api/artifact';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Script } from '../../src/api/script';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -30,7 +30,7 @@ print(result)
                 new WorkflowStep('hello-c', {
                     template: helloTemplate,
                     withSequence: {
-                        end: simpleTag({ workflowStep: helloBStep, output: new OutputResult() }),
+                        end: simpleTag({ workflowStep: helloBStep, output: new OutputResult() }).toString(),
                         start: '1',
                     },
                 }),
@@ -49,7 +49,7 @@ print(result)
                 new WorkflowStep('hello-b', {
                     template: helloHelloTemplate,
                     withSequence: {
-                        end: simpleTag({ workflowStep: helloAStep, output: new OutputResult() }),
+                        end: simpleTag({ workflowStep: helloAStep, output: new OutputResult() }).toString(),
                         start: '1',
                     },
                 }),

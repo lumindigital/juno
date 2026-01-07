@@ -1,5 +1,6 @@
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { equals, notEquals } from '../../src/api/expressions/comparison';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -18,7 +19,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const sendEmailTemplate = new Template('send-email', {
         container: new Container({
             args: [
-                `echo send e-mail: ${simpleTag('workflow.name')} ${simpleTag('workflow.status')} ${simpleTag('workflow.duration')}. Failed steps ${simpleTag('workflow.failures')}`,
+                `echo send e-mail: ${simpleTag({ string: 'workflow.name' })} ${simpleTag({ string: 'workflow.status' })} ${simpleTag({ string: 'workflow.duration' })}. Failed steps ${simpleTag({ string: 'workflow.failures' })}`,
             ],
             command: ['sh', '-c'],
             image: 'alpine:latest',
@@ -49,11 +50,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
                 new WorkflowStep('celebrate', {
                     template: celebrateTemplate,
-                    when: `${simpleTag('workflow.status')} == Succeeded`,
+                    whenExpression: equals(simpleTag({ string: 'workflow.status' }), 'Succeeded'),
                 }),
                 new WorkflowStep('cry', {
                     template: cryTemplate,
-                    when: `${simpleTag('workflow.status')} != Succeeded`,
+                    whenExpression: notEquals(simpleTag({ string: 'workflow.status' }), 'Succeeded'),
                 }),
             ],
         ],

@@ -1,6 +1,8 @@
 import { OutputResult } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { equals } from '../../src/api/expressions/comparison';
+import { and, or, paren } from '../../src/api/expressions/logical';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Script } from '../../src/api/script';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -58,18 +60,37 @@ print(result)
             [
                 new WorkflowStep('heads', {
                     template: headsTemplate,
-                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads`,
+                    whenExpression: equals(
+                        simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }),
+                        'heads',
+                    ),
                 }),
                 new WorkflowStep('tails', {
                     template: tailsTemplate,
-                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails`,
+                    whenExpression: equals(
+                        simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }),
+                        'tails',
+                    ),
                 }),
             ],
             [flipAgainStep],
             [
                 new WorkflowStep('complex-condition', {
                     template: headsTailsOrTwiceTailsTemplate,
-                    when: `( ${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads && ${simpleTag({ workflowStep: flipAgainStep, output: new OutputResult() })} == tails ) || ( ${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails && ${simpleTag({ workflowStep: flipAgainStep, output: new OutputResult() })} == tails )`,
+                    whenExpression: or([
+                        paren(
+                            and([
+                                equals(simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }), 'heads'),
+                                equals(simpleTag({ workflowStep: flipAgainStep, output: new OutputResult() }), 'tails'),
+                            ]),
+                        ),
+                        paren(
+                            and([
+                                equals(simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }), 'tails'),
+                                equals(simpleTag({ workflowStep: flipAgainStep, output: new OutputResult() }), 'tails'),
+                            ]),
+                        ),
+                    ]),
                 }),
                 new WorkflowStep('heads-regex', {
                     template: headsTemplate,

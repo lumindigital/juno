@@ -1,6 +1,7 @@
 import { WorkflowArguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
-import { expressionTag, hyphenParameter, simpleTag } from '../../src/api/expression';
+import { equals } from '../../src/api/expressions/comparison';
+import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter } from '../../src/api/parameter';
 import { Template } from '../../src/api/template';
@@ -8,9 +9,13 @@ import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowStep } from '../../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
+import { jsonPath, WorkflowParametersJson } from '../../src/api/expressions/json-path';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const shouldPrintInputParameter = new InputParameter('should-print');
+    const shouldPrintWorkflowParameter = shouldPrintInputParameter.toWorkflowParameter({
+        value: 'true',
+    });
 
     const argosayTemplate = new Template('argosay', {
         container: new Container({
@@ -28,15 +33,15 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             [
                 new WorkflowStep('print-hello-govaluate', {
                     template: argosayTemplate,
-                    when: `${simpleTag(shouldPrintInputParameter)} == true`,
+                    whenExpression: equals(simpleTag(shouldPrintInputParameter), 'true'),
                 }),
                 new WorkflowStep('print-hello-expr', {
                     template: argosayTemplate,
-                    when: expressionTag(`${hyphenParameter(shouldPrintInputParameter)} == 'true'`),
+                    whenExpression: expressionTag(equals(hyphenateExpressionArgs(shouldPrintInputParameter), true)),
                 }),
                 new WorkflowStep('print-hello-expr-json', {
                     template: argosayTemplate,
-                    when: expressionTag(`jsonpath(workflow.parameters.json, '$[0].value') == 'true'`),
+                    whenExpression: expressionTag(equals(jsonPath(new WorkflowParametersJson(), '$[0].value'), 'true')),
                 }),
             ],
         ],
@@ -48,11 +53,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [
-                    shouldPrintInputParameter.toWorkflowParameter({
-                        value: 'true',
-                    }),
-                ],
+                parameters: [shouldPrintWorkflowParameter],
             }),
             entrypoint: conditionalExampleTemplate,
         }),

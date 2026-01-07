@@ -1,10 +1,11 @@
 import { Arguments } from '../../src/api/arguments';
 import { OutputArtifact, InputArtifact } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { OutputParameter, InputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -14,9 +15,9 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interface
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const myGlobalParam = new OutputParameter('hello-param', {
         globalName: 'my-global-param',
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             path: '/tmp/hello_world.txt',
-        },
+        }),
     });
 
     const myGlobalArt = new OutputArtifact('hello-art', {

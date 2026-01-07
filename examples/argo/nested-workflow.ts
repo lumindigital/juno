@@ -1,10 +1,11 @@
 import { Arguments } from '../../src/api/arguments';
 import { OutputArtifact, InputArtifact } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { InputParameter, OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -13,9 +14,9 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interface
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const outParameterOutputParameter = new OutputParameter('out-parameter', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             path: '/tmp/my-output-parameter.txt',
-        },
+        }),
     });
 
     const outArtifactOutputArtifact = new OutputArtifact('out-artifact', {
@@ -83,9 +84,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     });
 
     const nestedOutputParameter = new OutputParameter('nested-out-parameter', {
-        valueFrom: {
-            parameter: simpleTag({ workflowStep: generateStep, output: outParameterOutputParameter }),
-        },
+        valueFrom: new ParameterValueFrom({
+            parameter: simpleTag({ workflowStep: generateStep, output: outParameterOutputParameter }).toString(),
+        }),
     });
 
     const nestedWfTemplate = new Template('nested-wf', {

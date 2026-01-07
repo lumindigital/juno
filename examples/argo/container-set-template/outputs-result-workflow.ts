@@ -4,7 +4,7 @@ import { ContainerNode } from '../../../src/api/container-node';
 import { ContainerSetTemplate } from '../../../src/api/container-set-template';
 import { DagTask } from '../../../src/api/dag-task';
 import { DagTemplate } from '../../../src/api/dag-template';
-import { simpleTag } from '../../../src/api/expression';
+import { simpleTag } from '../../../src/api/expressions/tag';
 import { Inputs } from '../../../src/api/inputs';
 import { InputParameter } from '../../../src/api/parameter';
 import { Script } from '../../../src/api/script';

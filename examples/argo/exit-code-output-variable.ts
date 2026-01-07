@@ -2,7 +2,7 @@ import { Arguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter } from '../../src/api/parameter';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -46,7 +46,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             exitCodeInputParameter.toArgumentParameter({
-                                value: simpleTag({ workflowStep: failingContainerStep, output: 'exitCode' }),
+                                value: simpleTag({ workflowStep: failingContainerStep, output: 'exitCode' }).toString(),
                             }),
                         ],
                     }),

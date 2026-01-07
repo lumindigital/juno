@@ -1,6 +1,7 @@
 import { Container } from '../../src/api/container';
 import { Outputs } from '../../src/api/outputs';
 import { OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -8,9 +9,9 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interface
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const helloOutputParameter = new OutputParameter('hello', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             path: '/tmp/hello_world.txt',
-        },
+        }),
     });
 
     const worldToFileTemplate = new Template('world-to-file', {

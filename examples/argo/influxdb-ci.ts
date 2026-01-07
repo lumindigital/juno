@@ -1,7 +1,7 @@
 import { Arguments, WorkflowArguments } from '../../src/api/arguments';
 import { InputArtifact, OutputArtifact } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { InputParameter, WorkflowParameter } from '../../src/api/parameter';
@@ -35,8 +35,8 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             artifacts: [
                 new InputArtifact('source', {
                     git: {
-                        repo: simpleTag(repoWorkflowParameter),
-                        revision: simpleTag(revisionWorkflowParameter),
+                        repo: simpleTag(repoWorkflowParameter).toString(),
+                        revision: simpleTag(revisionWorkflowParameter).toString(),
                     },
                     path: '/src',
                 }),
@@ -127,7 +127,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             testCovSourceInputArtifact.toArgumentArtifact({
-                                from: simpleTag(testCovSourceInputArtifact),
+                                valueFromExpressionArgs: testCovSourceInputArtifact,
                             }),
                         ],
                         parameters: [packageInputParameter.toArgumentParameter({ value: 'query' })],
@@ -138,7 +138,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             testCovSourceInputArtifact.toArgumentArtifact({
-                                from: simpleTag(testCovSourceInputArtifact),
+                                valueFromExpressionArgs: testCovSourceInputArtifact,
                             }),
                         ],
                         parameters: [packageInputParameter.toArgumentParameter({ value: 'tsdb/engine/tsm1' })],
@@ -153,7 +153,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const influxdbClientTemplate = new Template('influxdb-client', {
         container: new Container({
-            args: [simpleTag(cmdInputParameter)],
+            args: [simpleTag(cmdInputParameter).toString()],
             command: ['/bin/sh', '-c'],
             image: 'appropriate/curl:latest',
             resources: {
@@ -207,7 +207,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const influxDbWorkflowStep = new WorkflowStep('influxdb-server', {
         arguments: new Arguments({
-            artifacts: [influxdInputArtifact.toArgumentArtifact({ from: simpleTag(influxdInputArtifact) })],
+            artifacts: [influxdInputArtifact.toArgumentArtifact({ valueFromExpressionArgs: influxdInputArtifact })],
         }),
         template: influxdbServerTemplate,
     });
@@ -283,7 +283,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             artifacts: [
                 sourceInputArtifact.toArgumentArtifact({
-                    from: simpleTag({ workflowStep: checkoutStep, output: sourceOutputArtifact }),
+                    valueFromExpressionArgs: { workflowStep: checkoutStep, output: sourceOutputArtifact },
                 }),
             ],
         }),
@@ -299,7 +299,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             sourceInputArtifact.toArgumentArtifact({
-                                from: simpleTag({ workflowStep: checkoutStep, output: sourceOutputArtifact }),
+                                valueFromExpressionArgs: { workflowStep: checkoutStep, output: sourceOutputArtifact },
                             }),
                         ],
                     }),
@@ -311,7 +311,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         artifacts: [
                             testCovSourceInputArtifact.toArgumentArtifact({
-                                from: simpleTag({ workflowStep: checkoutStep, output: sourceOutputArtifact }),
+                                valueFromExpressionArgs: { workflowStep: checkoutStep, output: sourceOutputArtifact },
                             }),
                         ],
                     }),

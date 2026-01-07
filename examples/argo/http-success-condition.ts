@@ -1,5 +1,5 @@
 import { Arguments } from '../../src/api/arguments';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter } from '../../src/api/parameter';
 import { Template } from '../../src/api/template';
@@ -14,7 +14,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const httpStatusIs201Template = new Template('http-status-is-201', {
         http: {
             successCondition: 'response.statusCode == 201',
-            url: simpleTag(urlInputParameter),
+            url: simpleTag(urlInputParameter).toString(),
         },
         inputs: new Inputs({
             parameters: [urlInputParameter],
@@ -24,7 +24,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const httpBodyContainsGoogleTemplate = new Template('http-body-contains-google', {
         http: {
             successCondition: 'response.body contains "google"',
-            url: simpleTag(urlInputParameter),
+            url: simpleTag(urlInputParameter).toString(),
         },
         inputs: new Inputs({
             parameters: [urlInputParameter],
@@ -34,7 +34,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const httpHeadersContainsCloudflareTemplate = new Template('http-headers-contains-cloudflare', {
         http: {
             successCondition: 'response.headers["Server"][0] == "cloudflare"',
-            url: simpleTag(urlInputParameter),
+            url: simpleTag(urlInputParameter).toString(),
         },
         inputs: new Inputs({
             parameters: [urlInputParameter],

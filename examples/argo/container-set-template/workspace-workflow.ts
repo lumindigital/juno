@@ -3,6 +3,7 @@ import { ContainerNode } from '../../../src/api/container-node';
 import { ContainerSetTemplate } from '../../../src/api/container-set-template';
 import { Outputs } from '../../../src/api/outputs';
 import { OutputParameter } from '../../../src/api/parameter';
+import { ParameterValueFrom } from '../../../src/api/parameter-value-from';
 import { Template } from '../../../src/api/template';
 import { Workflow } from '../../../src/api/workflow';
 import { WorkflowSpec } from '../../../src/api/workflow-spec';
@@ -35,9 +36,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             ],
             parameters: [
                 new OutputParameter('out', {
-                    valueFrom: {
+                    valueFrom: new ParameterValueFrom({
                         path: '/workspace/out',
-                    },
+                    }),
                 }),
             ],
         }),

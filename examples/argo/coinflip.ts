@@ -1,6 +1,7 @@
 import { OutputResult } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { equals } from '../../src/api/expressions/comparison';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Script } from '../../src/api/script';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -46,11 +47,17 @@ print(result)
             [
                 new WorkflowStep('heads', {
                     template: headsTemplate,
-                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads`,
+                    whenExpression: equals(
+                        simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }),
+                        'heads',
+                    ),
                 }),
                 new WorkflowStep('tails', {
                     template: tailsTemplate,
-                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails`,
+                    whenExpression: equals(
+                        simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }),
+                        'tails',
+                    ),
                 }),
             ],
         ],

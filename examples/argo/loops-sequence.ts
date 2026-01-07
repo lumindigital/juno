@@ -1,6 +1,6 @@
 import { Arguments, WorkflowArguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { FromItemProperty, InputParameter, WorkflowParameter } from '../../src/api/parameter';
 import { Template } from '../../src/api/template';
@@ -18,7 +18,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const echoTemplate = new Template('echo', {
         container: new Container({
-            command: ['echo', simpleTag(msgInputParameter)],
+            command: ['echo', simpleTag(msgInputParameter).toString()],
             image: 'alpine:latest',
         }),
         inputs: new Inputs({
@@ -60,7 +60,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     }),
                     template: echoTemplate,
                     withSequence: {
-                        count: simpleTag(countWorkflowParameter),
+                        count: simpleTag(countWorkflowParameter).toString(),
                         start: '200',
                     },
                 }),

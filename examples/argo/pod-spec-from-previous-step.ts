@@ -1,10 +1,11 @@
 import { Arguments } from '../../src/api/arguments';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { InputParameter, OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Script } from '../../src/api/script';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -13,9 +14,9 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interface
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const resourcesOutputParameter = new OutputParameter('resources', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             path: '/tmp/resources.json',
-        },
+        }),
     });
 
     const parseResourcesTmplTemplate = new Template('parse-resources-tmpl', {

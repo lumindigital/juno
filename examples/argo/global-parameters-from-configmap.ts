@@ -1,7 +1,8 @@
 import { WorkflowArguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { WorkflowParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -9,17 +10,17 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interface
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageWorkflowParameter = new WorkflowParameter('message', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             configMapKeyRef: {
                 key: 'msg',
                 name: 'simple-parameters',
             },
-        },
+        }),
     });
 
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
-            args: [simpleTag(messageWorkflowParameter)],
+            args: [simpleTag(messageWorkflowParameter).toString()],
             command: ['echo'],
             image: 'busybox',
         }),

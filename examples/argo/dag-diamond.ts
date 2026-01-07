@@ -7,9 +7,9 @@ import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
-import { simpleTag } from '../../src/api/expression';
 import { Container } from '../../src/api/container';
-import { and } from '../../src/api/expr-api';
+import { simpleTag } from '../../src/api/expressions/tag';
+import { and } from '../../src/api/expressions/logical';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageInputParameter = new InputParameter('message');
@@ -20,7 +20,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const echoTemplate = new Template('echo', {
         container: new Container({
-            command: ['echo', simpleTag(echoTemplateInputs.parameters?.[0] as InputParameter)],
+            command: ['echo', simpleTag(messageInputParameter).toString()],
             image: 'alpine:3.7',
         }),
         inputs: echoTemplateInputs,

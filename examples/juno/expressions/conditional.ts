@@ -37,11 +37,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `if [ "${simpleTag(ternaryStringOutputParameter).output}" != true ]; then exit 12; fi
-                     if [ "${simpleTag(ternaryExpressionArgsOutputParameter).output}" != true ]; then exit 13; fi
-                     if [ "${simpleTag(nestedTernaryParameter).output}" != true ]; then exit 14; fi
-                     if [ "${simpleTag(nilCoalescingStringParameter).output}" != "defaultValue" ]; then exit 15; fi
-                     if [ "${simpleTag(nilCoalescingHyphenatedParameter).output}" != "true" ]; then exit 16; fi
+            source: `if [ "${simpleTag(ternaryStringOutputParameter)}" != true ]; then exit 12; fi
+                     if [ "${simpleTag(ternaryExpressionArgsOutputParameter)}" != true ]; then exit 13; fi
+                     if [ "${simpleTag(nestedTernaryParameter)}" != true ]; then exit 14; fi
+                     if [ "${simpleTag(nilCoalescingStringParameter)}" != "defaultValue" ]; then exit 15; fi
+                     if [ "${simpleTag(nilCoalescingHyphenatedParameter)}" != "true" ]; then exit 16; fi
 `,
             image: 'busybox',
         }),

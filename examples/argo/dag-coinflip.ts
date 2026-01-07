@@ -7,10 +7,11 @@ import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowStep } from '../../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
-import { simpleTag } from '../../src/api/expression';
 import { RecursiveTemplate } from '../../src/api/recursive-template';
 import { OutputResult } from '../../src/api/artifact';
-import { and } from '../../src/api/expr-api';
+import { equals } from '../../src/api/expressions/comparison';
+import { simpleTag } from '../../src/api/expressions/tag';
+import { and } from '../../src/api/expressions/logical';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const flipCoinTemplate = new Template('flip-coin', {
@@ -42,11 +43,17 @@ print(result)
             [
                 new WorkflowStep('heads', {
                     template: headsTemplate,
-                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads`,
+                    whenExpression: equals(
+                        simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }),
+                        'heads',
+                    ),
                 }),
                 new WorkflowStep('tails', {
                     template: new RecursiveTemplate('coinflip'),
-                    when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails`,
+                    whenExpression: equals(
+                        simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }),
+                        'tails',
+                    ),
                 }),
             ],
         ],

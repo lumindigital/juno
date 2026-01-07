@@ -1,8 +1,9 @@
 import { WorkflowArguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -37,12 +38,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             arguments: new WorkflowArguments({
                 parameters: [
                     new WorkflowParameter('message', {
-                        valueFrom: {
+                        valueFrom: new ParameterValueFrom({
                             configMapKeyRef: {
                                 key: 'msg',
                                 name: 'simple-parameters',
                             },
-                        },
+                        }),
                     }),
                 ],
             }),

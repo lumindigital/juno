@@ -8,7 +8,8 @@ import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowStep } from '../../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const deployTemplate = new Template('deploy', {
@@ -26,9 +27,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     });
 
     const approveOutputParameter = new OutputParameter('approve', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             supplied: {},
-        },
+        }),
     });
 
     const approvalTemplate = new Template('approval', {

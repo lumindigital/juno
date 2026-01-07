@@ -10,7 +10,8 @@ import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowStep } from '../../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const itemsOutputArtifacts = new OutputArtifact('items', {
@@ -18,9 +19,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     });
 
     const countOutputParameter = new OutputParameter('count', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             path: '/tmp/count',
-        },
+        }),
     });
 
     const getItemsTemplate = new Template('get-items', {
@@ -75,7 +76,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     }),
                     template: echoTemplate,
                     withSequence: {
-                        count: simpleTag({ workflowStep: getItemsStep, output: countOutputParameter }),
+                        count: simpleTag({ workflowStep: getItemsStep, output: countOutputParameter }).toString(),
                     },
                 }),
             ],

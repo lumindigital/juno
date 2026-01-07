@@ -3,21 +3,21 @@ import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
 import { Container } from '../../src/api/container';
 import { Inputs } from '../../src/api/inputs';
-import { InputParameter } from '../../src/api/parameter';
-import { simpleTag } from '../../src/api/expression';
+import { FromItemProperty, InputParameter } from '../../src/api/parameter';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowStep } from '../../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
-import { and } from '../../src/api/expr-api';
+import { simpleTag } from '../../src/api/expressions/tag';
+import { and } from '../../src/api/expressions/logical';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageInputParameter = new InputParameter('message');
 
     const echoTemplate = new Template('echo', {
         container: new Container({
-            command: ['echo', simpleTag(messageInputParameter)],
+            command: ['echo', simpleTag(messageInputParameter).toString()],
             image: 'alpine:3.7',
         }),
         inputs: new Inputs({
@@ -35,7 +35,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             messageInputParameter.toArgumentParameter({
-                                value: `${simpleTag(messageInputParameter)}${simpleTag('item')}`,
+                                value: `${simpleTag(messageInputParameter)}${simpleTag(new FromItemProperty())}`,
                             }),
                         ],
                     }),

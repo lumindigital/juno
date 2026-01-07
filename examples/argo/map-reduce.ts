@@ -2,7 +2,7 @@ import { Arguments, WorkflowArguments } from '../../src/api/arguments';
 import { OutputArtifact, InputArtifact, OutputResult } from '../../src/api/artifact';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { FromItemProperty, InputParameter, WorkflowParameter } from '../../src/api/parameter';
@@ -131,7 +131,9 @@ with open("/mnt/out/total.json" , "w") as f:
 
     const splitTask = new DagTask('split', {
         arguments: new Arguments({
-            parameters: [numPartsInputParameter.toArgumentParameter({ value: simpleTag(numPartsWorkflowParameter) })],
+            parameters: [
+                numPartsInputParameter.toArgumentParameter({ valueFromExpressionArgs: numPartsWorkflowParameter }),
+            ],
         }),
         template: splitTemplate,
     });
@@ -149,7 +151,7 @@ with open("/mnt/out/total.json" , "w") as f:
         }),
         depends: splitTask,
         template: mapTemplate,
-        withParamExpression: simpleTag({ dagTask: splitTask, output: new OutputResult() }),
+        withParamExpression: { dagTask: splitTask, output: new OutputResult() },
     });
 
     const mainTemplate = new Template('main', {

@@ -1,5 +1,6 @@
 import { Outputs } from '../../src/api/outputs';
 import { OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -10,14 +11,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         outputs: new Outputs({
             parameters: [
                 new OutputParameter('job-name', {
-                    valueFrom: {
+                    valueFrom: new ParameterValueFrom({
                         jsonPath: '{.metadata.name}',
-                    },
+                    }),
                 }),
                 new OutputParameter('job-obj', {
-                    valueFrom: {
+                    valueFrom: new ParameterValueFrom({
                         jqFilter: '.',
-                    },
+                    }),
                 }),
             ],
         }),

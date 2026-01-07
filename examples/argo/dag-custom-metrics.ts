@@ -2,7 +2,7 @@ import { Arguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { FromItemProperty, InputParameter } from '../../src/api/parameter';
 import { Template } from '../../src/api/template';
@@ -16,7 +16,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const echoTemplate = new Template('echo', {
         container: new Container({
-            command: ['echo', simpleTag(messageInputParameter)],
+            command: ['echo', simpleTag(messageInputParameter).toString()],
             image: 'alpine:3.7',
         }),
         inputs: new Inputs({
@@ -27,17 +27,17 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 {
                     gauge: {
                         realtime: false,
-                        value: `${simpleTag('duration')}`,
+                        value: simpleTag({ string: 'duration' }).toString(),
                     },
                     help: 'Duration gauge by task name in seconds - task level',
                     labels: [
                         {
                             key: 'playground_task_name',
-                            value: simpleTag(tagInputParameter),
+                            value: simpleTag(tagInputParameter).toString(),
                         },
                         {
                             key: 'status',
-                            value: `${simpleTag('status')}`,
+                            value: simpleTag({ string: 'status' }).toString(),
                         },
                     ],
                     name: 'playground_workflow_duration_task_seconds',
@@ -50,11 +50,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     labels: [
                         {
                             key: 'playground_task_name_counter',
-                            value: simpleTag(tagInputParameter),
+                            value: simpleTag(tagInputParameter).toString(),
                         },
                         {
                             key: 'status',
-                            value: `${simpleTag('status')}`,
+                            value: simpleTag({ string: 'status' }).toString(),
                         },
                     ],
                     name: 'playground_workflow_result_task_counter',
@@ -115,7 +115,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     {
                         gauge: {
                             realtime: false,
-                            value: `${simpleTag('workflow.duration')}`,
+                            value: simpleTag({ string: 'workflow.duration' }).toString(),
                         },
                         help: 'Duration gauge by workflow level',
                         labels: [
@@ -125,7 +125,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             },
                             {
                                 key: 'status',
-                                value: `${simpleTag('workflow.status')}`,
+                                value: simpleTag({ string: 'workflow.status' }).toString(),
                             },
                         ],
                         name: 'playground_workflow_duration',
@@ -142,7 +142,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             },
                             {
                                 key: 'status',
-                                value: `${simpleTag('workflow.status')}`,
+                                value: simpleTag({ string: 'workflow.status' }).toString(),
                             },
                         ],
                         name: 'playground_workflow_result_counter',

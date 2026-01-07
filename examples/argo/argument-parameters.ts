@@ -1,6 +1,6 @@
 import { WorkflowArguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter } from '../../src/api/parameter';
 import { Template } from '../../src/api/template';
@@ -12,7 +12,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const printMessageInputMessageParam = new InputParameter('message');
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
-            args: [simpleTag(printMessageInputMessageParam)],
+            args: [simpleTag(printMessageInputMessageParam).toString()],
             command: ['echo'],
             image: 'busybox',
         }),

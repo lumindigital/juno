@@ -3,10 +3,11 @@ import { OutputResult } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { FromItemProperty, InputParameter, OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -16,14 +17,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const numInputParameter = new InputParameter('num');
 
     const numOutputParameter = new OutputParameter('num', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             path: '/tmp/num',
-        },
+        }),
     });
     const evennessOutputParameter = new OutputParameter('evenness', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             path: '/tmp/even',
-        },
+        }),
     });
 
     const oddOrEvenTemplate = new Template('odd-or-even', {

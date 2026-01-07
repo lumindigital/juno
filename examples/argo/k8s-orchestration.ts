@@ -1,9 +1,10 @@
 import { Arguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { InputParameter, OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -12,14 +13,14 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interface
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const jobNameOutput = new OutputParameter('job-name', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             jsonPath: '{.metadata.name}',
-        },
+        }),
     });
     const jobUidOutput = new OutputParameter('job-uid', {
-        valueFrom: {
+        valueFrom: new ParameterValueFrom({
             jsonPath: '{.metadata.uid}',
-        },
+        }),
     });
 
     const randomNumberJobTemplate = new Template('random-number-job', {

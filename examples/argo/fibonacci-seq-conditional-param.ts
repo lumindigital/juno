@@ -1,10 +1,11 @@
 import { Arguments, WorkflowArguments } from '../../src/api/arguments';
 import { OutputResult } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { InputParameter, OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { RecursiveTemplate } from '../../src/api/recursive-template';
 import { Script } from '../../src/api/script';
 import { Template } from '../../src/api/template';
@@ -38,13 +39,6 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     });
 
     const num1InputParameter = new InputParameter('num-1');
-
-    const fibOutputParameter = new OutputParameter('fib', {
-        valueFrom: {
-            expression:
-                "asInt(inputs.parameters.num) == 1? 1: asInt(inputs.parameters.num) == 2? 1: steps['fibonacci-helper'].outputs.parameters.result",
-        },
-    });
 
     const sub1WorkflowStep = new WorkflowStep('sub-1', {
         arguments: new Arguments({
@@ -91,6 +85,15 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         template: new RecursiveTemplate('fibonacci'),
     });
 
+    const fibOutputParameter = new OutputParameter('fib', {
+        valueFrom: new ParameterValueFrom({
+            expression:
+                "asInt(inputs.parameters.num) == 1? 1: asInt(inputs.parameters.num) == 2? 1: steps['fibonacci-helper'].outputs.parameters.result",
+            // In order for this to work some of the resources would need to be in separate files.
+            //`${equals(asInt(hyphenateExpressionArgs(num1InputParameter)), 1)}? 1: ${equals(asInt(hyphenateExpressionArgs(num1InputParameter)), 1)}?1: ${hyphenateExpressionArgs()}`,
+        }),
+    });
+
     const addWorkflowStep = new WorkflowStep('add', {
         arguments: new Arguments({
             parameters: [
@@ -113,9 +116,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         outputs: new Outputs({
             parameters: [
                 new OutputParameter('result', {
-                    valueFrom: {
+                    valueFrom: new ParameterValueFrom({
                         parameter: `${simpleTag({ workflowStep: addWorkflowStep, output: new OutputResult() })}`,
-                    },
+                    }),
                 }),
             ],
         }),
@@ -130,6 +133,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const numInputParameter = new InputParameter('num');
 
+    const fibonacciHelperStep = new WorkflowStep('fibonacci-helper', {
+        arguments: new Arguments({
+            parameters: [num1InputParameter.toArgumentParameter({ valueFromExpressionArgs: numInputParameter })],
+        }),
+        template: fibonacciHelperTemplate,
+        when: `${simpleTag(numInputParameter)} != 1 && ${simpleTag(numInputParameter)} != 2`,
+    });
+
     const fibonacciTemplate = new Template('fibonacci', {
         inputs: new Inputs({
             parameters: [numInputParameter],
@@ -141,25 +152,13 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     name: 'fibonacci-m',
                 },
             },
-            key: simpleTag(numInputParameter),
+            key: simpleTag(numInputParameter).toString(),
             maxAge: '120s',
         },
         outputs: new Outputs({
             parameters: [fibOutputParameter],
         }),
-        steps: [
-            [
-                new WorkflowStep('fibonacci-helper', {
-                    arguments: new Arguments({
-                        parameters: [
-                            num1InputParameter.toArgumentParameter({ valueFromExpressionArgs: numInputParameter }),
-                        ],
-                    }),
-                    template: fibonacciHelperTemplate,
-                    when: `${simpleTag(numInputParameter)} != 1 && ${simpleTag(numInputParameter)} != 2`,
-                }),
-            ],
-        ],
+        steps: [[fibonacciHelperStep]],
     });
 
     const resultInputParameter = new InputParameter('result');

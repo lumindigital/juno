@@ -1,7 +1,6 @@
 import { Arguments } from '../../src/api/arguments';
 import { InputArtifact, OutputArtifact } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
 import { Inputs } from '../../src/api/inputs';
 import { LifecycleHook } from '../../src/api/lifecycle-hook';
 import { Outputs } from '../../src/api/outputs';
@@ -54,7 +53,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             arguments: new Arguments({
                                 artifacts: [
                                     messageInputArtifact.toArgumentArtifact({
-                                        from: simpleTag({ workflowStepName: 'step-1', output: resultOutputArtifact }),
+                                        valueFromExpressionArgs: {
+                                            workflowStepName: 'step-1',
+                                            output: resultOutputArtifact,
+                                        },
                                     }),
                                 ],
                             }),

@@ -4,7 +4,7 @@ import { DagTemplate } from '../../src/api/dag-template';
 import { Container } from '../../src/api/container';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter } from '../../src/api/parameter';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -23,7 +23,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const echoTemplate = new Template('echo', {
         container: new Container({
-            args: [simpleTag(messageInputParameter)],
+            args: [simpleTag(messageInputParameter).toString()],
             command: ['echo'],
             image: 'busybox',
         }),

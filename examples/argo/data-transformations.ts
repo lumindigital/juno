@@ -1,7 +1,7 @@
 import { Arguments } from '../../src/api/arguments';
 import { InputArtifact, OutputArtifact, OutputResult } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
-import { simpleTag } from '../../src/api/expression';
+import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { FromItemProperty, InputParameter } from '../../src/api/parameter';
@@ -67,7 +67,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         artifacts: [
                             fileInputArtifact.toArgumentArtifact({
                                 s3: {
-                                    key: simpleTag(new FromItemProperty()),
+                                    key: simpleTag(new FromItemProperty()).toString(),
                                 },
                             }),
                         ],
@@ -78,7 +78,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         ],
                     }),
                     template: processLogsTemplate,
-                    withParamExpression: simpleTag({ workflowStep: listLogFilesStep, output: new OutputResult() }),
+                    withParamExpression: { workflowStep: listLogFilesStep, output: new OutputResult() },
                 }),
             ],
         ],

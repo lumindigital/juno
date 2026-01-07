@@ -3,7 +3,7 @@ import { WorkflowTemplates } from '../../../example-helpers/workflow-templates';
 import { Arguments } from '../../../src/api/arguments';
 import { DagTask } from '../../../src/api/dag-task';
 import { DagTemplate } from '../../../src/api/dag-template';
-import { and } from '../../../src/api/expr-api';
+import { and } from '../../../src/api/expressions/logical';
 import { InputParameter } from '../../../src/api/parameter';
 import { Template } from '../../../src/api/template';
 import { TemplateReference } from '../../../src/api/template-reference';

@@ -1,7 +1,10 @@
 import { OutputResult } from '../../src/api/artifact';
-import { getVariableReference, hyphenParameter, simpleTag } from '../../src/api/expression';
+import { equals } from '../../src/api/expressions/comparison';
+import { ternary } from '../../src/api/expressions/conditional';
+import { hyphenateExpressionArgs, simpleTag } from '../../src/api/expressions/tag';
 import { Outputs } from '../../src/api/outputs';
 import { OutputParameter } from '../../src/api/parameter';
+import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Script } from '../../src/api/script';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -44,20 +47,27 @@ print("heads" if random.randint(0,1) == 0 else "tails")
 
     const headsStep = new WorkflowStep('heads', {
         template: headsTemplate,
-        when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == heads`,
+        whenExpression: equals(simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }), 'heads'),
     });
     const tailsStep = new WorkflowStep('tails', {
         template: tailsTemplate,
-        when: `${simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() })} == tails`,
+        whenExpression: equals(simpleTag({ workflowStep: flipCoinStep, output: new OutputResult() }), 'tails'),
     });
 
     const mainTemplate = new Template('main', {
         outputs: new Outputs({
             parameters: [
                 new OutputParameter('stepresult', {
-                    valueFrom: {
-                        expression: `${hyphenParameter({ workflowStep: flipCoinStep, output: new OutputResult() })} == 'heads' ? ${getVariableReference({ workflowStep: headsStep, output: new OutputResult() })} : ${getVariableReference({ workflowStep: tailsStep, output: new OutputResult() })}`,
-                    },
+                    valueFrom: new ParameterValueFrom({
+                        expression: ternary(
+                            equals(
+                                hyphenateExpressionArgs({ workflowStep: flipCoinStep, output: new OutputResult() }),
+                                'heads',
+                            ),
+                            hyphenateExpressionArgs({ workflowStep: headsStep, output: new OutputResult() }),
+                            hyphenateExpressionArgs({ workflowStep: tailsStep, output: new OutputResult() }),
+                        ).toString(),
+                    }),
                 }),
             ],
         }),
