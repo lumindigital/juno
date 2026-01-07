@@ -29,7 +29,7 @@ import { ArgumentParameter, InputParameter } from './parameter.js';
 import { DagTask } from './dag-task.js';
 import { WorkflowStep } from './workflow-step.js';
 import { ArgumentArtifact, InputArtifact } from './artifact.js';
-import { TaskAndResult } from './expression.js';
+import { TaskAndResult } from './expressions/types.js';
 import { RecursiveTemplate } from './recursive-template.js';
 
 /**

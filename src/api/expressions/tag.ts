@@ -1,10 +1,11 @@
-import { ExpressionArgs, getVariableReference } from '../expression.js';
 import {
     ExpressionTemplateInputs as ExpressionTagTemplateInputs,
     ExpressionTemplateTag,
     HyphenatedExpressionArgs,
     SimpleTemplateTag,
 } from './classes.js';
+import { ExpressionArgs } from './types.js';
+import { getVariableReference } from './util.js';
 
 export type UndefinedExpressionArg = {
     string: string;

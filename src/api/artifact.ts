@@ -12,9 +12,9 @@ import {
     IoArgoprojWorkflowV1Alpha1RawArtifact,
     IoArgoprojWorkflowV1Alpha1S3Artifact,
 } from '../workflow-interfaces/data-contracts.js';
-import { ExpressionArgs } from './expression.js';
 import { ExpressionTemplateTag } from './expressions/classes.js';
 import { simpleTag } from './expressions/tag.js';
+import { ExpressionArgs } from './expressions/types.js';
 
 export class Artifact {
     archive?: IoArgoprojWorkflowV1Alpha1ArchiveStrategy;

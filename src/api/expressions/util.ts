@@ -1,35 +1,19 @@
-import { InputArtifact, OutputArtifact, OutputResult } from './artifact.js';
-import { DagTask } from './dag-task.js';
-import { FromItemProperty, InputParameter, OutputParameter, WorkflowParameter } from './parameter.js';
-import { WorkflowStep } from './workflow-step.js';
-
-export type OutputType = OutputArtifact | OutputParameter | OutputResult | string;
-export type InputType = InputParameter | InputArtifact | WorkflowParameter;
-export type TaskAndResult = { task: DagTask | WorkflowStep; result?: TaskResult };
-export type TaskOutput = { dagTask: DagTask; output: OutputType };
-export type TaskOutputParameters = { dagTaskOutputParameter: DagTask };
-export type StringTaskOutput = { dagTaskName: string; output: OutputType };
-export type StepOutput = { workflowStep: WorkflowStep; output: OutputType };
-export type StepOutputParameters = { workflowStepOutputParameter: WorkflowStep };
-export type StringStepOutput = { workflowStepName: string; output: OutputType };
-export type PathType = { pathResult: InputArtifact | OutputArtifact | OutputParameter };
-export type WorkflowOutput = { workflowOutput: OutputArtifact | OutputParameter | OutputResult };
-
-export type ExpressionArgs =
-    | DagTask
-    | WorkflowStep
-    | TaskAndResult
-    | TaskOutput
-    | StepOutput
-    | InputType
-    | PathType
-    | WorkflowOutput
-    | FromItemProperty
-    | OutputParameter
-    | StringTaskOutput
-    | StringStepOutput
-    | TaskOutputParameters
-    | StepOutputParameters;
+import { InputArtifact, OutputArtifact, OutputResult } from '../artifact.js';
+import { DagTask } from '../dag-task.js';
+import { InputParameter, OutputParameter, WorkflowParameter, FromItemProperty } from '../parameter.js';
+import { WorkflowStep } from '../workflow-step.js';
+import {
+    ExpressionArgs,
+    PathType,
+    StepOutput,
+    StepOutputParameters,
+    StringStepOutput,
+    StringTaskOutput,
+    TaskAndResult,
+    TaskOutput,
+    TaskOutputParameters,
+    WorkflowOutput,
+} from './types.js';
 
 enum ExpressionType {
     DagTask = 'DagTask',
@@ -63,15 +47,6 @@ enum ExpressionType {
     StringTaskOutputString = 'StringTaskOutputString',
     TaskOutputParameters = 'TaskOutputParameters',
     StepOutputParameters = 'StepOutputParameters',
-}
-
-export enum TaskResult {
-    Succeeded = 'Succeeded',
-    Failed = 'Failed',
-    Errored = 'Errored',
-    Skipped = 'Skipped',
-    Omitted = 'Omitted',
-    Daemoned = 'Daemoned',
 }
 
 export function getVariableReference(expressionArgs: ExpressionArgs | string): string {

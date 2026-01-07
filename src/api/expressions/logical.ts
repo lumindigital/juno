@@ -1,5 +1,4 @@
 import { DagTask } from '../dag-task.js';
-import { getVariableReference, TaskAndResult } from '../expression.js';
 import { WorkflowStep } from '../workflow-step.js';
 import {
     ComparisonExpression,
@@ -8,6 +7,8 @@ import {
     ParenExpression,
     SimpleTemplateTag,
 } from './classes.js';
+import { TaskAndResult } from './types.js';
+import { getVariableReference } from './util.js';
 
 export type LogicalExpressionInputs =
     | SimpleTemplateTag

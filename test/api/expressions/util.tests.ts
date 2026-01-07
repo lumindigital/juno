@@ -1,11 +1,12 @@
 import { expect } from 'chai';
-import { getVariableReference, TaskResult } from '../../src/api/expression';
-import { FromItemProperty, InputParameter, OutputParameter, WorkflowParameter } from '../../src/api/parameter';
-import { DagTask } from '../../src/api/dag-task';
-import { WorkflowStep } from '../../src/api/workflow-step';
-import { InputArtifact, OutputArtifact, OutputResult } from '../../src/api/artifact';
+import { FromItemProperty, InputParameter, OutputParameter, WorkflowParameter } from '../../../src/api/parameter';
+import { DagTask } from '../../../src/api/dag-task';
+import { WorkflowStep } from '../../../src/api/workflow-step';
+import { InputArtifact, OutputArtifact, OutputResult } from '../../../src/api/artifact';
+import { getVariableReference } from '../../../src/api/expressions/util';
+import { TaskResult } from '../../../src/api/expressions/types';
 
-describe('expression tests', (): void => {
+describe('util tests', (): void => {
     describe('getVariableReference', (): void => {
         it('returns artifact input when input type is InputArtifact', (): void => {
             expect(getVariableReference(new InputArtifact('A', {}))).to.equal('inputs.artifacts.A');

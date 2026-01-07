@@ -1,11 +1,12 @@
 import { IoArgoprojWorkflowV1Alpha1DAGTask } from '../workflow-interfaces/data-contracts.js';
 import { LifecycleHook } from './lifecycle-hook.js';
-import { getVariableReference, StepOutput, TaskAndResult, TaskOutput } from './expression.js';
+import { StepOutput, TaskAndResult, TaskOutput } from './expressions/types.js';
 import { BaseTaskOrStep } from './base-task-or-step.js';
 import { WorkflowStep } from './workflow-step.js';
 import { Template } from './template.js';
 import { RecursiveTemplate } from './recursive-template.js';
 import { LogicalExpression } from './expressions/classes.js';
+import { getVariableReference } from './expressions/util.js';
 
 export class DagTask extends BaseTaskOrStep {
     readonly isDagTask = true;

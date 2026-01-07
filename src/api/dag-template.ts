@@ -1,6 +1,6 @@
 import { IoArgoprojWorkflowV1Alpha1DAGTemplate } from '../workflow-interfaces/data-contracts.js';
 import { DagTask } from './dag-task.js';
-import { ExpressionArgs } from './expression.js';
+import { ExpressionArgs } from './expressions/types.js';
 import { simpleTag, UndefinedExpressionArg } from './expressions/tag.js';
 
 export class DagTemplate {

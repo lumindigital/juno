@@ -2,9 +2,9 @@ import {
     IoArgoprojWorkflowV1Alpha1Parameter,
     IoArgoprojWorkflowV1Alpha1ValueFrom,
 } from '../workflow-interfaces/data-contracts.js';
-import { ExpressionArgs } from './expression.js';
 import { ExpressionTemplateTag } from './expressions/classes.js';
 import { simpleTag } from './expressions/tag.js';
+import { ExpressionArgs } from './expressions/types.js';
 import { ParameterValueFrom } from './parameter-value-from.js';
 
 class Parameter {

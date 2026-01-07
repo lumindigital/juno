@@ -4,9 +4,10 @@ import {
     IoArgoprojWorkflowV1Alpha1Sequence,
 } from '../workflow-interfaces/data-contracts.js';
 import { Arguments } from './arguments.js';
-import { TaskOutput, StepOutput, StepOutputParameters, TaskOutputParameters } from './expression.js';
+
 import { ComparisonExpression, ExpressionTemplateTag, LogicalExpression } from './expressions/classes.js';
 import { simpleTag } from './expressions/tag.js';
+import { TaskOutput, StepOutput, StepOutputParameters, TaskOutputParameters } from './expressions/types.js';
 import { LifecycleHook } from './lifecycle-hook.js';
 import { InputParameter } from './parameter.js';
 import { RecursiveTemplate } from './recursive-template.js';

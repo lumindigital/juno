@@ -1,5 +1,6 @@
-import { ExpressionArgs, getVariableReference } from '../expression.js';
+import { ExpressionArgs } from '../expressions/types.js';
 import { JsonPathExpression } from './classes.js';
+import { getVariableReference } from './util.js';
 
 export class WorkflowParametersJson {
     isWorkflowParametersJson = true;

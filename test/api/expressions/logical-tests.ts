@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import { and, not, or, paren } from '../../../src/api/expressions/logical';
 import { DagTask } from '../../../src/api/dag-task';
-import { TaskResult } from '../../../src/api/expression';
 import { WorkflowStep } from '../../../src/api/workflow-step';
 import { LogicalExpression, ParenExpression } from '../../../src/api/expressions/classes';
+import { TaskResult } from '../../../src/api/expressions/types';
 
 describe('logical tests', (): void => {
     const dagTask = new DagTask('B', {});
