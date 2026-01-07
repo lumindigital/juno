@@ -5,6 +5,7 @@ import {
 import { ExpressionArgs } from './expression.js';
 import { ExpressionTemplateTag } from './expressions/classes.js';
 import { simpleTag } from './expressions/tag.js';
+import { ParameterValueFrom } from './parameter-value-from.js';
 
 class Parameter {
     default?: string;
@@ -14,7 +15,7 @@ class Parameter {
     globalName?: string;
     readonly name: string;
     value?: string;
-    valueFrom?: IoArgoprojWorkflowV1Alpha1ValueFrom;
+    valueFrom?: ParameterValueFrom;
     valueFromExpressionArgs?: ExpressionArgs;
     valueFromExpressionTag?: ExpressionTemplateTag;
 
@@ -36,6 +37,11 @@ class Parameter {
             value = this.valueFromExpressionTag.toString();
         }
 
+        let valueFrom: IoArgoprojWorkflowV1Alpha1ValueFrom | undefined;
+        if (this.valueFrom) {
+            valueFrom = this.valueFrom.toValueFrom(templateName, this.name);
+        }
+
         return {
             default: this.default,
             description: this.description,
@@ -43,7 +49,7 @@ class Parameter {
             globalName: this.globalName,
             name: this.name,
             value,
-            valueFrom: this.valueFrom,
+            valueFrom: valueFrom,
         };
     }
 

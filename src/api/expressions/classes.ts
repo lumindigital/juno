@@ -23,10 +23,22 @@ export class SimpleTemplateTag {
         return this.output;
     }
 }
-
 export class ExpressionTemplateTag {
     private output: string;
     isExpressionTagExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class HyphenatedExpressionArgs {
+    private output: string;
+    isHyphenatedExpressionArgs: boolean = true;
 
     constructor(output: string) {
         this.output = output;
@@ -49,7 +61,6 @@ export class ComparisonExpression {
         return this.output;
     }
 }
-
 export class TernaryExpression {
     private output: string;
     isTernaryExpression: boolean = true;
@@ -66,19 +77,6 @@ export class TernaryExpression {
 export class NilCoalescingExpression {
     private output: string;
     isNilCoalescingExpression: boolean = true;
-
-    constructor(output: string) {
-        this.output = output;
-    }
-
-    toString(): string {
-        return this.output;
-    }
-}
-
-export class HyphenatedExpressionArgs {
-    private output: string;
-    isHyphenatedExpressionArgs: boolean = true;
 
     constructor(output: string) {
         this.output = output;

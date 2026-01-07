@@ -19,18 +19,19 @@ const enum Comparators {
     LESS_THAN_OR_EQUAL = '<=',
 }
 
-export type LeftEqualityComparisonTypes =
-    | HyphenatedExpressionArgs
-    | SimpleTemplateTag
-    | JsonPathExpression
-    | UndefinedExpressionArg;
-export type RightEqualityComparisonTypes = LeftEqualityComparisonTypes | boolean | string | NilResult;
-
 export type LeftNumericComparisonTypes =
     | IntCastExpression
     | FloatCastExpression
     | JsonPathExpression
     | UndefinedExpressionArg;
+
+export type LeftEqualityComparisonTypes =
+    | LeftNumericComparisonTypes
+    | HyphenatedExpressionArgs
+    | SimpleTemplateTag
+    | JsonPathExpression
+    | UndefinedExpressionArg;
+export type RightEqualityComparisonTypes = LeftEqualityComparisonTypes | boolean | string | number | NilResult;
 
 export type RightNumericComparisonTypes = LeftNumericComparisonTypes | boolean | number | NilResult;
 
