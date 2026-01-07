@@ -5,8 +5,10 @@ import {
     HyphenatedExpressionArgs,
     IntCastExpression,
     JsonPathExpression,
+    NilResult,
     SimpleTemplateTag,
 } from './classes.js';
+import { UndefinedExpressionArg } from './tag.js';
 
 const enum Comparators {
     EQUALS = '==',
@@ -17,61 +19,100 @@ const enum Comparators {
     LESS_THAN_OR_EQUAL = '<=',
 }
 
-export function equals<T extends HyphenatedExpressionArgs | SimpleTemplateTag | JsonPathExpression>(
+export type LeftEqualityComparisonTypes =
+    | HyphenatedExpressionArgs
+    | SimpleTemplateTag
+    | JsonPathExpression
+    | UndefinedExpressionArg;
+export type RightEqualityComparisonTypes = LeftEqualityComparisonTypes | boolean | string | NilResult;
+
+export type LeftNumericComparisonTypes =
+    | IntCastExpression
+    | FloatCastExpression
+    | JsonPathExpression
+    | UndefinedExpressionArg;
+
+export type RightNumericComparisonTypes = LeftNumericComparisonTypes | boolean | number | NilResult;
+
+export function equals<T extends LeftEqualityComparisonTypes>(
     left: T,
-    right: T | boolean | string,
+    right: RightEqualityComparisonTypes,
 ): ComparisonExpression {
     return comparison(Comparators.EQUALS, left, right);
 }
 
-export function notEquals<T extends HyphenatedExpressionArgs | SimpleTemplateTag | JsonPathExpression>(
+export function notEquals<T extends LeftEqualityComparisonTypes>(
     left: T,
-    right: T | boolean | string,
+    right: RightEqualityComparisonTypes,
 ): ComparisonExpression {
     return comparison(Comparators.NOT_EQUALS, left, right);
 }
 
-export function greaterThan<T extends IntCastExpression | FloatCastExpression | JsonPathExpression>(
+export function greaterThan<T extends LeftNumericComparisonTypes>(
     left: T,
-    right: T | boolean | string,
+    right: RightNumericComparisonTypes,
 ): ComparisonExpression {
     return comparison(Comparators.GREATER_THAN, left, right);
 }
 
-export function lessThan<T extends IntCastExpression | FloatCastExpression | JsonPathExpression>(
+export function lessThan<T extends LeftNumericComparisonTypes>(
     left: T,
-    right: T | boolean | string,
+    right: RightNumericComparisonTypes,
 ): ComparisonExpression {
     return comparison(Comparators.LESS_THAN, left, right);
 }
 
-export function greaterThanOrEqual<T extends IntCastExpression | FloatCastExpression | JsonPathExpression>(
+export function greaterThanOrEqual<T extends LeftNumericComparisonTypes>(
     left: T,
-    right: T | boolean | string,
+    right: RightNumericComparisonTypes,
 ): ComparisonExpression {
     return comparison(Comparators.GREATER_THAN_OR_EQUAL, left, right);
 }
 
-export function lessThanOrEqual<T extends IntCastExpression | FloatCastExpression | JsonPathExpression>(
+export function lessThanOrEqual<T extends LeftNumericComparisonTypes>(
     left: T,
-    right: T | boolean | string,
+    right: RightNumericComparisonTypes,
 ): ComparisonExpression {
     return comparison(Comparators.LESS_THAN_OR_EQUAL, left, right);
 }
 
-function comparison<T extends HyphenatedExpressionArgs | SimpleTemplateTag | CastExpressions | JsonPathExpression>(
+function comparison<
+    T extends
+        | HyphenatedExpressionArgs
+        | SimpleTemplateTag
+        | CastExpressions
+        | JsonPathExpression
+        | UndefinedExpressionArg,
+>(
     operator: Comparators,
     left: T,
-    right: T | boolean | string,
+    right: RightEqualityComparisonTypes | RightNumericComparisonTypes,
 ): ComparisonExpression {
-    const leftSide = left.toString();
+    let leftSide: string;
+
+    if ((left as UndefinedExpressionArg)?.string) {
+        leftSide = (left as UndefinedExpressionArg).string;
+    } else {
+        leftSide = left.toString();
+    }
     let rightSide: string;
 
     if (typeof right === 'boolean') {
-        // for now since the left side is always a parameter, we will wrap the boolean in quotes as parameters must always be either cast to a type or compared to strings
-        rightSide = right ? `'true'` : `'false'`;
+        if ((left as SimpleTemplateTag)?.isSimpleTagExpression) {
+            // if comparing a simple tag expression, we do not wrap the string in quotes (govaluate)
+            rightSide = right ? 'true' : 'false';
+        } else {
+            rightSide = `'${right}'`;
+        }
     } else if (typeof right === 'string') {
-        rightSide = `${right}`;
+        if ((left as SimpleTemplateTag)?.isSimpleTagExpression) {
+            // if comparing a simple tag expression, we do not wrap the string in quotes
+            rightSide = right;
+        } else {
+            rightSide = `'${right}'`;
+        }
+    } else if ((right as NilResult)?.isNilResult) {
+        rightSide = right.toString();
     } else {
         rightSide = right.toString();
     }

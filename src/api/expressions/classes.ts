@@ -179,3 +179,10 @@ export class JsonPathExpression {
         return this.output;
     }
 }
+export class NilResult {
+    isNilResult: boolean = true;
+
+    toString(): string {
+        return 'nil';
+    }
+}
