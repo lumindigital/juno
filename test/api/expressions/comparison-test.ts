@@ -11,6 +11,7 @@ import { DagTask } from '../../../src/api/dag-task';
 import { OutputParameter } from '../../../src/api/parameter';
 import { hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
 import { asFloat, asInt } from '../../../src/api/expressions/cast';
+import { NilResult } from '../../../src/api/expressions/classes';
 
 describe('comparison tests', (): void => {
     const expressionArg1 = { dagTask: new DagTask('A', {}), output: new OutputParameter('output1') };
@@ -46,14 +47,34 @@ describe('comparison tests', (): void => {
             );
         });
 
-        it('returns successfully when comparing simpleTag and boolean', (): void => {
-            const result = equals(simpleTemplateTag1, true);
-            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} == 'true'`);
+        it('returns successfully when comparing hyphenatedExpressionArgs and boolean', (): void => {
+            const result = equals(hyphenatedExpressionArgs1, true);
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] == 'true'`);
+        });
+
+        it('returns successfully when comparing hyphenatedExpressionArgs and string', (): void => {
+            const result = equals(hyphenatedExpressionArgs1, 'true');
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] == 'true'`);
+        });
+
+        it('returns successfully when comparing hyphenatedExpressionArgs and boolean', (): void => {
+            const result = equals(hyphenatedExpressionArgs1, true);
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] == 'true'`);
         });
 
         it('returns successfully when comparing simpleTag and string', (): void => {
-            const result = equals(simpleTemplateTag1, `'true'`);
-            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} == 'true'`);
+            const result = equals(simpleTemplateTag1, 'true');
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} == true`);
+        });
+
+        it('returns successfully when comparing simpleTag and boolean', (): void => {
+            const result = equals(simpleTemplateTag1, true);
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} == true`);
+        });
+
+        it('returns successfully when comparing simpleTag and nil', (): void => {
+            const result = equals(simpleTemplateTag1, new NilResult());
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} == nil`);
         });
     });
 
@@ -72,14 +93,34 @@ describe('comparison tests', (): void => {
             );
         });
 
-        it('returns successfully when comparing simpleTag and boolean', (): void => {
-            const result = notEquals(simpleTemplateTag1, true);
-            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} != 'true'`);
+        it('returns successfully when comparing hyphenatedExpressionArgs and boolean', (): void => {
+            const result = notEquals(hyphenatedExpressionArgs1, true);
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] != 'true'`);
+        });
+
+        it('returns successfully when comparing hyphenatedExpressionArgs and string', (): void => {
+            const result = notEquals(hyphenatedExpressionArgs1, 'true');
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] != 'true'`);
+        });
+
+        it('returns successfully when comparing hyphenatedExpressionArgs and boolean', (): void => {
+            const result = notEquals(hyphenatedExpressionArgs1, true);
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] != 'true'`);
         });
 
         it('returns successfully when comparing simpleTag and string', (): void => {
-            const result = notEquals(simpleTemplateTag1, `'true'`);
-            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} != 'true'`);
+            const result = notEquals(simpleTemplateTag1, 'true');
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} != true`);
+        });
+
+        it('returns successfully when comparing simpleTag and boolean', (): void => {
+            const result = notEquals(simpleTemplateTag1, true);
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} != true`);
+        });
+
+        it('returns successfully when comparing simpleTag and nil', (): void => {
+            const result = notEquals(simpleTemplateTag1, new NilResult());
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} != nil`);
         });
     });
 
