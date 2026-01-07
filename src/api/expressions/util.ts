@@ -49,13 +49,8 @@ enum ExpressionType {
     StepOutputParameters = 'StepOutputParameters',
 }
 
-export function getVariableReference(expressionArgs: ExpressionArgs | string): string {
-    if (typeof expressionArgs === 'string') {
-        return expressionArgs;
-    }
-
+export function getVariableReference(expressionArgs: ExpressionArgs): string {
     const expressionType = getExpressionType(expressionArgs);
-
     switch (expressionType) {
         case ExpressionType.DagTask:
         case ExpressionType.WorkflowStep: {
@@ -207,7 +202,7 @@ export function getVariableReference(expressionArgs: ExpressionArgs | string): s
         }
 
         default: {
-            throw new Error('Unsupported expression args');
+            throw new Error(`Unsupported expression args ${expressionType}`);
         }
     }
 }

@@ -76,10 +76,6 @@ describe('util tests', (): void => {
             ).to.equal('tasks.DagA.outputs.result');
         });
 
-        it('returns string input when input type is string', (): void => {
-            expect(getVariableReference('A')).to.equal('A');
-        });
-
         it('returns output parameter path when input type is pathresult', (): void => {
             expect(
                 getVariableReference({

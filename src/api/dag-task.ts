@@ -33,9 +33,11 @@ export class DagTask extends BaseTaskOrStep {
 
         if ((this?.depends as LogicalExpression)?.isLogicalExpression) {
             depends = (this?.depends as LogicalExpression).toString();
-        } else if (this.depends) {
+        } else if (typeof this?.depends === 'string') {
+            depends = this.depends;
+        } else if (this?.depends) {
             depends = getVariableReference(
-                this.depends as string | TaskOutput | StepOutput | DagTask | TaskAndResult | WorkflowStep,
+                this.depends as TaskOutput | StepOutput | DagTask | TaskAndResult | WorkflowStep,
             );
         }
 
