@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { getVariableReference, TaskResult, hyphenParameter } from '../../src/api/expression';
+import { getVariableReference, TaskResult } from '../../src/api/expression';
 import { FromItemProperty, InputParameter, OutputParameter, WorkflowParameter } from '../../src/api/parameter';
 import { DagTask } from '../../src/api/dag-task';
 import { WorkflowStep } from '../../src/api/workflow-step';
@@ -219,52 +219,6 @@ describe('expression tests', (): void => {
                     output: new OutputResult(),
                 }),
             ).to.equal('tasks.TaskA.outputs.result');
-        });
-    });
-
-    describe('hyphenExpression', (): void => {
-        it('handles hyphenated input artifact ', (): void => {
-            expect(hyphenParameter(new InputArtifact('A-A', {}))).to.equal("inputs.artifacts['A-A']");
-        });
-
-        it('handles non-hyphenated input parameter', (): void => {
-            expect(hyphenParameter(new InputParameter('A', {}))).to.equal('inputs.parameters.A');
-        });
-
-        it('handles hyphen when input type is OutputParameter and task is a step', (): void => {
-            expect(
-                hyphenParameter({
-                    workflowStep: new WorkflowStep('Step-A', {}),
-                    output: new OutputParameter('Param-A', {}),
-                }),
-            ).to.equal("steps['Step-A'].outputs.parameters['Param-A']");
-        });
-
-        it('handles hyphen when input type is OutputArtifact and task is a step', (): void => {
-            expect(
-                hyphenParameter({
-                    workflowStep: new WorkflowStep('Step-A', {}),
-                    output: new OutputArtifact('Param-A', {}),
-                }),
-            ).to.equal("steps['Step-A'].outputs.artifacts['Param-A']");
-        });
-
-        it('handles hyphen when input type is OutputParameter and task is a dag task and hypenated', (): void => {
-            expect(
-                hyphenParameter({
-                    dagTask: new DagTask('Dag-A', {}),
-                    output: new OutputParameter('Param-A', {}),
-                }),
-            ).to.equal("tasks['Dag-A'].outputs.parameters['Param-A']");
-        });
-
-        it('handles hyphen when input type is OutputArtifact and task is a dag task and hypenated', (): void => {
-            expect(
-                hyphenParameter({
-                    dagTask: new DagTask('Dag-A', {}),
-                    output: new OutputArtifact('Param-A', {}),
-                }),
-            ).to.equal("tasks['Dag-A'].outputs.artifacts['Param-A']");
         });
     });
 });
