@@ -2,6 +2,9 @@ import { Arguments } from '../../src/api/arguments';
 import { Container } from '../../src/api/container';
 import { DagTask } from '../../src/api/dag-task';
 import { DagTemplate } from '../../src/api/dag-template';
+import { multiply } from '../../src/api/expressions/arithmetic';
+import { asInt } from '../../src/api/expressions/cast';
+import { expressionTag, hyphenateExpressionArgs } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
 import { InputParameter, OutputParameter } from '../../src/api/parameter';
@@ -18,7 +21,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         container: new Container({
             args: [
                 'echo',
-                "hello {{=asInt(inputs.parameters.foo) * 10}} @ {{=sprig.date('2006', workflow.creationTimestamp)}}\n",
+                `hello ${expressionTag(multiply(asInt(hyphenateExpressionArgs(fooInputParameter)), 10))} @ {{=sprig.date('2006', workflow.creationTimestamp)}}\n`,
                 '/output',
             ],
             image: 'argoproj/argosay:v2',

@@ -1,5 +1,8 @@
 import { Arguments } from '../../src/api/arguments';
 import { OutputResult } from '../../src/api/artifact';
+import { asInt } from '../../src/api/expressions/cast';
+import { equals, greaterThan } from '../../src/api/expressions/comparison';
+import { and } from '../../src/api/expressions/logical';
 import { simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter } from '../../src/api/parameter';
@@ -27,7 +30,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [safeToRetryInputParameter],
         }),
         retryStrategy: {
-            expression: `asInt(lastRetry.exitCode) > 1 && ${simpleTag(safeToRetryInputParameter)} == true`,
+            expression: and([
+                greaterThan(asInt({ string: 'lastRetry.exitCode' }), 1),
+                equals(simpleTag(safeToRetryInputParameter), true),
+            ]).toString(),
             limit: '10',
         },
         script: new Script({

@@ -3,7 +3,9 @@ export type ExpressionTemplateInputs =
     | TernaryExpression
     | LogicalExpression
     | ParenExpression
-    | CastExpressions;
+    | CastExpressions
+    | ArithmeticExpressions;
+
 export type CastExpressions =
     | IntCastExpression
     | FloatCastExpression
@@ -11,6 +13,13 @@ export type CastExpressions =
     | JsonCastExpression
     | NilCoalescingExpression;
 
+export type ArithmeticExpressions =
+    | AddExpression
+    | SubtractExpression
+    | MultiplyExpression
+    | DivideExpression
+    | ModulusExpression
+    | ExponentExpression;
 export class SimpleTemplateTag {
     private output: string;
     isSimpleTagExpression: boolean = true;
@@ -182,5 +191,82 @@ export class NilResult {
 
     toString(): string {
         return 'nil';
+    }
+}
+
+export class AddExpression {
+    private output: string;
+    isAddExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class SubtractExpression {
+    private output: string;
+    isSubtractExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MultiplyExpression {
+    private output: string;
+    isMultiplyExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class DivideExpression {
+    private output: string;
+    isDivideExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+export class ModulusExpression {
+    private output: string;
+    isModulusExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ExponentExpression {
+    private output: string;
+    isExponentExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
     }
 }
