@@ -58,7 +58,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     const printMessageTemplate = new Template('print-message', {
         container: new Container({
-            args: [`${simpleTag(messageInputParameter)}`],
+            args: [simpleTag(messageInputParameter).toString()],
             command: ['echo'],
             image: 'busybox',
         }),

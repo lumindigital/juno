@@ -2,7 +2,8 @@ import { Arguments, WorkflowArguments } from '../../src/api/arguments';
 import { OutputResult } from '../../src/api/artifact';
 import { Container } from '../../src/api/container';
 import { asInt } from '../../src/api/expressions/cast';
-import { equals } from '../../src/api/expressions/comparison';
+import { equals, notEquals } from '../../src/api/expressions/comparison';
+import { and } from '../../src/api/expressions/logical';
 import { hyphenateExpressionArgs, simpleTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
@@ -62,7 +63,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             ],
         }),
         template: doMathTemplate,
-        when: `${simpleTag(num1InputParameter)} != 1 && ${simpleTag(num1InputParameter)} != 2`,
+        whenExpression: and([notEquals(simpleTag(num1InputParameter), 1), notEquals(simpleTag(num1InputParameter), 2)]),
     });
 
     const numInputParameter = new InputParameter('num');
@@ -120,7 +121,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [
                 new OutputParameter('result', {
                     valueFrom: new ParameterValueFrom({
-                        parameter: `${simpleTag({ workflowStep: addWorkflowStep, output: new OutputResult() })}`,
+                        parameter: simpleTag({ workflowStep: addWorkflowStep, output: new OutputResult() }).toString(),
                     }),
                 }),
             ],
@@ -139,7 +140,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [num1InputParameter.toArgumentParameter({ valueFromExpressionArgs: numInputParameter })],
         }),
         template: fibonacciHelperTemplate,
-        when: `${simpleTag(numInputParameter)} != 1 && ${simpleTag(numInputParameter)} != 2`,
+        whenExpression: and([notEquals(simpleTag(numInputParameter), 1), notEquals(simpleTag(numInputParameter), 2)]),
     });
 
     const fibonacciTemplate = new Template('fibonacci', {
@@ -194,7 +195,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [
                             resultInputParameter.toArgumentParameter({
-                                value: `${simpleTag({ workflowStep: fibMainWorkflowStep, output: fibOutputParameter })}`,
+                                value: simpleTag({
+                                    workflowStep: fibMainWorkflowStep,
+                                    output: fibOutputParameter,
+                                }).toString(),
                             }),
                         ],
                     }),

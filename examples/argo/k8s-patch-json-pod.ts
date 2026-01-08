@@ -8,7 +8,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const mainTemplate = new Template('main', {
         resource: {
             action: 'patch',
-            flags: ['pod', `${simpleTag({ string: 'pod.name' })}`],
+            flags: ['pod', simpleTag({ string: 'pod.name' }).toString()],
             manifest: `- op: add
   path: /metadata/annotations/foo
   value: bar

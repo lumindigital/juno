@@ -76,7 +76,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                         },
                         {
                             key: 'status',
-                            value: `${simpleTag({ string: 'status' })}`,
+                            value: simpleTag({ string: 'status' }).toString(),
                         },
                     ],
                     name: 'result_counter',
