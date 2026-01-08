@@ -7,6 +7,7 @@ import {
     JsonPathExpression,
     NilResult,
     SimpleTemplateTag,
+    StringCastExpression,
 } from './classes.js';
 import { UndefinedExpressionArg } from './tag.js';
 import { TaskResult } from './types.js';
@@ -31,7 +32,8 @@ export type LeftEqualityComparisonTypes =
     | HyphenatedExpressionArgs
     | SimpleTemplateTag
     | JsonPathExpression
-    | UndefinedExpressionArg;
+    | UndefinedExpressionArg
+    | StringCastExpression;
 export type RightEqualityComparisonTypes =
     | LeftEqualityComparisonTypes
     | boolean

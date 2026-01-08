@@ -23,17 +23,17 @@ export function asFloat(input: HyphenatedExpressionArgs | UndefinedExpressionArg
     return new FloatCastExpression(`asFloat(${input})`);
 }
 
-export function asString(input: HyphenatedExpressionArgs | UndefinedExpressionArg): StringCastExpression {
+export function asString(input: HyphenatedExpressionArgs | UndefinedExpressionArg | number): StringCastExpression {
     if ((input as UndefinedExpressionArg)?.string) {
-        return new StringCastExpression(`asString(${(input as UndefinedExpressionArg).string})`);
+        return new StringCastExpression(`string(${(input as UndefinedExpressionArg).string})`);
     }
 
-    return new StringCastExpression(`asString(${input})`);
+    return new StringCastExpression(`string(${input})`);
 }
 
 export function toJson(input: HyphenatedExpressionArgs | UndefinedExpressionArg): JsonCastExpression {
     if ((input as UndefinedExpressionArg)?.string) {
-        return new JsonCastExpression(`asString(${(input as UndefinedExpressionArg).string})`);
+        return new JsonCastExpression(`toJson(${(input as UndefinedExpressionArg).string})`);
     }
 
     return new JsonCastExpression(`toJson(${input})`);
