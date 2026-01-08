@@ -54,16 +54,40 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                 ),
                             }),
                             orParameter.toArgumentParameter({
-                                value: `${expressionTag(or([equals(hyphenateExpressionArgs(trueParam), true), equals(hyphenateExpressionArgs(falseParam), true)]))}`,
+                                valueFromExpressionTag: expressionTag(
+                                    or([
+                                        equals(hyphenateExpressionArgs(trueParam), true),
+                                        equals(hyphenateExpressionArgs(falseParam), true),
+                                    ]),
+                                ),
                             }),
                             parenParameter.toArgumentParameter({
-                                value: `${expressionTag(paren(or([equals(hyphenateExpressionArgs(trueParam), true), equals(hyphenateExpressionArgs(falseParam), false)])))}`,
+                                valueFromExpressionTag: expressionTag(
+                                    paren(
+                                        or([
+                                            equals(hyphenateExpressionArgs(trueParam), true),
+                                            equals(hyphenateExpressionArgs(falseParam), false),
+                                        ]),
+                                    ),
+                                ),
                             }),
                             notParameter.toArgumentParameter({
-                                value: `${expressionTag(not(equals(hyphenateExpressionArgs(falseParam), true)))}`,
+                                valueFromExpressionTag: expressionTag(
+                                    not(equals(hyphenateExpressionArgs(falseParam), true)),
+                                ),
                             }),
                             combinedParameter.toArgumentParameter({
-                                value: `${expressionTag(and([paren(or([equals(hyphenateExpressionArgs(trueParam), true), equals(hyphenateExpressionArgs(falseParam), false)])), not(equals(hyphenateExpressionArgs(falseParam), true))]))}`,
+                                valueFromExpressionTag: expressionTag(
+                                    and([
+                                        paren(
+                                            or([
+                                                equals(hyphenateExpressionArgs(trueParam), true),
+                                                equals(hyphenateExpressionArgs(falseParam), false),
+                                            ]),
+                                        ),
+                                        not(equals(hyphenateExpressionArgs(falseParam), true)),
+                                    ]),
+                                ),
                             }),
                         ],
                     }),
