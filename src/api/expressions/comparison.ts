@@ -9,6 +9,7 @@ import {
     SimpleTemplateTag,
 } from './classes.js';
 import { UndefinedExpressionArg } from './tag.js';
+import { TaskResult } from './types.js';
 
 const enum Comparators {
     EQUALS = '==',
@@ -31,7 +32,13 @@ export type LeftEqualityComparisonTypes =
     | SimpleTemplateTag
     | JsonPathExpression
     | UndefinedExpressionArg;
-export type RightEqualityComparisonTypes = LeftEqualityComparisonTypes | boolean | string | number | NilResult;
+export type RightEqualityComparisonTypes =
+    | LeftEqualityComparisonTypes
+    | boolean
+    | string
+    | number
+    | NilResult
+    | TaskResult;
 
 export type RightNumericComparisonTypes = LeftNumericComparisonTypes | boolean | number | NilResult;
 

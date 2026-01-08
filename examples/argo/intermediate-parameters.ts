@@ -10,6 +10,7 @@ import { WorkflowStep } from '../../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
 import { simpleTag } from '../../src/api/expressions/tag';
 import { ParameterValueFrom } from '../../src/api/parameter-value-from';
+import { equals } from '../../src/api/expressions/comparison';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const deployTemplate = new Template('deploy', {
@@ -57,7 +58,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             [
                 new WorkflowStep('deploy-prod', {
                     template: deployTemplate,
-                    when: `${simpleTag({ workflowStep: approvalStep, output: approveOutputParameter })} == YES`,
+                    whenExpression: equals(
+                        simpleTag({ workflowStep: approvalStep, output: approveOutputParameter }),
+                        'YES',
+                    ),
                 }),
             ],
         ],

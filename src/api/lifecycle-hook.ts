@@ -2,6 +2,7 @@ import { IoArgoprojWorkflowV1Alpha1LifecycleHook } from '../workflow-interfaces/
 import { Arguments } from './arguments.js';
 import { Template } from './template.js';
 import { TemplateReference } from './template-reference.js';
+import { ComparisonExpression } from './expressions/classes.js';
 
 /**
  * Represents an Argo Lifecycle Hook
@@ -14,6 +15,7 @@ export class LifecycleHook {
     arguments?: Arguments;
 
     expression?: string;
+    expressionFrom?: ComparisonExpression;
     readonly name: string;
     template?: Template;
 
@@ -40,9 +42,18 @@ export class LifecycleHook {
             throw new Error(`template and templateRef are mutually exclusive on lifecycle hook ${this.name}`);
         }
 
+        if (this.expression && this.expressionFrom) {
+            throw new Error(`expression and expressionFrom are mutually exclusive on lifecycle hook ${this.name}`);
+        }
+
+        let expression: string | undefined = this.expression;
+        if (this.expressionFrom) {
+            expression = this.expressionFrom.toString();
+        }
+
         return {
             arguments: this.arguments?.toArguments(`lifecycle-hook-${this.name}`),
-            expression: this.expression,
+            expression: expression,
             template: this.template?.name,
             templateRef: this.templateRef?.toTemplateRef(),
         };

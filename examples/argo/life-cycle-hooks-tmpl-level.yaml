@@ -11,19 +11,19 @@
                 hooks:
                   running: # Name of hook does not matter
                     # Expr will not support `-` on variable name. Variable should wrap with `[]`
-                    expression: steps["step-1"].status == "Running"
+                    expression: steps['step-1'].status == 'Running'
                     template: http
                   success:
-                    expression: steps["step-1"].status == "Succeeded"
+                    expression: steps['step-1'].status == 'Succeeded'
                     template: http
                 template: echo
             - - name: step2
                 hooks:
                   running:
-                    expression: steps.step2.status == "Running"
+                    expression: steps.step2.status == 'Running'
                     template: http
                   success:
-                    expression: steps.step2.status == "Succeeded"
+                    expression: steps.step2.status == 'Succeeded'
                     template: http
                 template: echo
 

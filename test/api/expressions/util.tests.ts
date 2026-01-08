@@ -130,10 +130,6 @@ describe('util tests', (): void => {
             );
         });
 
-        it('returns task only when type is TaskAndResult and only task is defined', (): void => {
-            expect(getVariableReference({ task: new DagTask('TaskA', {}), result: undefined })).to.equal('TaskA');
-        });
-
         it('returns task and string when type is StepOutputString and both step and string are defined', (): void => {
             expect(getVariableReference({ workflowStep: new WorkflowStep('StepA', {}), output: 'myString' })).to.equal(
                 'steps.StepA.myString',

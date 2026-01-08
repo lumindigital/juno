@@ -1,4 +1,5 @@
 import { Container } from '../../src/api/container';
+import { equals } from '../../src/api/expressions/comparison';
 import { LifecycleHook } from '../../src/api/lifecycle-hook';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -42,7 +43,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     template: httpTemplate,
                 }),
                 new LifecycleHook('running', {
-                    expression: 'workflow.status == "Running"',
+                    expressionFrom: equals({ string: 'workflow.status' }, 'Running'),
                     template: httpTemplate,
                 }),
             ],

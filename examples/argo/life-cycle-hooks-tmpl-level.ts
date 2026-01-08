@@ -1,4 +1,6 @@
 import { Container } from '../../src/api/container';
+import { equals } from '../../src/api/expressions/comparison';
+import { hyphenateExpressionArgs } from '../../src/api/expressions/tag';
 import { LifecycleHook } from '../../src/api/lifecycle-hook';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -27,11 +29,17 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new WorkflowStep('step-1', {
                     hooks: [
                         new LifecycleHook('running', {
-                            expression: 'steps["step-1"].status == "Running"',
+                            expressionFrom: equals(
+                                hyphenateExpressionArgs({ workflowStepName: 'step-1', output: 'status' }),
+                                'Running',
+                            ),
                             template: httpTemplate,
                         }),
                         new LifecycleHook('success', {
-                            expression: 'steps["step-1"].status == "Succeeded"',
+                            expressionFrom: equals(
+                                hyphenateExpressionArgs({ workflowStepName: 'step-1', output: 'status' }),
+                                'Succeeded',
+                            ),
                             template: httpTemplate,
                         }),
                     ],
@@ -42,11 +50,17 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new WorkflowStep('step2', {
                     hooks: [
                         new LifecycleHook('running', {
-                            expression: 'steps.step2.status == "Running"',
+                            expressionFrom: equals(
+                                hyphenateExpressionArgs({ workflowStepName: 'step2', output: 'status' }),
+                                'Running',
+                            ),
                             template: httpTemplate,
                         }),
                         new LifecycleHook('success', {
-                            expression: 'steps.step2.status == "Succeeded"',
+                            expressionFrom: equals(
+                                hyphenateExpressionArgs({ workflowStepName: 'step2', output: 'status' }),
+                                'Succeeded',
+                            ),
                             template: httpTemplate,
                         }),
                     ],

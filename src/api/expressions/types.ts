@@ -5,7 +5,7 @@ import { WorkflowStep } from '../workflow-step.js';
 
 export type OutputType = OutputArtifact | OutputParameter | OutputResult | string;
 export type InputType = InputParameter | InputArtifact | WorkflowParameter;
-export type TaskAndResult = { task: DagTask | WorkflowStep; result?: TaskResult };
+export type TaskAndResult = { task: DagTask | WorkflowStep; result: TaskResult };
 export type TaskOutput = { dagTask: DagTask; output: OutputType };
 export type TaskOutputParameters = { dagTaskOutputParameter: DagTask };
 export type StringTaskOutput = { dagTaskName: string; output: OutputType };
