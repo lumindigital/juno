@@ -7,7 +7,7 @@ import { asInt } from '../../src/api/expressions/cast';
 import { expressionTag, hyphenateExpressionArgs } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { Outputs } from '../../src/api/outputs';
-import { InputParameter, OutputParameter } from '../../src/api/parameter';
+import { FromItemProperty, InputParameter, OutputParameter } from '../../src/api/parameter';
 import { ParameterValueFrom } from '../../src/api/parameter-value-from';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
@@ -45,7 +45,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             tasks: [
                 new DagTask('task-0', {
                     arguments: new Arguments({
-                        parameters: [fooInputParameter.toArgumentParameter({ value: '{{=item}}' })],
+                        parameters: [
+                            fooInputParameter.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(new FromItemProperty()),
+                            }),
+                        ],
                     }),
                     template: pod0Template,
                     withParamExpression: '{{=toJson(filter([1, 3], {# > 1}))}}',

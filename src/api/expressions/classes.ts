@@ -1,3 +1,5 @@
+import { FromItemProperty } from '../parameter.js';
+
 export type ExpressionTemplateInputs =
     | ComparisonExpression
     | TernaryExpression
@@ -5,7 +7,8 @@ export type ExpressionTemplateInputs =
     | ParenExpression
     | CastExpressions
     | ArithmeticExpressions
-    | JsonPathExpression;
+    | JsonPathExpression
+    | FromItemProperty;
 
 export type CastExpressions =
     | IntCastExpression

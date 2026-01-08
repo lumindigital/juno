@@ -1,3 +1,4 @@
+import { FromItemProperty } from '../parameter.js';
 import {
     ExpressionTemplateInputs as ExpressionTagTemplateInputs,
     ExpressionTemplateTag,
@@ -12,6 +13,10 @@ export type UndefinedExpressionArg = {
 };
 
 export function expressionTag(input: ExpressionTagTemplateInputs): ExpressionTemplateTag {
+    if ((input as FromItemProperty)?.isFromItemProperty) {
+        return new ExpressionTemplateTag(`{{=${getVariableReference(input as FromItemProperty)}}}`);
+    }
+
     return new ExpressionTemplateTag(`{{=${input}}}`);
 }
 
