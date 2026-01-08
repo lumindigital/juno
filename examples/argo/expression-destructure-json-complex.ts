@@ -8,19 +8,27 @@ import { Workflow } from '../../src/api/workflow';
 import { WorkflowParameter } from '../../src/api/parameter';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
+import { expressionTag } from '../../src/api/expressions/tag';
+import { jsonPath } from '../../src/api/expressions/json-path';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const configWorkflowParameter = new WorkflowParameter('config', {
+        value: '{"employees": [{"name": "Baris", "age":43},{"name": "Mo", "age": 42}, {"name": "Jai", "age" :44}]}',
+    });
+
     const aInputParameter = new InputParameter('a', {
-        value: '{{=jsonpath(workflow.parameters.config, \'$.employees[?(@.name=="Baris")].age\')}}',
+        valueFromExpressionTag: expressionTag(jsonPath(configWorkflowParameter, '$.employees[?(@.name=="Baris")].age')),
     });
     const bInputParameter = new InputParameter('b', {
-        value: "{{=jsonpath(workflow.parameters.config, '$.employees[?(@.age>42 && @.age<44)].age')}}",
+        valueFromExpressionTag: expressionTag(
+            jsonPath(configWorkflowParameter, '$.employees[?(@.age>42 && @.age<44)].age'),
+        ),
     });
     const cInputParameter = new InputParameter('c', {
-        value: "{{=jsonpath(workflow.parameters.config, '$.employees[0:1]')}}",
+        valueFromExpressionTag: expressionTag(jsonPath(configWorkflowParameter, '$.employees[0:1]')),
     });
     const dInputParameter = new InputParameter('d', {
-        value: "{{=jsonpath(workflow.parameters.config, '$.employees[*].name')}}",
+        valueFromExpressionTag: expressionTag(jsonPath(configWorkflowParameter, '$.employees[*].name')),
     });
 
     const mainTemplate = new Template('main', {
@@ -54,11 +62,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [
-                    new WorkflowParameter('config', {
-                        value: '{"employees": [{"name": "Baris", "age":43},{"name": "Mo", "age": 42}, {"name": "Jai", "age" :44}]}',
-                    }),
-                ],
+                parameters: [configWorkflowParameter],
             }),
             entrypoint: mainTemplate,
         }),

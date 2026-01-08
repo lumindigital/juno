@@ -4,7 +4,8 @@ export type ExpressionTemplateInputs =
     | LogicalExpression
     | ParenExpression
     | CastExpressions
-    | ArithmeticExpressions;
+    | ArithmeticExpressions
+    | JsonPathExpression;
 
 export type CastExpressions =
     | IntCastExpression

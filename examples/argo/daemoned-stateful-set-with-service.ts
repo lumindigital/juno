@@ -1,4 +1,5 @@
 import { Container } from '../../src/api/container';
+import { equals } from '../../src/api/expressions/comparison';
 import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
@@ -62,7 +63,7 @@ kind: StatefulSet
 metadata:
   name: web
 `,
-            successCondition: 'status.readyReplicas == 1',
+            successCondition: equals({ string: 'status.readyReplicas' }, 1).toString(),
         },
     });
 

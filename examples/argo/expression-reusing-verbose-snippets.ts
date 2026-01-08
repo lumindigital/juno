@@ -8,10 +8,22 @@ import { WorkflowParameter } from '../../src/api/parameter';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowArguments } from '../../src/api/arguments';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
+import { expressionTag } from '../../src/api/expressions/tag';
+import { jsonPath } from '../../src/api/expressions/json-path';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const weekTempsInputParameter = new InputParameter('week-temps', {
-        value: `{{=\n  map([\n      jsonpath(sprig.b64dec(jsonpath(workflow.parameters.weather, '$.weekWeather')), '$.temps')\n    ], {\n      toJson({\n        avg: sprig.add(#[0], #[1], #[2], #[3], #[4]) / 5,\n        min: sprig.min(#[0], #[1], #[2], #[3], #[4]),\n        max: sprig.max(#[0], #[1], #[2], #[3], #[4])\n      })\n  })[0]\n}}`,
+        value: `{{=
+  map([
+      jsonpath(sprig.b64dec(jsonpath(workflow.parameters.weather, '$.weekWeather')), '$.temps')
+    ], {
+      toJson({
+        avg: sprig.add(#[0], #[1], #[2], #[3], #[4]) / 5,
+        min: sprig.min(#[0], #[1], #[2], #[3], #[4]),
+        max: sprig.max(#[0], #[1], #[2], #[3], #[4])
+      })
+  })[0]
+}}`,
     });
 
     const mainTemplate = new Template('main', {
@@ -22,13 +34,13 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             command: ['bash'],
             env: [
                 new EnvironmentVariable('AVG', {
-                    value: "{{=jsonpath(inputs.parameters['week-temps'], '$.avg')}}",
+                    valueFromExpressionTag: expressionTag(jsonPath(weekTempsInputParameter, '$.avg')),
                 }),
                 new EnvironmentVariable('MIN', {
-                    value: "{{=jsonpath(inputs.parameters['week-temps'], '$.min')}}",
+                    valueFromExpressionTag: expressionTag(jsonPath(weekTempsInputParameter, '$.min')),
                 }),
                 new EnvironmentVariable('MAX', {
-                    value: "{{=jsonpath(inputs.parameters['week-temps'], '$.max')}}",
+                    valueFromExpressionTag: expressionTag(jsonPath(weekTempsInputParameter, '$.max')),
                 }),
             ],
             image: 'debian:9.4',

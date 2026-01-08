@@ -1,5 +1,7 @@
 import { WorkflowArguments } from '../../src/api/arguments';
 import { EnvironmentVariable } from '../../src/api/environment-variable';
+import { jsonPath } from '../../src/api/expressions/json-path';
+import { expressionTag } from '../../src/api/expressions/tag';
 import { Inputs } from '../../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../../src/api/parameter';
 import { Script } from '../../src/api/script';
@@ -9,14 +11,18 @@ import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
+    const configWorkflowParameter = new WorkflowParameter('config', {
+        value: '{"a": "1", "b": "2", "c": "3"}',
+    });
+
     const aInputParameter = new InputParameter('a', {
-        value: "{{=jsonpath(workflow.parameters.config, '$.a')}}",
+        valueFromExpressionTag: expressionTag(jsonPath(configWorkflowParameter, '$.a')),
     });
     const bInputParameter = new InputParameter('b', {
-        value: "{{=jsonpath(workflow.parameters.config, '$.b')}}",
+        valueFromExpressionTag: expressionTag(jsonPath(configWorkflowParameter, '$.b')),
     });
     const cInputParameter = new InputParameter('c', {
-        value: "{{=jsonpath(workflow.parameters.config, '$.c')}}",
+        valueFromExpressionTag: expressionTag(jsonPath(configWorkflowParameter, '$.c')),
     });
 
     const mainTemplate = new Template('main', {
@@ -51,11 +57,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [
-                    new WorkflowParameter('config', {
-                        value: '{"a": "1", "b": "2", "c": "3"}',
-                    }),
-                ],
+                parameters: [configWorkflowParameter],
             }),
             entrypoint: mainTemplate,
         }),

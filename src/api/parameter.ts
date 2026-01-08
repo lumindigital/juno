@@ -79,7 +79,13 @@ class Parameter {
     }
 
     isValueSet(): boolean {
-        return !!(this.value || this.valueFrom || this.valueFromExpressionArgs || this.default);
+        return !!(
+            this.value ||
+            this.valueFrom ||
+            this.valueFromExpressionArgs ||
+            this.valueFromExpressionTag ||
+            this.default
+        );
     }
 }
 
