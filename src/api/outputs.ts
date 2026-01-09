@@ -12,11 +12,11 @@ export class Outputs {
         Object.assign(this, init);
     }
 
-    toOutputs(): IoArgoprojWorkflowV1Alpha1Outputs {
+    toOutputs(templateName: string): IoArgoprojWorkflowV1Alpha1Outputs {
         return {
-            artifacts: this.artifacts?.map((x) => x.toArtifact()),
+            artifacts: this.artifacts?.map((x) => x.toArtifact(templateName)),
             exitCode: this.exitCode?.toString(),
-            parameters: this.parameters?.map((x) => x.toParameter()),
+            parameters: this.parameters?.map((x) => x.toParameter(templateName)),
             result: this.result,
         };
     }
