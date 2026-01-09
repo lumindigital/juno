@@ -16,7 +16,7 @@ export function ternary(
 
     if (typeof whenTrue === 'string') {
         whenTrueOutput = `'${whenTrue}'`;
-    } else if ((whenTrue as TernaryExpression)?.toString() != null) {
+    } else if ((whenTrue as TernaryExpression).isTernaryExpression) {
         whenTrueOutput = (whenTrue as TernaryExpression).toString();
     } else if ((whenTrue as HyphenatedExpressionArgs)?.isHyphenatedExpressionArgs) {
         whenTrueOutput = (whenTrue as HyphenatedExpressionArgs).toString();
@@ -28,7 +28,7 @@ export function ternary(
 
     if (typeof whenFalse === 'string') {
         whenFalseOutput = `'${whenFalse}'`;
-    } else if ((whenFalse as TernaryExpression)?.toString() != null) {
+    } else if ((whenFalse as TernaryExpression)?.isTernaryExpression) {
         whenFalseOutput = (whenFalse as TernaryExpression).toString();
     } else if ((whenFalse as HyphenatedExpressionArgs)?.isHyphenatedExpressionArgs) {
         whenFalseOutput = (whenFalse as HyphenatedExpressionArgs).toString();

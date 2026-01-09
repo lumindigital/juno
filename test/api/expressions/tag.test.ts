@@ -1,6 +1,8 @@
 import { expect } from 'chai';
-import { expressionTag, simpleTag } from '../../../src/api/expressions/tag';
+import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
 import { LogicalExpression } from '../../../src/api/expressions/classes';
+import { DagTask } from '../../../src/api/dag-task';
+import { OutputParameter } from '../../../src/api/parameter';
 
 describe('tag tests', (): void => {
     const logicalExpression = new LogicalExpression('A + B');
@@ -31,6 +33,24 @@ describe('tag tests', (): void => {
             const result = simpleTag(stringArg);
 
             expect(`${result}`).to.equal('{{A}}');
+        });
+    });
+
+    describe('hyphenateExpressionArgs', (): void => {
+        it('returns successfully when Expression Arg', (): void => {
+            const result = hyphenateExpressionArgs({
+                dagTask: new DagTask('A-1', {}),
+                output: new OutputParameter('output-1'),
+            });
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1']`);
+        });
+
+        it('returns successfully when Expression Arg with brackets', (): void => {
+            const result = hyphenateExpressionArgs({
+                dagTask: new DagTask("['A-1']", {}),
+                output: new OutputParameter('output-1'),
+            });
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1']`);
         });
     });
 });

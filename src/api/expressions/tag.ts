@@ -39,7 +39,7 @@ function hyphen(input: string): string {
 
     for (let i = 1; i < split.length; i++) {
         if (split[i].includes('[')) {
-            output = output.concat(`.${split[i]}`);
+            output = output.concat(`${split[i]}`);
             continue;
         }
 

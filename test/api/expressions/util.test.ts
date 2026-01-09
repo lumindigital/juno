@@ -172,10 +172,10 @@ describe('util tests', (): void => {
         it('returns valid reference when type is StringTaskOutputParameter', (): void => {
             expect(
                 getVariableReference({
-                    workflowStepName: 'StepA',
+                    dagTaskName: 'DagA',
                     output: new OutputParameter('ParamA', {}),
                 }),
-            ).to.equal('steps.StepA.outputs.parameters.ParamA');
+            ).to.equal('tasks.DagA.outputs.parameters.ParamA');
         });
 
         it('returns valid reference when type is StringStepOutputArtifact', (): void => {

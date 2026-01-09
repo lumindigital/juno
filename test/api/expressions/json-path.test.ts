@@ -16,13 +16,11 @@ describe('jsonPath tests', (): void => {
     describe('jsonPath', (): void => {
         it('returns successfully when given an expression argument', (): void => {
             const result = jsonPath(expressionArg, '$[0].value');
-
-            expect(result.toString()).to.equal(`jsonpath(tasks.A-1.outputs.parameters.output-1, '$[0].value')`);
+            expect(result.toString()).to.equal(`jsonpath(tasks['A-1'].outputs.parameters['output-1'], '$[0].value')`);
         });
 
         it('returns successfully when given WorkflowParametersJson', (): void => {
             const result = jsonPath(new WorkflowParametersJson(), '$.myParam');
-
             expect(result.toString()).to.equal(`jsonpath(workflow.parameters.json, '$.myParam')`);
         });
 

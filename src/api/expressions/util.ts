@@ -59,12 +59,7 @@ export function getVariableReference(expressionArgs: ExpressionArgs): string {
         }
         case ExpressionType.TaskAndResult: {
             const taskAndResult = expressionArgs as TaskAndResult;
-
-            if (taskAndResult.result) {
-                return `${taskAndResult.task.name}.${taskAndResult.result}`;
-            }
-
-            return taskAndResult.task.name;
+            return `${taskAndResult.task.name}.${taskAndResult.result}`;
         }
         case ExpressionType.InputParameter: {
             const inputParameter = expressionArgs as InputParameter;
