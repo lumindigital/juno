@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways conditional expressions can be used.
+  generateName: conditional-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: true-param
+        value: "true"
+      - name: false-param
+        value: "false"
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: ternary-string-output-param
+                  value: "{{=workflow.parameters['true-param'] == workflow.parameters['true-param'] ? 'true' : 'false'}}"
+                - name: ternary-expression-args-output-param
+                  value: "{{=workflow.parameters['true-param'] == workflow.parameters['true-param'] ? workflow.parameters['true-param'] : workflow.parameters['false-param']}}"
+                - name: nested-ternary-param
+                  value: "{{=workflow.parameters['true-param'] == workflow.parameters['true-param'] ? workflow.parameters['true-param'] == workflow.parameters['true-param'] ? workflow.parameters['true-param'] : workflow.parameters['false-param'] : workflow.parameters['true-param'] == workflow.parameters['true-param'] ? workflow.parameters['true-param'] : workflow.parameters['false-param']}}"
+                - name: 'nil-coalescing-string-param'
+                  value: "{{=workflow.parameters['missing-param'] ?? 'defaultValue'}}"
+                - name: 'nil-coalescing-hyphenated-param'
+                  value: "{{=workflow.parameters['missing-param'] ?? workflow.parameters['true-param']}}"
+            name: conditional-task
+            template: conditional
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: ternary-string-output-param
+          - name: ternary-expression-args-output-param
+          - name: nested-ternary-param
+          - name: nil-coalescing-string-param
+          - name: nil-coalescing-hyphenated-param
+      name: conditional
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source:  >
+          if [ "{{inputs.parameters.ternary-string-output-param}}" != true ]; then exit 12; fi
+                               if [ "{{inputs.parameters.ternary-expression-args-output-param}}" != true ]; then exit 13; fi
+                               if [ "{{inputs.parameters.nested-ternary-param}}" != true ]; then exit 14; fi
+                               if [ "{{inputs.parameters.nil-coalescing-string-param}}" != "defaultValue" ]; then exit 15; fi
+                               if [ "{{inputs.parameters.nil-coalescing-hyphenated-param}}" != "true" ]; then exit 16; fi

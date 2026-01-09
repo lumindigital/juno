@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways cast expressions can be used.
+  generateName: cast-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: workflow-int-param
+        value: "1"
+      - name: workflow-float-param
+        value: "1.5"
+      - name: workflow-json-param
+        value: '{"isTrue":"true"}'
+
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: int-param
+                  value: "{{=asInt(workflow.parameters['workflow-int-param']) == 1}}"
+                - name: float-param
+                  value: "{{=asFloat(workflow.parameters['workflow-float-param']) == 1.5}}"
+                - name: json-param
+                  value: "{{=jsonpath(workflow.parameters['workflow-json-param'], '$.isTrue') == 'true'}}"
+                - name: string-int-param
+                  value: "{{=string(workflow.parameters['workflow-int-param'])}}"
+            name: cast-task
+            template: cast
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: int-param
+          - name: float-param
+          - name: json-param
+          - name: string-int-param
+      name: cast
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        env:
+          - name: CAST_INT_TO_STRING
+            value: "{{=string(1) == '1'}}"
+        image: busybox
+        source:  >
+          if [ "{{inputs.parameters.int-param}}" != true ]; then exit 12; fi
+                               if [ "{{inputs.parameters.float-param}}" != true ]; then exit 13; fi
+                               if [ "{{inputs.parameters.json-param}}" != true ]; then exit 14; fi
+                               if [ "$CAST_INT_TO_STRING" != true ]; then exit 16; fi
