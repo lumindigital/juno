@@ -223,12 +223,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     });
 
     const depsTask = new DagTask('deps', {
-        dependencies: [cloneTask, cacheRestoreTask],
+        dependenciesExpressions: [cloneTask, cacheRestoreTask],
         template: depsTemplate,
     });
 
     const buildTask = new DagTask('build', {
-        dependencies: [depsTask],
+        dependenciesExpressions: [depsTask],
         template: buildTemplate,
     });
 
@@ -240,7 +240,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 depsTask,
                 buildTask,
                 new DagTask('test', {
-                    dependencies: [buildTask],
+                    dependenciesExpressions: [buildTask],
                     template: testTemplate,
                 }),
             ],

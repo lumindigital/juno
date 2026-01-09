@@ -42,14 +42,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
         }),
-        depends: taskA,
+        dependsExpression: taskA,
         template: echoTemplate,
     });
     const taskD = new DagTask('D', {
         arguments: new Arguments({
             parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
         }),
-        depends: and([taskA, taskB]),
+        dependsExpression: and([taskA, taskB]),
         template: echoTemplate,
     });
 

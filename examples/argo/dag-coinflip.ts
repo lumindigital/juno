@@ -64,12 +64,12 @@ print(result)
     });
 
     const taskB = new DagTask('B', {
-        depends: taskA,
+        dependsExpression: taskA,
         template: coinflipTemplate,
     });
 
     const taskC = new DagTask('C', {
-        depends: taskA,
+        dependsExpression: taskA,
         template: coinflipTemplate,
     });
 
@@ -80,7 +80,7 @@ print(result)
                 taskB,
                 taskC,
                 new DagTask('D', {
-                    depends: and([taskB, taskC]),
+                    dependsExpression: and([taskB, taskC]),
                     template: coinflipTemplate,
                 }),
             ],

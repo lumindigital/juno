@@ -11,8 +11,8 @@ export class WorkflowStep extends BaseTaskOrStep {
         Object.assign(this, init);
     }
 
-    toWorkflowStep(): IoArgoprojWorkflowV1Alpha1WorkflowStep {
-        this.validateMutuallyExclusive();
+    toWorkflowStep(workflowStepName: string): IoArgoprojWorkflowV1Alpha1WorkflowStep {
+        this.validateMutuallyExclusive(workflowStepName);
 
         let templateName = undefined;
         if (this.template && (this.template as Template).isTemplate) {

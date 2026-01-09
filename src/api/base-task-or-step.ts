@@ -75,7 +75,7 @@ export class BaseTaskOrStep {
         return this.when;
     }
 
-    validateMutuallyExclusive() {
+    validateMutuallyExclusive(parentName: string) {
         let count = 0;
 
         if (this.template) {
@@ -91,11 +91,13 @@ export class BaseTaskOrStep {
         }
 
         if (count > 1) {
-            throw new Error(`template, templateRef, and inline are mutually exclusive on ${this.name}`);
+            throw new Error(
+                `template, templateRef, and inline are mutually exclusive on ${this.name} on ${parentName}`,
+            );
         }
 
         if (count === 0) {
-            throw new Error(`One of template, templateRef, or inline is required on ${this.name}`);
+            throw new Error(`One of template, templateRef, or inline is required on ${this.name} on ${parentName}`);
         }
 
         count = 0;
@@ -109,7 +111,7 @@ export class BaseTaskOrStep {
         }
 
         if (count > 1) {
-            throw new Error(`when and whenExpressionTag are mutually exclusive on ${this.name}`);
+            throw new Error(`when and whenExpressionTag are mutually exclusive on ${this.name} on ${parentName}`);
         }
     }
 }

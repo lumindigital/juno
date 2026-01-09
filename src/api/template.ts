@@ -80,7 +80,7 @@ export class BaseTemplate {
     }
 
     toTemplate(): IoArgoprojWorkflowV1Alpha1Template {
-        const steps = this.steps?.map((x) => x.map((y) => y.toWorkflowStep()));
+        const steps = this.steps?.map((x) => x.map((y) => y.toWorkflowStep(this.name ?? '')));
         this.validateEnvironmentVariables();
 
         return {

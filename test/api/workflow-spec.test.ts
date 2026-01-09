@@ -481,13 +481,13 @@ describe('workflow-spec validation tests', (): void => {
             );
         });
 
-        it('fails validation when the depends field includes a dagtask that is not included in template', (): void => {
+        it('fails validation when the dependsExpression field includes a dagtask that is not included in template', (): void => {
             const taskA = new DagTask('A', {
                 template: new Template('C', {}),
             });
 
             const taskB = new DagTask('B', {
-                depends: taskA,
+                dependsExpression: taskA,
                 template: new Template('C', {}),
             });
 
@@ -506,13 +506,13 @@ describe('workflow-spec validation tests', (): void => {
             );
         });
 
-        it('fails validation when the depends field includes a dagtask and result that is not included in template', (): void => {
+        it('fails validation when the dependsExpression field includes a dagtask and result that is not included in template', (): void => {
             const taskA = new DagTask('A', {
                 template: new Template('C', {}),
             });
 
             const taskB = new DagTask('B', {
-                depends: { task: taskA, result: TaskResult.Daemoned },
+                dependsExpression: { task: taskA, result: TaskResult.Daemoned },
                 template: new Template('C', {}),
             });
 
@@ -532,13 +532,13 @@ describe('workflow-spec validation tests', (): void => {
         });
 
         // This should never happen.
-        it('fails validation when the depends field includes a workflow step and result that is a workflow step', (): void => {
+        it('fails validation when the dependsExpression field includes a workflow step and result that is a workflow step', (): void => {
             const stepA = new WorkflowStep('A', {
                 template: new Template('C', {}),
             });
 
             const taskB = new DagTask('B', {
-                depends: { task: stepA, result: TaskResult.Daemoned },
+                dependsExpression: { task: stepA, result: TaskResult.Daemoned },
                 template: new Template('C', {}),
             });
 
@@ -558,13 +558,13 @@ describe('workflow-spec validation tests', (): void => {
         });
 
         // This should never happen.
-        it('fails validation the depends field includes a workflowstep', (): void => {
+        it('fails validation the dependsExpression field includes a workflowstep', (): void => {
             const stepA = new WorkflowStep('A', {
                 template: new Template('C', {}),
             });
 
             const taskB = new DagTask('B', {
-                depends: stepA,
+                dependsExpression: stepA,
                 template: new Template('C', {}),
             });
 
@@ -583,13 +583,13 @@ describe('workflow-spec validation tests', (): void => {
             );
         });
 
-        it('fails validation when the dependency field includes a dagtask that is not included in template', (): void => {
+        it('fails validation when the dependenciesExpressions field includes a dagtask that is not included in template', (): void => {
             const taskA = new DagTask('A', {
                 template: new Template('C', {}),
             });
 
             const taskB = new DagTask('B', {
-                dependencies: [taskA],
+                dependenciesExpressions: [taskA],
                 template: new Template('C', {}),
             });
 

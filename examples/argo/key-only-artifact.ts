@@ -53,7 +53,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             tasks: [
                 generateTask,
                 new DagTask('consume', {
-                    depends: generateTask,
+                    dependsExpression: generateTask,
                     template: consumeTemplate,
                 }),
             ],

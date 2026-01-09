@@ -142,7 +142,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [pathInputParameter.toArgumentParameter({ valueFromExpressionArgs: pathWorkflowParameter })],
         }),
-        depends: cloneTask,
+        dependsExpression: cloneTask,
         template: buildTemplate,
     });
 
@@ -162,7 +162,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             }),
                         ],
                     }),
-                    depends: buildTask,
+                    dependsExpression: buildTask,
                     template: imageTemplate,
                 }),
             ],

@@ -48,12 +48,12 @@ print("heads" if random.randint(0,1) == 0 else "tails")
     });
 
     const headsTask = new DagTask('heads', {
-        depends: flipCoinTask,
+        dependsExpression: flipCoinTask,
         template: headsTemplate,
         whenExpression: equals(simpleTag({ dagTask: flipCoinTask, output: new OutputResult() }), 'heads'),
     });
     const tailsTask = new DagTask('tails', {
-        depends: flipCoinTask,
+        dependsExpression: flipCoinTask,
         template: tailsTemplate,
         whenExpression: equals(simpleTag({ dagTask: flipCoinTask, output: new OutputResult() }), 'tails'),
     });

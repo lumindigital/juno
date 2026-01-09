@@ -27,7 +27,7 @@ export class DagTemplate {
         return {
             failFast: this.failFast,
             target: target,
-            tasks: this.tasks.map((x) => x.toDagTask()),
+            tasks: this.tasks.map((x) => x.toDagTask(templateName)),
         };
     }
 

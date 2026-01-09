@@ -52,7 +52,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
             ],
         }),
-        depends: influxTask,
+        dependsExpression: influxTask,
         template: influxdbClientTemplate,
     });
 
@@ -64,7 +64,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
             ],
         }),
-        depends: initDatabaseTask,
+        dependsExpression: initDatabaseTask,
         template: influxdbClientTemplate,
     });
 
@@ -76,7 +76,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
             ],
         }),
-        depends: initDatabaseTask,
+        dependsExpression: initDatabaseTask,
         template: influxdbClientTemplate,
     });
 
@@ -88,7 +88,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 }),
             ],
         }),
-        depends: initDatabaseTask,
+        dependsExpression: initDatabaseTask,
         template: influxdbClientTemplate,
     });
 
@@ -108,7 +108,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             }),
                         ],
                     }),
-                    depends: and([producer1Task, producer2Task, producer3Task]),
+                    dependsExpression: and([producer1Task, producer2Task, producer3Task]),
                     template: influxdbClientTemplate,
                 }),
             ],
