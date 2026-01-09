@@ -2,7 +2,10 @@ import {
     IoArgoprojWorkflowV1Alpha1Parameter,
     IoArgoprojWorkflowV1Alpha1ValueFrom,
 } from '../workflow-interfaces/data-contracts.js';
-import { ExpressionArgs, simpleTag } from './expression.js';
+import { ExpressionTemplateTag } from './expressions/classes.js';
+import { simpleTag } from './expressions/tag.js';
+import { ExpressionArgs } from './expressions/types.js';
+import { ParameterValueFrom } from './parameter-value-from.js';
 
 class Parameter {
     default?: string;
@@ -12,21 +15,31 @@ class Parameter {
     globalName?: string;
     readonly name: string;
     value?: string;
-    valueFrom?: IoArgoprojWorkflowV1Alpha1ValueFrom;
+    valueFrom?: ParameterValueFrom;
     valueFromExpressionArgs?: ExpressionArgs;
+    valueFromExpressionTag?: ExpressionTemplateTag;
 
     constructor(name: string, init?: Partial<Parameter>) {
         this.name = name;
         Object.assign(this, init);
     }
 
-    toParameter(): IoArgoprojWorkflowV1Alpha1Parameter {
-        this.validateMutuallyExclusive();
+    toParameter(templateName: string): IoArgoprojWorkflowV1Alpha1Parameter {
+        this.validateMutuallyExclusive(templateName);
 
         let value = this.value;
 
         if (this.valueFromExpressionArgs) {
-            value = simpleTag(this.valueFromExpressionArgs);
+            value = simpleTag(this.valueFromExpressionArgs).toString();
+        }
+
+        if (this.valueFromExpressionTag) {
+            value = this.valueFromExpressionTag.toString();
+        }
+
+        let valueFrom: IoArgoprojWorkflowV1Alpha1ValueFrom | undefined;
+        if (this.valueFrom) {
+            valueFrom = this.valueFrom.toValueFrom(templateName, this.name);
         }
 
         return {
@@ -36,11 +49,11 @@ class Parameter {
             globalName: this.globalName,
             name: this.name,
             value,
-            valueFrom: this.valueFrom,
+            valueFrom: valueFrom,
         };
     }
 
-    validateMutuallyExclusive() {
+    validateMutuallyExclusive(templateName: string) {
         let count = 0;
         if (this.value || this.value === '') {
             count++;
@@ -54,13 +67,29 @@ class Parameter {
             count++;
         }
 
+        if (this.valueFromExpressionTag) {
+            count++;
+        }
+
         if (count > 1) {
+<<<<<<< HEAD
             throw new Error(`value, valueFrom, and valueFromExpressionArgs are mutually exclusive on ${this.name}`);
+=======
+            throw new Error(
+                `value, valueFrom, valueFromExpressionArgs, and valueFromExpressionTag are mutually exclusive on parameter ${this.name} on ${templateName}`,
+            );
+>>>>>>> 7faf7d8 (feat: added valueFromExpressionTag to artifacts and parameters)
         }
     }
 
     isValueSet(): boolean {
-        return !!(this.value || this.valueFrom || this.valueFromExpressionArgs || this.default);
+        return !!(
+            this.value ||
+            this.valueFrom ||
+            this.valueFromExpressionArgs ||
+            this.valueFromExpressionTag ||
+            this.default
+        );
     }
 }
 

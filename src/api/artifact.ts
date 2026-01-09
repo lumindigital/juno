@@ -12,7 +12,9 @@ import {
     IoArgoprojWorkflowV1Alpha1RawArtifact,
     IoArgoprojWorkflowV1Alpha1S3Artifact,
 } from '../workflow-interfaces/data-contracts.js';
-import { ExpressionArgs, simpleTag } from './expression.js';
+import { ExpressionTemplateTag } from './expressions/classes.js';
+import { simpleTag } from './expressions/tag.js';
+import { ExpressionArgs } from './expressions/types.js';
 
 export class Artifact {
     archive?: IoArgoprojWorkflowV1Alpha1ArchiveStrategy;
@@ -38,20 +40,23 @@ export class Artifact {
     s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
     subPath?: string;
     valueFromExpressionArgs?: ExpressionArgs;
+    valueFromExpressionTag?: ExpressionTemplateTag;
 
     constructor(name: string, init?: Partial<Artifact>) {
         this.name = name;
         Object.assign(this, init);
     }
 
-    toArtifact(): IoArgoprojWorkflowV1Alpha1Artifact {
-        this.validateMutuallyExclusive();
+    toArtifact(templateName: string): IoArgoprojWorkflowV1Alpha1Artifact {
+        this.validateMutuallyExclusive(templateName);
 
         let from;
         if (this.from) {
             from = this.from;
         } else if (this.valueFromExpressionArgs) {
-            from = simpleTag(this.valueFromExpressionArgs);
+            from = simpleTag(this.valueFromExpressionArgs).toString();
+        } else if (this.valueFromExpressionTag) {
+            from = this.valueFromExpressionTag.toString();
         }
 
         return {
@@ -80,7 +85,7 @@ export class Artifact {
         };
     }
 
-    validateMutuallyExclusive() {
+    validateMutuallyExclusive(templateName: string) {
         let count = 0;
         if (this.from || this.from === '') {
             count++;
@@ -94,8 +99,14 @@ export class Artifact {
             count++;
         }
 
+        if (this.valueFromExpressionTag) {
+            count++;
+        }
+
         if (count > 1) {
-            throw new Error(`from, valueFromExpressionArgs, and fromExpression are mutually exclusive on ${this.name}`);
+            throw new Error(
+                `from, valueFromExpressionArgs, valueFromExpressionTag, and fromExpression are mutually exclusive on artifact ${this.name} on ${templateName}`,
+            );
         }
     }
 }
