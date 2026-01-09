@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways slice expressions can be used.
+  generateName: slice-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: workflow-array-param
+        value: '{"count":["one", "two", "three"]}'
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: array-slice-param
+                  value: "{{=jsonpath(workflow.parameters['workflow-array-param'], '$.count')[0:2]}}"
+            name: slice-task
+            template: slice
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: array-slice-param
+      name: slice
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source:  >
+          if [ "{{inputs.parameters.array-slice-param}}" != "[one,two]" ]; then exit 12; fi

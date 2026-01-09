@@ -22,7 +22,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const arrayParam = new WorkflowParameter('workflow-array-param', { value: '{"count":["one", "two", "three"]}' });
     const badKeyParam = new WorkflowParameter('bad-key-param', { value: 'badKey' });
 
-    const castTemplate = new Template('cast', {
+    const membershipTemplate = new Template('membership', {
         inputs: new Inputs({
             parameters: [inParamTest, dotParamTest, bracketParamTest, arrayBracketParamTest],
         }),
@@ -40,7 +40,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const entryPointTemplate = new Template('entrypoint', {
         dag: new DagTemplate({
             tasks: [
-                new DagTask('cast-task', {
+                new DagTask('membership-task', {
                     arguments: new Arguments({
                         parameters: [
                             inParamTest.toArgumentParameter({
@@ -48,12 +48,18 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                     isIn(hyphenateExpressionArgs(badKeyParam), jsonPath(workflowJsonParam, '$')),
                                 ),
                             }),
+                            // You have to convert the json string into a json object first before accessing properties
+                            // Juno doesn't support accessing properties with dot notation, so we use string interpolation instead
                             dotParamTest.toArgumentParameter({
                                 value: `{{=${jsonPath(workflowJsonParam, '$')}.isTrue}}`,
                             }),
+                            // You have to convert the json string into a json object first before accessing properties
+                            // Juno doesn't support accessing properties by brackets natively, so we use string interpolation instead
                             bracketParamTest.toArgumentParameter({
                                 value: `{{=${jsonPath(workflowJsonParam, '$')}["isTrue"]}}`,
                             }),
+                            // You have to convert the json string into a json object first before accessing properties
+                            // Juno doesn't support membership by array index natively, so we use string interpolation instead
                             arrayBracketParamTest.toArgumentParameter({
                                 value: `{{=${jsonPath(arrayParam, '$.count')}[0]}}`,
                             }),
@@ -63,7 +69,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             // }),
                         ],
                     }),
-                    template: castTemplate,
+                    template: membershipTemplate,
                 }),
             ],
         }),
@@ -72,9 +78,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     return new Workflow({
         metadata: {
             annotations: {
-                'workflows.argoproj.io/description': `This is an example of the ways cast expressions can be used.\n`,
+                'workflows.argoproj.io/description': `This is an example of the ways membership expressions can be used.\n`,
             },
-            generateName: 'cast-',
+            generateName: 'membership-',
             labels: {
                 'workflows.argoproj.io/archive-strategy': 'false',
             },

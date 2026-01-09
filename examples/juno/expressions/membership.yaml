@@ -3,8 +3,8 @@ kind: Workflow
 metadata:
   annotations:
     workflows.argoproj.io/description: |
-      This is an example of the ways cast expressions can be used.
-  generateName: cast-
+      This is an example of the ways membership expressions can be used.
+  generateName: membership-
   labels:
     workflows.argoproj.io/archive-strategy: 'false'
 spec:
@@ -33,8 +33,8 @@ spec:
                 # You cannot use ?. in argo workflows. if you do the parameter return the expression IE: {{=jsonpath(workflow.parameters['workflow-json-param'], '$')?.nonExistentKey}}
                 # - name: optional-chaining-param
                 #   value: "{{=jsonpath(workflow.parameters['workflow-json-param'], '$')?.nonExistentKey}}"
-            name: cast-task
-            template: cast
+            name: membership-task
+            template: membership
       name: entrypoint
     - inputs:
         parameters:
@@ -42,7 +42,7 @@ spec:
           - name: dot-param
           - name: bracket-param
           - name: array-bracket-param
-      name: cast
+      name: membership
       script:
         command:
           - '/bin/sh'

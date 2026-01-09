@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways range expressions can be used.
+  generateName: range-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: array-range-param
+                  value: "{{=1..3}}"
+            name: range-task
+            template: range
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: array-range-param
+      name: range
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source:  >
+          if [ "{{inputs.parameters.array-range-param}}" != "[1,2,3]" ]; then exit 12; fi
