@@ -1,35 +1,19 @@
-import { InputArtifact, OutputArtifact, OutputResult } from './artifact.js';
-import { DagTask } from './dag-task.js';
-import { FromItemProperty, InputParameter, OutputParameter, WorkflowParameter } from './parameter.js';
-import { WorkflowStep } from './workflow-step.js';
-
-export type OutputType = OutputArtifact | OutputParameter | OutputResult | string;
-export type InputType = InputParameter | InputArtifact | WorkflowParameter;
-export type TaskAndResult = { task: DagTask | WorkflowStep; result?: TaskResult };
-export type TaskOutput = { dagTask: DagTask; output: OutputType };
-export type TaskOutputParameters = { dagTaskOutputParameter: DagTask };
-export type StringTaskOutput = { dagTaskName: string; output: OutputType };
-export type StepOutput = { workflowStep: WorkflowStep; output: OutputType };
-export type StepOutputParameters = { workflowStepOutputParameter: WorkflowStep };
-export type StringStepOutput = { workflowStepName: string; output: OutputType };
-export type PathType = { pathResult: InputArtifact | OutputArtifact | OutputParameter };
-export type WorkflowOutput = { workflowOutput: OutputArtifact | OutputParameter | OutputResult };
-
-export type ExpressionArgs =
-    | DagTask
-    | WorkflowStep
-    | TaskAndResult
-    | TaskOutput
-    | StepOutput
-    | InputType
-    | PathType
-    | WorkflowOutput
-    | FromItemProperty
-    | OutputParameter
-    | StringTaskOutput
-    | StringStepOutput
-    | TaskOutputParameters
-    | StepOutputParameters;
+import { InputArtifact, OutputArtifact, OutputResult } from '../artifact.js';
+import { DagTask } from '../dag-task.js';
+import { InputParameter, OutputParameter, WorkflowParameter, FromItemProperty } from '../parameter.js';
+import { WorkflowStep } from '../workflow-step.js';
+import {
+    ExpressionArgs,
+    PathType,
+    StepOutput,
+    StepOutputParameters,
+    StringStepOutput,
+    StringTaskOutput,
+    TaskAndResult,
+    TaskOutput,
+    TaskOutputParameters,
+    WorkflowOutput,
+} from './types.js';
 
 enum ExpressionType {
     DagTask = 'DagTask',
@@ -65,129 +49,8 @@ enum ExpressionType {
     StepOutputParameters = 'StepOutputParameters',
 }
 
-export enum TaskResult {
-    Succeeded = 'Succeeded',
-    Failed = 'Failed',
-    Errored = 'Errored',
-    Skipped = 'Skipped',
-    Omitted = 'Omitted',
-    Daemoned = 'Daemoned',
-}
-
-/**
- * Adds a logical AND between multiple expressions.
- *
- * @param inputs - A valid {@link ExpressionArgs} object
- *
- * @returns A string representation of the AND expression
- * @public
- */
-export function and(inputs: (string | ExpressionArgs)[]): string {
-    let result = '';
-
-    for (let i = 0; i < inputs.length; i++) {
-        if (i !== 0) {
-            result += ' && ';
-        }
-
-        const input = inputs[i];
-
-        result += getVariableReference(input);
-    }
-
-    return result;
-}
-
-/**
- * Adds a logical OR between multiple expressions.
- *
- * @param inputs - A valid {@link ExpressionArgs} object
- *
- * @returns A string representation of the OR expression
- * @public
- */
-export function or(inputs: (string | ExpressionArgs)[]): string {
-    let result = '';
-
-    for (let i = 0; i < inputs.length; i++) {
-        if (i !== 0) {
-            result += ' || ';
-        }
-
-        const input = inputs[i];
-
-        result += getVariableReference(input);
-    }
-
-    return result;
-}
-
-/**
- * Adds a logical NOT to an expression.
- *
- * @param input - A valid {@link ExpressionArgs} object
- *
- * @returns A string representation of the negated expression
- * @public
- */
-export function not(input: string | ExpressionArgs): string {
-    return `!${getVariableReference(input)}`;
-}
-
-/**
- * Wraps an expression in parentheses.
- *
- * @param input - A valid expression string
- *
- * @returns A string wrapped in parentheses
- * @public
- */
-export function paren(input: string): string {
-    return `( ${input} )`;
-}
-
-/**
- * Takes a string and wraps it in expression tags.
- *
- * @param input - A valid argoworkflow expression string
- *
- * @returns A string wrapped in expression tags {{=string}}.  Note: this does not handle hyphenated parameters. Wrap any hyphenated parameters using {@link hyphenParameter} for that.
- * @public
- */
-export function expressionTag(input: string): string {
-    return `{{=${input}}}`;
-}
-
-/**
- * Takes a {@link ExpressionArgs} and converts it to a string that works with expressions
- *
- * @param input - A valid {@link ExpressionArgs} object
- *
- * @returns A string representation of the parameter argument. Any hyphenated parameters will be converted to the bracket notation.
- * @public
- */
-export function hyphenParameter(input: ExpressionArgs): string {
-    return hyphen(getVariableReference(input));
-}
-
-/**
- * Takes a {@link ExpressionArgs} or string and wraps it in simple expression tags.
- * @param input - A valid {@link ExpressionArgs} or string
- *
- * @returns A string wrapped in expression tags
- * @public
- */
-export function simpleTag(input: ExpressionArgs | string): string {
-    return `{{${getVariableReference(input)}}}`;
-}
-
-export function getVariableReference(expressionArgs: ExpressionArgs | string): string {
-    if (typeof expressionArgs === 'string') {
-        return expressionArgs;
-    }
-
+export function getVariableReference(expressionArgs: ExpressionArgs): string {
     const expressionType = getExpressionType(expressionArgs);
-
     switch (expressionType) {
         case ExpressionType.DagTask:
         case ExpressionType.WorkflowStep: {
@@ -196,12 +59,7 @@ export function getVariableReference(expressionArgs: ExpressionArgs | string): s
         }
         case ExpressionType.TaskAndResult: {
             const taskAndResult = expressionArgs as TaskAndResult;
-
-            if (taskAndResult.result) {
-                return `${taskAndResult.task.name}.${taskAndResult.result}`;
-            }
-
-            return taskAndResult.task.name;
+            return `${taskAndResult.task.name}.${taskAndResult.result}`;
         }
         case ExpressionType.InputParameter: {
             const inputParameter = expressionArgs as InputParameter;
@@ -339,29 +197,16 @@ export function getVariableReference(expressionArgs: ExpressionArgs | string): s
         }
 
         default: {
-            throw new Error('Unsupported expression args');
+            throw new Error(`Unsupported expression args ${expressionType}`);
         }
     }
 }
 
-function hyphen(input: string): string {
-    const split = input.split('.');
-    let output = split[0];
-
-    for (let i = 1; i < split.length; i++) {
-        if (split[i].includes('[')) {
-            output = output.concat(`.${split[i]}`);
-            continue;
-        }
-
-        if (split[i].includes('-')) {
-            output = output.concat(`['${split[i]}']`);
-            continue;
-        }
-        output = output.concat(`.${split[i]}`);
+export function wrapStringInQuotes(value: string): string {
+    if (value.startsWith("'") && value.endsWith("'")) {
+        return value;
     }
-
-    return output;
+    return `'${value}'`;
 }
 
 function getExpressionType(expressionArgs: ExpressionArgs): ExpressionType {

@@ -1,70 +1,12 @@
 import { expect } from 'chai';
-import {
-    and,
-    getVariableReference,
-    TaskResult,
-    paren,
-    or,
-    hyphenParameter,
-    simpleTag,
-    not,
-} from '../../src/api/expression';
-import { FromItemProperty, InputParameter, OutputParameter, WorkflowParameter } from '../../src/api/parameter';
-import { DagTask } from '../../src/api/dag-task';
-import { WorkflowStep } from '../../src/api/workflow-step';
-import { InputArtifact, OutputArtifact, OutputResult } from '../../src/api/artifact';
+import { FromItemProperty, InputParameter, OutputParameter, WorkflowParameter } from '../../../src/api/parameter';
+import { DagTask } from '../../../src/api/dag-task';
+import { WorkflowStep } from '../../../src/api/workflow-step';
+import { InputArtifact, OutputArtifact, OutputResult } from '../../../src/api/artifact';
+import { getVariableReference } from '../../../src/api/expressions/util';
+import { TaskResult } from '../../../src/api/expressions/types';
 
-describe('expression tests', (): void => {
-    describe('and', (): void => {
-        it('returns string with && between values', (): void => {
-            const dagTaskA = new DagTask('A', {});
-            const dagTaskB = new DagTask('B', {});
-            expect(and([dagTaskA, dagTaskB])).to.equal('A && B');
-        });
-    });
-
-    describe('paren', (): void => {
-        it('returns string with () around input', (): void => {
-            expect(paren('A')).to.equal('( A )');
-        });
-    });
-
-    describe('simpleTag', (): void => {
-        it('returns string with {{}} around input', (): void => {
-            expect(simpleTag('A')).to.equal('{{A}}');
-        });
-    });
-
-    describe('not', (): void => {
-        it('returns string with ! before value', (): void => {
-            const dagTaskA = new DagTask('A', {});
-            expect(`${not(dagTaskA)}`).to.equal('!A');
-        });
-    });
-
-    describe('or', (): void => {
-        it('returns string with || between values', (): void => {
-            const dagTaskA = new DagTask('A', {});
-            const dagTaskB = new DagTask('B', {});
-            expect(or([dagTaskA, dagTaskB])).to.equal('A || B');
-        });
-    });
-
-    describe('Complex Constructs', (): void => {
-        it('returns value with parens, ands, and ors', (): void => {
-            const dagTaskA = new DagTask('A', {});
-            const dagTaskB = new DagTask('B', {});
-            const dagTaskC = new DagTask('C', {});
-
-            // const templateA = new Template('A', {});
-            // // const templateB = new Template('B', {});
-            // const templateC = new Template('C', {});
-
-            const result = and([paren(or([dagTaskA, { task: dagTaskB, result: TaskResult.Succeeded }])), dagTaskC]);
-            expect(result).to.equal('( A || B.Succeeded ) && C');
-        });
-    });
-
+describe('util tests', (): void => {
     describe('getVariableReference', (): void => {
         it('returns artifact input when input type is InputArtifact', (): void => {
             expect(getVariableReference(new InputArtifact('A', {}))).to.equal('inputs.artifacts.A');
@@ -134,10 +76,6 @@ describe('expression tests', (): void => {
             ).to.equal('tasks.DagA.outputs.result');
         });
 
-        it('returns string input when input type is string', (): void => {
-            expect(getVariableReference('A')).to.equal('A');
-        });
-
         it('returns output parameter path when input type is pathresult', (): void => {
             expect(
                 getVariableReference({
@@ -192,10 +130,6 @@ describe('expression tests', (): void => {
             );
         });
 
-        it('returns task only when type is TaskAndResult and only task is defined', (): void => {
-            expect(getVariableReference({ task: new DagTask('TaskA', {}), result: undefined })).to.equal('TaskA');
-        });
-
         it('returns task and string when type is StepOutputString and both step and string are defined', (): void => {
             expect(getVariableReference({ workflowStep: new WorkflowStep('StepA', {}), output: 'myString' })).to.equal(
                 'steps.StepA.myString',
@@ -238,10 +172,10 @@ describe('expression tests', (): void => {
         it('returns valid reference when type is StringTaskOutputParameter', (): void => {
             expect(
                 getVariableReference({
-                    workflowStepName: 'StepA',
+                    dagTaskName: 'DagA',
                     output: new OutputParameter('ParamA', {}),
                 }),
-            ).to.equal('steps.StepA.outputs.parameters.ParamA');
+            ).to.equal('tasks.DagA.outputs.parameters.ParamA');
         });
 
         it('returns valid reference when type is StringStepOutputArtifact', (): void => {
@@ -278,52 +212,6 @@ describe('expression tests', (): void => {
                     output: new OutputResult(),
                 }),
             ).to.equal('tasks.TaskA.outputs.result');
-        });
-    });
-
-    describe('hyphenExpression', (): void => {
-        it('handles hyphenated input artifact ', (): void => {
-            expect(hyphenParameter(new InputArtifact('A-A', {}))).to.equal("inputs.artifacts['A-A']");
-        });
-
-        it('handles non-hyphenated input parameter', (): void => {
-            expect(hyphenParameter(new InputParameter('A', {}))).to.equal('inputs.parameters.A');
-        });
-
-        it('handles hyphen when input type is OutputParameter and task is a step', (): void => {
-            expect(
-                hyphenParameter({
-                    workflowStep: new WorkflowStep('Step-A', {}),
-                    output: new OutputParameter('Param-A', {}),
-                }),
-            ).to.equal("steps['Step-A'].outputs.parameters['Param-A']");
-        });
-
-        it('handles hyphen when input type is OutputArtifact and task is a step', (): void => {
-            expect(
-                hyphenParameter({
-                    workflowStep: new WorkflowStep('Step-A', {}),
-                    output: new OutputArtifact('Param-A', {}),
-                }),
-            ).to.equal("steps['Step-A'].outputs.artifacts['Param-A']");
-        });
-
-        it('handles hyphen when input type is OutputParameter and task is a dag task and hyphenated', (): void => {
-            expect(
-                hyphenParameter({
-                    dagTask: new DagTask('Dag-A', {}),
-                    output: new OutputParameter('Param-A', {}),
-                }),
-            ).to.equal("tasks['Dag-A'].outputs.parameters['Param-A']");
-        });
-
-        it('handles hyphen when input type is OutputArtifact and task is a dag task and hyphenated', (): void => {
-            expect(
-                hyphenParameter({
-                    dagTask: new DagTask('Dag-A', {}),
-                    output: new OutputArtifact('Param-A', {}),
-                }),
-            ).to.equal("tasks['Dag-A'].outputs.artifacts['Param-A']");
         });
     });
 });
