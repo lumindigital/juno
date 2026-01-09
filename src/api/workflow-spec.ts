@@ -29,7 +29,7 @@ import { ArgumentParameter, InputParameter } from './parameter.js';
 import { DagTask } from './dag-task.js';
 import { WorkflowStep } from './workflow-step.js';
 import { ArgumentArtifact, InputArtifact } from './artifact.js';
-import { TaskAndResult } from './expression.js';
+import { TaskAndResult } from './expressions/types.js';
 import { RecursiveTemplate } from './recursive-template.js';
 
 /**
@@ -459,7 +459,7 @@ export class WorkflowSpec {
             activeDeadlineSeconds: this.activeDeadlineSeconds,
             affinity: this.affinity,
             archiveLogs: this.archiveLogs,
-            arguments: this.arguments?.toArguments(),
+            arguments: this.arguments?.toArguments('workflow'),
             artifactGC: this.artifactGC,
             artifactRepositoryRef: this.artifactRepositoryRef,
             automountServiceAccountToken: this.automountServiceAccountToken,

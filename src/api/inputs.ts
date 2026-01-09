@@ -10,10 +10,10 @@ export class Inputs {
         Object.assign(this, init);
     }
 
-    toInputs(): IoArgoprojWorkflowV1Alpha1Inputs {
+    toInputs(templateName: string): IoArgoprojWorkflowV1Alpha1Inputs {
         return {
-            artifacts: this.artifacts?.map((x) => x.toArtifact()),
-            parameters: this.parameters?.map((x) => x.toParameter()),
+            artifacts: this.artifacts?.map((x) => x.toArtifact(templateName)),
+            parameters: this.parameters?.map((x) => x.toParameter(templateName)),
         };
     }
 }

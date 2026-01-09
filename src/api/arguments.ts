@@ -11,10 +11,10 @@ export class WorkflowArguments {
         Object.assign(this, init);
     }
 
-    toArguments(): IoArgoprojWorkflowV1Alpha1Arguments {
+    toArguments(templateName: string): IoArgoprojWorkflowV1Alpha1Arguments {
         return {
-            artifacts: this.artifacts?.map((x) => x.toArtifact()),
-            parameters: this.parameters?.map((x) => x.toParameter()),
+            artifacts: this.artifacts?.map((x) => x.toArtifact(templateName)),
+            parameters: this.parameters?.map((x) => x.toParameter(templateName)),
         };
     }
 }
@@ -28,10 +28,10 @@ export class Arguments {
         Object.assign(this, init);
     }
 
-    toArguments(): IoArgoprojWorkflowV1Alpha1Arguments {
+    toArguments(templateName: string): IoArgoprojWorkflowV1Alpha1Arguments {
         return {
-            artifacts: this.artifacts?.map((x) => x.toArtifact()),
-            parameters: this.parameters?.map((x) => x.toParameter()),
+            artifacts: this.artifacts?.map((x) => x.toArtifact(templateName)),
+            parameters: this.parameters?.map((x) => x.toParameter(templateName)),
         };
     }
 }
