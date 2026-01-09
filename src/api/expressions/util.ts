@@ -202,6 +202,13 @@ export function getVariableReference(expressionArgs: ExpressionArgs): string {
     }
 }
 
+export function wrapStringInQuotes(value: string): string {
+    if (value.startsWith("'") && value.endsWith("'")) {
+        return value;
+    }
+    return `'${value}'`;
+}
+
 function getExpressionType(expressionArgs: ExpressionArgs): ExpressionType {
     if ((expressionArgs as TaskAndResult).task !== undefined && (expressionArgs as TaskAndResult)) {
         return ExpressionType.TaskAndResult;

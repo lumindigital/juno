@@ -4,6 +4,7 @@ import {
     NilCoalescingExpression,
     TernaryExpression,
 } from './classes.js';
+import { wrapStringInQuotes } from './util.js';
 
 export function ternary(
     condition: ComparisonExpression,
@@ -15,7 +16,7 @@ export function ternary(
     let whenTrueOutput: string;
 
     if (typeof whenTrue === 'string') {
-        whenTrueOutput = `'${whenTrue}'`;
+        whenTrueOutput = wrapStringInQuotes(whenTrue.toString());
     } else if ((whenTrue as TernaryExpression).isTernaryExpression) {
         whenTrueOutput = (whenTrue as TernaryExpression).toString();
     } else if ((whenTrue as HyphenatedExpressionArgs)?.isHyphenatedExpressionArgs) {
@@ -27,7 +28,7 @@ export function ternary(
     let whenFalseOutput: string;
 
     if (typeof whenFalse === 'string') {
-        whenFalseOutput = `'${whenFalse}'`;
+        whenFalseOutput = wrapStringInQuotes(whenFalse.toString());
     } else if ((whenFalse as TernaryExpression)?.isTernaryExpression) {
         whenFalseOutput = (whenFalse as TernaryExpression).toString();
     } else if ((whenFalse as HyphenatedExpressionArgs)?.isHyphenatedExpressionArgs) {
@@ -46,7 +47,7 @@ export function nilCoalescing(
     let nilResult: string;
 
     if (typeof whenNil === 'string') {
-        nilResult = `'${whenNil}'`;
+        nilResult = wrapStringInQuotes(whenNil.toString());
     } else {
         nilResult = whenNil.toString();
     }

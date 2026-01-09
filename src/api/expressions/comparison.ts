@@ -11,6 +11,7 @@ import {
 } from './classes.js';
 import { UndefinedExpressionArg } from './tag.js';
 import { TaskResult } from './types.js';
+import { wrapStringInQuotes } from './util.js';
 
 const enum Comparators {
     EQUALS = '==',
@@ -112,14 +113,14 @@ function comparison<
             // if comparing a simple tag expression, we do not wrap the string in quotes (govaluate)
             rightSide = right ? 'true' : 'false';
         } else {
-            rightSide = `'${right}'`;
+            rightSide = wrapStringInQuotes(right.toString());
         }
     } else if (typeof right === 'string') {
         if ((left as SimpleTemplateTag)?.isSimpleTagExpression) {
             // if comparing a simple tag expression, we do not wrap the string in quotes
             rightSide = right;
         } else {
-            rightSide = `'${right}'`;
+            rightSide = wrapStringInQuotes(right);
         }
     } else if ((right as NilResult)?.isNilResult) {
         rightSide = right.toString();

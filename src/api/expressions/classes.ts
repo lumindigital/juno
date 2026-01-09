@@ -8,7 +8,8 @@ export type ExpressionTemplateInputs =
     | CastExpressions
     | ArithmeticExpressions
     | JsonPathExpression
-    | FromItemProperty;
+    | FromItemProperty
+    | InMembershipExpression;
 
 export type CastExpressions =
     | IntCastExpression
@@ -265,6 +266,19 @@ export class ModulusExpression {
 export class ExponentExpression {
     private output: string;
     isExponentExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class InMembershipExpression {
+    private output: string;
+    isInMembershipExpression: boolean = true;
 
     constructor(output: string) {
         this.output = output;
