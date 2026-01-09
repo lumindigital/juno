@@ -4,7 +4,10 @@ import {
     IoArgoprojWorkflowV1Alpha1Sequence,
 } from '../workflow-interfaces/data-contracts.js';
 import { Arguments } from './arguments.js';
-import { TaskOutput, StepOutput, simpleTag, StepOutputParameters, TaskOutputParameters } from './expression.js';
+
+import { ComparisonExpression, ExpressionTemplateTag, LogicalExpression } from './expressions/classes.js';
+import { simpleTag } from './expressions/tag.js';
+import { TaskOutput, StepOutput, StepOutputParameters, TaskOutputParameters } from './expressions/types.js';
 import { LifecycleHook } from './lifecycle-hook.js';
 import { InputParameter } from './parameter.js';
 import { RecursiveTemplate } from './recursive-template.js';
@@ -23,6 +26,7 @@ export class BaseTaskOrStep {
     template?: Template | RecursiveTemplate;
     templateRef?: TemplateReference;
     when?: string;
+    whenExpression?: ExpressionTemplateTag | ComparisonExpression | LogicalExpression;
     withItems?: IoArgoprojWorkflowV1Alpha1Item[];
     withParamExpression?:
         | string
@@ -57,11 +61,18 @@ export class BaseTaskOrStep {
         }
 
         try {
-            return simpleTag(withParam);
+            return simpleTag(withParam).toString();
         } catch (error) {
             throw new Error(`WithParam on DagTask ${this.name} failed: ${error}`);
-            return undefined;
         }
+    }
+
+    protected toWhenParam(): string | undefined {
+        if (this.whenExpression) {
+            return this.whenExpression.toString();
+        }
+
+        return this.when;
     }
 
     validateMutuallyExclusive() {
@@ -85,6 +96,20 @@ export class BaseTaskOrStep {
 
         if (count === 0) {
             throw new Error(`One of template, templateRef, or inline is required on ${this.name}`);
+        }
+
+        count = 0;
+
+        if (this.when) {
+            count++;
+        }
+
+        if (this.whenExpression) {
+            count++;
+        }
+
+        if (count > 1) {
+            throw new Error(`when and whenExpressionTag are mutually exclusive on ${this.name}`);
         }
     }
 }
