@@ -1,0 +1,69 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways arithmetic expressions can be used.
+  generateName: arithmetic-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: workflow-int-param
+        value: "2"
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: add-param
+                  value: "{{=asInt(workflow.parameters['workflow-int-param']) + 1}}"
+                - name: subtract-param
+                  value: "{{=asInt(workflow.parameters['workflow-int-param']) - 3}}"
+                - name: divide-param
+                  value: "{{=asInt(workflow.parameters['workflow-int-param']) / 2}}"
+                - name: multiply-param
+                  value: "{{=asInt(workflow.parameters['workflow-int-param']) * 2}}"
+                - name: modulus-param
+                  value: "{{=asInt(workflow.parameters['workflow-int-param']) % 2}}"
+                - name: exponent-param
+                  value: "{{=asInt(workflow.parameters['workflow-int-param']) ** 3}}"
+            name: arithmetic-task
+            template: arithmetic
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: add-param
+          - name: subtract-param
+          - name: divide-param
+          - name: multiply-param
+          - name: modulus-param
+          - name: exponent-param
+      name: arithmetic
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        env:
+          - name: ADD_EQUALS
+            value: "{{=inputs.parameters['add-param'] == '3'}}"
+          - name: SUBTRACT_EQUALS
+            value: "{{=inputs.parameters['subtract-param'] == '-1'}}"
+          - name: DIVIDE_EQUALS
+            value: "{{=inputs.parameters['divide-param'] == '1'}}"
+          - name: MULTIPLY_EQUALS
+            value: "{{=inputs.parameters['multiply-param'] == '4'}}"
+          - name: MODULUS_EQUALS
+            value: "{{=inputs.parameters['modulus-param'] == '0'}}"
+          - name: EXPONENT_EQUALS
+            value: "{{=inputs.parameters['exponent-param'] == '8'}}"
+        image: busybox
+        source:  >
+          if [ "$ADD_EQUALS" != true ]; then exit 12; fi
+                               if [ "$SUBTRACT_EQUALS" != true ]; then exit 13; fi
+                               if [ "$DIVIDE_EQUALS" != true ]; then exit 14; fi
+                               if [ "$MULTIPLY_EQUALS" != true ]; then exit 15; fi
+                               if [ "$MODULUS_EQUALS" != true ]; then exit 16; fi
+                               if [ "$EXPONENT_EQUALS" != true ]; then exit 17; fi
