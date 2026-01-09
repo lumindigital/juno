@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways string operator expressions can be used.
+  generateName: string-operator-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: workflow-string-param
+        value: 'Hello World'
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: concatenation-param
+                  value: "{{=workflow.parameters['workflow-string-param'] + \"!\"}}"
+                - name: contains-param
+                  value: "{{=workflow.parameters['workflow-string-param'] contains \"World\"}}"
+                - name: starts-with-param
+                  value: "{{=workflow.parameters['workflow-string-param'] startsWith \"Hello\"}}"
+                - name: ends-with-param
+                  value: "{{=workflow.parameters['workflow-string-param'] endsWith \"World\"}}"
+            name: string-operator-task
+            template: string-operator
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: concatenation-param
+          - name: contains-param
+          - name: starts-with-param
+          - name: ends-with-param
+      name: string-operator
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source: |
+          if [ "{{inputs.parameters.concatenation-param}}" != "Hello World!" ]; then echo "concatenation failed: got '{{inputs.parameters.concatenation-param}}'"; exit 11; fi
+          if [ "{{inputs.parameters.contains-param}}" != "true" ]; then echo "contains failed: got '{{inputs.parameters.contains-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.starts-with-param}}" != "true" ]; then echo "startsWith failed: got '{{inputs.parameters.starts-with-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.ends-with-param}}" != "true" ]; then echo "endsWith failed: got '{{inputs.parameters.ends-with-param}}'"; exit 14; fi
+          echo "All string function tests passed"

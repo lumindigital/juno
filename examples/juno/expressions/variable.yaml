@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways variable expressions can be used.
+  generateName: variable-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: variable-param
+                  value: "{{=let x = 42; x * 2}}"
+            name: variable-task
+            template: variable
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: variable-param
+      name: variable
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source:  >
+          if [ "{{inputs.parameters.variable-param}}" != "84" ]; then exit 12; fi

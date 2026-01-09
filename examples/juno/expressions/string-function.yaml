@@ -1,0 +1,85 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways string function expressions can be used.
+  generateName: string-function-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: workflow-string-param
+        value: 'Hello World'
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: trim-param
+                  value: "{{=\" \" + workflow.parameters['workflow-string-param'] + \" \" | trim()}}"
+                - name: trim-prefix-param
+                  value: "{{=trimPrefix(workflow.parameters['workflow-string-param'], \"Hello\")}}"
+                - name: trim-suffix-param
+                  value: "{{=trimSuffix(workflow.parameters['workflow-string-param'], \"World\")}}"
+                - name: upper-param
+                  value: "{{=upper(workflow.parameters['workflow-string-param'])}}"
+                - name: lower-param
+                  value: "{{=lower(workflow.parameters['workflow-string-param'])}}"
+                - name: split-param
+                  value: "{{=split(trim(workflow.parameters['workflow-string-param']), \" \")[0]}}"
+                - name: split-after-param
+                  value: "{{=splitAfter(trim(workflow.parameters['workflow-string-param']), \"Hello\")[0]}}"
+                - name: replace-param
+                  value: "{{=replace(workflow.parameters['workflow-string-param'], \"World\", \"Universe\")}}"
+                - name: repeat-param
+                  value: "{{=repeat(workflow.parameters['workflow-string-param'], 3)}}"
+                - name: index-of-param
+                  value: "{{=indexOf(workflow.parameters['workflow-string-param'], \"World\")}}"
+                - name: last-index-of-param
+                  value: "{{=lastIndexOf(workflow.parameters['workflow-string-param'], \"World\")}}"
+                - name: has-prefix-param
+                  value: "{{=hasPrefix(workflow.parameters['workflow-string-param'], \"Hello\")}}"
+                - name: has-suffix-param
+                  value: "{{=hasSuffix(workflow.parameters['workflow-string-param'], \"World\")}}"
+            name: string-function-task
+            template: string-function
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: trim-param
+          - name: trim-prefix-param
+          - name: trim-suffix-param
+          - name: upper-param
+          - name: lower-param
+          - name: split-param
+          - name: split-after-param
+          - name: replace-param
+          - name: repeat-param
+          - name: index-of-param
+          - name: last-index-of-param
+          - name: has-prefix-param
+          - name: has-suffix-param
+      name: string-function
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source: |
+          if [ "{{inputs.parameters.trim-param}}" != "Hello World" ]; then echo "trim failed: got '{{inputs.parameters.trim-param}}'"; exit 11; fi
+          if [ "{{inputs.parameters.trim-prefix-param}}" != " World" ]; then echo "trimPrefix failed: got '{{inputs.parameters.trim-prefix-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.trim-suffix-param}}" != "Hello " ]; then echo "trimSuffix failed: got '{{inputs.parameters.trim-suffix-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.upper-param}}" != "HELLO WORLD" ]; then echo "upper failed: got '{{inputs.parameters.upper-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.lower-param}}" != "hello world" ]; then echo "lower failed: got '{{inputs.parameters.lower-param}}'"; exit 15; fi
+          if [ "{{inputs.parameters.split-param}}" != "Hello" ]; then echo "split failed: got '{{inputs.parameters.split-param}}'"; exit 16; fi
+          if [ "{{inputs.parameters.split-after-param}}" != "Hello" ]; then echo "splitAfter failed: got '{{inputs.parameters.split-after-param}}'"; exit 17; fi
+          if [ "{{inputs.parameters.replace-param}}" != "Hello Universe" ]; then echo "replace failed: got '{{inputs.parameters.replace-param}}'"; exit 18; fi
+          if [ "{{inputs.parameters.repeat-param}}" != "Hello WorldHello WorldHello World" ]; then echo "repeat failed: got '{{inputs.parameters.repeat-param}}'"; exit 19; fi
+          if [ "{{inputs.parameters.index-of-param}}" != "6" ]; then echo "indexOf failed: got '{{inputs.parameters.index-of-param}}'"; exit 20; fi
+          if [ "{{inputs.parameters.last-index-of-param}}" != "6" ]; then echo "lastIndexOf failed: got '{{inputs.parameters.last-index-of-param}}'"; exit 21; fi
+          if [ "{{inputs.parameters.has-prefix-param}}" != "true" ]; then echo "hasPrefix failed: got '{{inputs.parameters.has-prefix-param}}'"; exit 22; fi
+          if [ "{{inputs.parameters.has-suffix-param}}" != "true" ]; then echo "hasSuffix failed: got '{{inputs.parameters.has-suffix-param}}'"; exit 23; fi
+          echo "All string function tests passed"
