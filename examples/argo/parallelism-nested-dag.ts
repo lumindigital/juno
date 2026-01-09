@@ -35,14 +35,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [msgInputParameter.toArgumentParameter({ value: `${simpleTag(msgInputParameter)} c2` })],
         }),
-        depends: c1Task,
+        dependsExpression: c1Task,
         template: oneJobTemplate,
     });
     const c3Task = new DagTask('c3', {
         arguments: new Arguments({
             parameters: [msgInputParameter.toArgumentParameter({ value: `${simpleTag(msgInputParameter)} c3` })],
         }),
-        depends: c1Task,
+        dependsExpression: c1Task,
         template: oneJobTemplate,
     });
 
@@ -65,28 +65,28 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [msgInputParameter.toArgumentParameter({ value: '2' })],
         }),
-        depends: b1Task,
+        dependsExpression: b1Task,
         template: bTemplate,
     });
     const b3Task = new DagTask('b3', {
         arguments: new Arguments({
             parameters: [msgInputParameter.toArgumentParameter({ value: '3' })],
         }),
-        depends: b1Task,
+        dependsExpression: b1Task,
         template: bTemplate,
     });
     const b4Task = new DagTask('b4', {
         arguments: new Arguments({
             parameters: [msgInputParameter.toArgumentParameter({ value: '4' })],
         }),
-        depends: b1Task,
+        dependsExpression: b1Task,
         template: bTemplate,
     });
     const b5Task = new DagTask('b5', {
         arguments: new Arguments({
             parameters: [msgInputParameter.toArgumentParameter({ value: '5' })],
         }),
-        depends: and([b2Task, b3Task, b4Task]),
+        dependsExpression: and([b2Task, b3Task, b4Task]),
         template: bTemplate,
     });
 

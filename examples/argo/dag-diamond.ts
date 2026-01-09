@@ -37,7 +37,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [messageInputParameter.toArgumentParameter({ value: 'B' })],
         }),
-        depends: taskA,
+        dependsExpression: taskA,
         template: echoTemplate,
     });
 
@@ -45,7 +45,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
         }),
-        depends: taskA,
+        dependsExpression: taskA,
         template: echoTemplate,
     });
 
@@ -59,7 +59,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
                     }),
-                    depends: and([taskB, taskC]),
+                    dependsExpression: and([taskB, taskC]),
                     template: echoTemplate,
                 }),
             ],

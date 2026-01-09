@@ -149,7 +149,7 @@ with open("/mnt/out/total.json" , "w") as f:
             ],
             parameters: [partIdInputParameter.toArgumentParameter({ valueFromExpressionArgs: new FromItemProperty() })],
         }),
-        depends: splitTask,
+        dependsExpression: splitTask,
         template: mapTemplate,
         withParamExpression: { dagTask: splitTask, output: new OutputResult() },
     });
@@ -160,7 +160,7 @@ with open("/mnt/out/total.json" , "w") as f:
                 splitTask,
                 mapTask,
                 new DagTask('reduce', {
-                    depends: mapTask,
+                    dependsExpression: mapTask,
                     template: reduceTemplate,
                 }),
             ],

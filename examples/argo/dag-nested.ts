@@ -86,14 +86,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [messageInputParameter.toArgumentParameter({ value: 'B' })],
         }),
-        depends: dagTaskA,
+        dependsExpression: dagTaskA,
         template: nestedDiamondTemplate,
     });
     const dagTaskC = new DagTask('C', {
         arguments: new Arguments({
             parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
         }),
-        depends: dagTaskA,
+        dependsExpression: dagTaskA,
         template: nestedDiamondTemplate,
     });
     const dagTaskD = new DagTask('D', {

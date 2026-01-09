@@ -63,7 +63,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                             }),
                         ],
                     }),
-                    depends: parseResourcesTask,
+                    dependsExpression: parseResourcesTask,
                     template: setupResourcesTmplTemplate,
                 }),
             ],

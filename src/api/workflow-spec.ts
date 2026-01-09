@@ -281,9 +281,9 @@ export class WorkflowSpec {
                     );
                 }
 
-                if (task.depends) {
-                    if ((task.depends as DagTask).isDagTask) {
-                        const dagTask = task.depends as DagTask;
+                if (task.dependsExpression) {
+                    if ((task.dependsExpression as DagTask).isDagTask) {
+                        const dagTask = task.dependsExpression as DagTask;
 
                         if (!template.dag.tasks.find((x) => x.name === dagTask.name)) {
                             throw new Error(
@@ -291,10 +291,10 @@ export class WorkflowSpec {
                             );
                         }
                     } else if (
-                        (task.depends as TaskAndResult).task !== undefined &&
-                        (task.depends as TaskAndResult).result !== undefined
+                        (task.dependsExpression as TaskAndResult).task !== undefined &&
+                        (task.dependsExpression as TaskAndResult).result !== undefined
                     ) {
-                        const taskAndResult = task.depends as TaskAndResult;
+                        const taskAndResult = task.dependsExpression as TaskAndResult;
 
                         if ((taskAndResult.task as WorkflowStep).isWorkflowStep !== undefined) {
                             throw new Error(
@@ -307,18 +307,16 @@ export class WorkflowSpec {
                                 `Dependency ${taskAndResult.task.name} in dag task ${task.name} is not included in template ${template.name}`,
                             );
                         }
-                    } else if ((task.depends as WorkflowStep).isWorkflowStep) {
-                        const workflowStep = task.depends as WorkflowStep;
+                    } else if ((task.dependsExpression as WorkflowStep).isWorkflowStep) {
+                        const workflowStep = task.dependsExpression as WorkflowStep;
                         throw new Error(
                             `Dependency on ${workflowStep.name} is not valid in a dag task ${task.name} on template ${template.name}`,
                         );
-                    } else if (typeof task.depends === 'string') {
-                        // Do nothing, we have no way to validate strings
                     }
                 }
 
-                if (task.dependencies) {
-                    for (const dep of task.dependencies) {
+                if (task.dependenciesExpressions) {
+                    for (const dep of task.dependenciesExpressions) {
                         const errors = [];
 
                         if ((dep as DagTask).isDagTask !== undefined) {
@@ -330,8 +328,6 @@ export class WorkflowSpec {
                                 );
 
                                 throw new Error(errors.join(', '));
-                            } else if (typeof dep === 'string') {
-                                // Do nothing, we have no way to validate strings
                             }
                         }
                     }

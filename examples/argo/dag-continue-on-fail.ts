@@ -29,27 +29,27 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         template: helloWorldTemplate,
     });
     const taskB = new DagTask('B', {
-        depends: taskA,
+        dependsExpression: taskA,
         template: intentionalFailTemplate,
     });
     const taskC = new DagTask('C', {
-        depends: taskA,
+        dependsExpression: taskA,
         template: helloWorldTemplate,
     });
     const taskD = new DagTask('D', {
-        depends: and([{ task: taskB, result: TaskResult.Failed }, taskC]),
+        dependsExpression: and([{ task: taskB, result: TaskResult.Failed }, taskC]),
         template: helloWorldTemplate,
     });
     const taskE = new DagTask('E', {
-        depends: taskA,
+        dependsExpression: taskA,
         template: intentionalFailTemplate,
     });
     const taskF = new DagTask('F', {
-        depends: taskA,
+        dependsExpression: taskA,
         template: helloWorldTemplate,
     });
     const taskG = new DagTask('G', {
-        depends: and([taskE, taskF]),
+        dependsExpression: and([taskE, taskF]),
         template: helloWorldTemplate,
     });
 

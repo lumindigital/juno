@@ -88,21 +88,21 @@ export class SharedTemplates {
         }),
     });
     public static innerBDagTask = new DagTask('inner-B', {
-        depends: this.innerADagTask,
+        dependsExpression: this.innerADagTask,
         template: this.printMessageTemplate,
         arguments: new Arguments({
             parameters: [this.messageInputParameter.toArgumentParameter({ value: 'inner-B' })],
         }),
     });
     public static innerCDagTask = new DagTask('inner-C', {
-        depends: this.innerADagTask,
+        dependsExpression: this.innerADagTask,
         template: this.printMessageTemplate,
         arguments: new Arguments({
             parameters: [this.messageInputParameter.toArgumentParameter({ value: 'inner-C' })],
         }),
     });
     public static innerDDagTask = new DagTask('inner-D', {
-        depends: and([this.innerBDagTask, this.innerCDagTask]),
+        dependsExpression: and([this.innerBDagTask, this.innerCDagTask]),
         templateRef: new TemplateReference({
             workflowTemplate: this.printMessageWorkflowTemplate,
             template: this.printMessageTemplate,

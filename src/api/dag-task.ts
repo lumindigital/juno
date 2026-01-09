@@ -11,16 +11,18 @@ import { getVariableReference } from './expressions/util.js';
 export class DagTask extends BaseTaskOrStep {
     readonly isDagTask = true;
 
-    dependencies?: DagTask[] | string[];
-    depends?: string | TaskOutput | StepOutput | DagTask | TaskAndResult | WorkflowStep | LogicalExpression;
+    dependencies?: string[];
+    dependenciesExpressions?: DagTask[];
+    depends?: string;
+    dependsExpression?: TaskOutput | StepOutput | DagTask | TaskAndResult | WorkflowStep | LogicalExpression;
 
     constructor(name: string, init: Partial<DagTask>) {
         super(name);
         Object.assign(this, init);
     }
 
-    toDagTask(): IoArgoprojWorkflowV1Alpha1DAGTask {
-        this.validateMutuallyExclusive();
+    toDagTask(dagName: string): IoArgoprojWorkflowV1Alpha1DAGTask {
+        this.validateMutuallyExclusive(dagName);
 
         let templateName = undefined;
         if (this.template && (this.template as Template)) {
@@ -29,28 +31,28 @@ export class DagTask extends BaseTaskOrStep {
             templateName = (this.template as RecursiveTemplate).templateName;
         }
 
-        let depends: string | undefined = undefined;
+        let dependencies = this.dependencies;
 
-        if ((this?.depends as LogicalExpression)?.isLogicalExpression) {
-            depends = (this?.depends as LogicalExpression).toString();
-        } else if (typeof this?.depends === 'string') {
-            depends = this.depends;
-        } else if (this?.depends) {
-            depends = getVariableReference(
-                this.depends as TaskOutput | StepOutput | DagTask | TaskAndResult | WorkflowStep,
-            );
+        if (this?.dependenciesExpressions) {
+            dependencies = (this?.dependenciesExpressions as DagTask[]).map((dep) => dep.name);
+        }
+
+        let depends = this.depends;
+
+        if (this?.dependsExpression) {
+            if ((this.dependsExpression as LogicalExpression)?.isLogicalExpression) {
+                depends = (this?.dependsExpression as LogicalExpression).toString();
+            } else if (this?.dependsExpression as TaskOutput | StepOutput | DagTask | TaskAndResult | WorkflowStep) {
+                depends = getVariableReference(
+                    this.dependsExpression as TaskOutput | StepOutput | DagTask | TaskAndResult | WorkflowStep,
+                );
+            }
         }
 
         return {
             arguments: this.arguments?.toArguments(`dag-task-${this.name}`),
             continueOn: this.continueOn,
-            dependencies: this.dependencies?.map((dep) => {
-                if (typeof dep === 'string') {
-                    return dep;
-                }
-
-                return dep.name;
-            }),
+            dependencies: dependencies,
             depends: depends,
             hooks: this.hooks ? LifecycleHook.convertLifecycleHooksRecord(this.hooks) : undefined,
             inline: this.inline?.toTemplate(),
@@ -63,5 +65,44 @@ export class DagTask extends BaseTaskOrStep {
             withParam: this.toWithParam(this.withParamExpression),
             withSequence: this.withSequence,
         };
+    }
+
+    validateMutuallyExclusive(dagName: string) {
+        super.validateMutuallyExclusive(dagName);
+
+        let count = 0;
+
+        if (this.depends) {
+            count++;
+        }
+
+        if (this.dependsExpression) {
+            count++;
+        }
+
+        if (this.dependencies) {
+            count++;
+        }
+
+        if (count > 1) {
+            throw new Error(
+                `depends, dependsExpression, and dependencies are mutually exclusive on ${this.name} on dag ${dagName}`,
+            );
+        }
+
+        count = 0;
+
+        if (this.dependencies) {
+            count++;
+        }
+
+        if (this.dependenciesExpressions) {
+            count++;
+        }
+        if (count > 1) {
+            throw new Error(
+                `dependencies and dependenciesExpression are mutually exclusive on ${this.name} on dag ${dagName}`,
+            );
+        }
     }
 }

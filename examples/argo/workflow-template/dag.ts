@@ -28,7 +28,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [messageInputParameter.toArgumentParameter({ value: 'B' })],
         }),
-        depends: aTask,
+        dependsExpression: aTask,
         templateRef: new TemplateReference({
             workflowTemplate: SharedTemplates.printMessageWorkflowTemplate,
             template: SharedTemplates.printMessageTemplate,
@@ -36,7 +36,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     });
 
     const cTask = new DagTask('C', {
-        depends: aTask,
+        dependsExpression: aTask,
         templateRef: new TemplateReference({
             workflowTemplate: WorkflowTemplates.innerDagWorkflowTemplate,
             template: SharedTemplates.innerDiamondTemplate,
@@ -53,7 +53,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                     arguments: new Arguments({
                         parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
                     }),
-                    depends: and([bTask, cTask]),
+                    dependsExpression: and([bTask, cTask]),
                     templateRef: new TemplateReference({
                         workflowTemplate: SharedTemplates.printMessageWorkflowTemplate,
                         template: SharedTemplates.printMessageTemplate,
