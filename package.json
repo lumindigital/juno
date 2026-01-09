@@ -73,9 +73,10 @@
     "url": "https://github.com/lumindigital/juno"
   },
   "scripts": {
-    "prebuild": "npm run lint && npm run pretty",
+    "prebuild": "npm run lint",
     "build": "tsc -b",
-    "lint": "npm run pretty && npx eslint . --fix",
+    "prelint": "npm run pretty",
+    "lint": "npx eslint . --fix",
     "postpack": "shx rm -f oclif.manifest.json",
     "prepack": "oclif manifest && oclif readme",
     "pretest": "npm run build",
