@@ -72,13 +72,9 @@ class Parameter {
         }
 
         if (count > 1) {
-<<<<<<< HEAD
-            throw new Error(`value, valueFrom, and valueFromExpressionArgs are mutually exclusive on ${this.name}`);
-=======
             throw new Error(
                 `value, valueFrom, valueFromExpressionArgs, and valueFromExpressionTag are mutually exclusive on parameter ${this.name} on ${templateName}`,
             );
->>>>>>> 7faf7d8 (feat: added valueFromExpressionTag to artifacts and parameters)
         }
     }
 
