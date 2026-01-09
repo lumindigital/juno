@@ -1,6 +1,7 @@
-# Documentation by Example
+# Examples
 
-Many of the example yaml files included in this folder and any subfolders come from the [Argo Workflows](https://github.com/argoproj/argo-workflows/tree/main/examples) repository.
+## Argo
+The examples found in the argo folder are the examples that come from the argo project. However, some of these examples may be modified slightly from the originals in order to pass
 
-These files exists as both examples of juno and also as a way to test that juno generates valid workflows. Please see the
-
+## Juno
+The examples found in the juno folder are examples created specifically for the juno project.
