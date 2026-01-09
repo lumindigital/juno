@@ -33,7 +33,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new DagTask('pipe-task', {
                     arguments: new Arguments({
                         parameters: [
-                            // Juno doesn't support pipes natively, so we use string interpolation instead
+                            // juno doesn't support pipes natively, so we use string interpolation instead
                             pipeParameter.toArgumentParameter({
                                 value: `{{=${hyphenateExpressionArgs(stringParam)} | lower()}}`,
                             }),

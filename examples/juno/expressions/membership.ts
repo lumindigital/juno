@@ -49,17 +49,17 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                 ),
                             }),
                             // You have to convert the json string into a json object first before accessing properties
-                            // Juno doesn't support accessing properties with dot notation, so we use string interpolation instead
+                            // juno doesn't support accessing properties with dot notation, so we use string interpolation instead
                             dotParamTest.toArgumentParameter({
                                 value: `{{=${jsonPath(workflowJsonParam, '$')}.isTrue}}`,
                             }),
                             // You have to convert the json string into a json object first before accessing properties
-                            // Juno doesn't support accessing properties by brackets natively, so we use string interpolation instead
+                            // juno doesn't support accessing properties by brackets natively, so we use string interpolation instead
                             bracketParamTest.toArgumentParameter({
                                 value: `{{=${jsonPath(workflowJsonParam, '$')}["isTrue"]}}`,
                             }),
                             // You have to convert the json string into a json object first before accessing properties
-                            // Juno doesn't support membership by array index natively, so we use string interpolation instead
+                            // juno doesn't support membership by array index natively, so we use string interpolation instead
                             arrayBracketParamTest.toArgumentParameter({
                                 value: `{{=${jsonPath(arrayParam, '$.count')}[0]}}`,
                             }),

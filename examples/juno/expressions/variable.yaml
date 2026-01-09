@@ -3,8 +3,8 @@ kind: Workflow
 metadata:
   annotations:
     workflows.argoproj.io/description: |
-      This is an example of the ways range expressions can be used.
-  generateName: range-
+      This is an example of the ways variable expressions can be used.
+  generateName: variable-
   labels:
     workflows.argoproj.io/archive-strategy: 'false'
 spec:
@@ -14,19 +14,19 @@ spec:
         tasks:
           - arguments:
               parameters:
-                - name: range-param
-                  value: "{{=1..3}}"
-            name: range-task
-            template: range
+                - name: variable-param
+                  value: "{{=let x = 42; x * 2}}"
+            name: variable-task
+            template: variable
       name: entrypoint
     - inputs:
         parameters:
-          - name: range-param
-      name: range
+          - name: variable-param
+      name: variable
       script:
         command:
           - '/bin/sh'
           - '-e'
         image: busybox
         source:  >
-          if [ "{{inputs.parameters.range-param}}" != "[1,2,3]" ]; then exit 12; fi
+          if [ "{{inputs.parameters.variable-param}}" != "84" ]; then exit 12; fi

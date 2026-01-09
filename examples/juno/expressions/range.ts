@@ -11,7 +11,7 @@ import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../../src/workflow-interf
 import { simpleTag } from '../../../src/api/expressions/tag';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
-    const rangeParamTest = new InputParameter('array-range-param');
+    const rangeParamTest = new InputParameter('range-param');
 
     const rangeTemplate = new Template('range', {
         inputs: new Inputs({
@@ -31,7 +31,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 new DagTask('range-task', {
                     arguments: new Arguments({
                         parameters: [
-                            // Juno doesn't support ranges natively, so we use string interpolation instead
+                            // juno doesn't support ranges natively, so we use string interpolation instead
                             rangeParamTest.toArgumentParameter({
                                 value: `{{=1..3}}`,
                             }),
