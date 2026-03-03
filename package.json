@@ -87,10 +87,5 @@
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "precommit": "pre-commit run --all-files"
   },
-  "types": "dist/index.d.ts",
-  "overrides": {
-    "c8": {
-      "yargs": "^18.0.0"
-    }
-  }
+  "types": "dist/index.d.ts"
 }
