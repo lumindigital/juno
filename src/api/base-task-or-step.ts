@@ -63,7 +63,7 @@ export class BaseTaskOrStep {
         try {
             return simpleTag(withParam).toString();
         } catch (error) {
-            throw new Error(`WithParam on DagTask ${this.name} failed: ${error}`);
+            throw new Error(`WithParam on DagTask ${this.name} failed`, { cause: error });
         }
     }
 
