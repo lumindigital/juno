@@ -6,6 +6,7 @@ import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { WorkflowStep } from '../../src/api/workflow-step';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
+import { and } from '../../src/api/expressions/logical';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const randomFailTemplate = new Template('random-fail', {
@@ -45,24 +46,24 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         ],
     });
 
+    const taskA = new DagTask('A', {
+        template: randomFailTemplate,
+    });
+    const taskB = new DagTask('B', {
+        template: randFailStepsTemplate,
+    });
+    const taskC = new DagTask('C', {
+        dependsExpression: taskB,
+        template: randomFailTemplate,
+    });
+    const taskD = new DagTask('D', {
+        dependsExpression: and([taskA, taskB]),
+        template: randomFailTemplate,
+    });
+
     const randFailDagTemplate = new Template('rand-fail-dag', {
         dag: new DagTemplate({
-            tasks: [
-                new DagTask('A', {
-                    template: randomFailTemplate,
-                }),
-                new DagTask('B', {
-                    template: randFailStepsTemplate,
-                }),
-                new DagTask('C', {
-                    depends: 'B',
-                    template: randomFailTemplate,
-                }),
-                new DagTask('D', {
-                    depends: 'A && B',
-                    template: randomFailTemplate,
-                }),
-            ],
+            tasks: [taskA, taskB, taskC, taskD],
         }),
     });
 

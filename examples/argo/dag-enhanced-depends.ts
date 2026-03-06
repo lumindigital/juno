@@ -5,6 +5,8 @@ import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
+import { and, or, paren } from '../../src/api/expressions/logical';
+import { TaskResult } from '../../src/api/expressions/types';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const passTemplate = new Template('pass', {
@@ -21,37 +23,50 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
+    const taskA = new DagTask('A', {
+        template: passTemplate,
+    });
+
+    const taskB = new DagTask('B', {
+        dependsExpression: taskA,
+        template: passTemplate,
+    });
+
+    const taskC = new DagTask('C', {
+        dependsExpression: taskA,
+        template: failTemplate,
+    });
+
+    const shouldExecute1 = new DagTask('should-execute-1', {
+        dependsExpression: and([
+            taskA,
+            paren(
+                or([
+                    { dagTaskResult: taskC, result: TaskResult.Succeeded },
+                    { dagTaskResult: taskC, result: TaskResult.Failed },
+                ]),
+            ),
+        ]),
+        template: passTemplate,
+    });
+
+    const shouldExecute2 = new DagTask('should-execute-2', {
+        dependsExpression: or([taskB, taskC]),
+        template: passTemplate,
+    });
+
+    const shouldNotExecute = new DagTask('should-not-execute', {
+        dependsExpression: and([taskB, taskC]),
+        template: passTemplate,
+    });
+    const shouldExecute3 = new DagTask('should-execute-3', {
+        dependsExpression: or([{ dagTaskResult: shouldExecute2, result: TaskResult.Succeeded }, shouldNotExecute]),
+        template: passTemplate,
+    });
+
     const diamondTemplate = new Template('diamond', {
         dag: new DagTemplate({
-            tasks: [
-                new DagTask('A', {
-                    template: passTemplate,
-                }),
-                new DagTask('B', {
-                    depends: 'A',
-                    template: passTemplate,
-                }),
-                new DagTask('C', {
-                    depends: 'A',
-                    template: failTemplate,
-                }),
-                new DagTask('should-execute-1', {
-                    depends: 'A && (C.Succeeded || C.Failed)',
-                    template: passTemplate,
-                }),
-                new DagTask('should-execute-2', {
-                    depends: 'B || C',
-                    template: passTemplate,
-                }),
-                new DagTask('should-not-execute', {
-                    depends: 'B && C',
-                    template: passTemplate,
-                }),
-                new DagTask('should-execute-3', {
-                    depends: 'should-execute-2.Succeeded || should-not-execute',
-                    template: passTemplate,
-                }),
-            ],
+            tasks: [taskA, taskB, taskC, shouldExecute1, shouldExecute2, shouldNotExecute, shouldExecute3],
         }),
     });
 
