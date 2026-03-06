@@ -298,7 +298,7 @@ parameters:
   - name: message
     value: hello world
 ```
-See the [Argument Parameters Example](../..argo/argument-parameters.ts) for an example of a workflow that uses this pattern.
+See the [Argument Parameters Example](../../examples/argo/argument-parameters.ts) for an example of a workflow that uses this pattern.
 
 ## Parameter
 ### valueFromExpressionArgs
@@ -443,7 +443,7 @@ See the [Cluster WorkflowTemplate Dag Example](../../examples/argo/cluster-workf
 ## WorkflowSpec
 ### additionalTemplates
 `additionalTemplates` is used to specify additional templates that are child templates of the entrypoint templates.
-This is useful when have a shared template that isn't meant to be run directly.
+This is useful when you have a shared template that isn't meant to be run directly.
 
 See the [Http Success Condition Example](../../examples/argo/http-success-condition.ts) for an example of a workflow that uses this pattern.
 

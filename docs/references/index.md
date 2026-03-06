@@ -1,6 +1,6 @@
 # References
 
-## Api Differences
+## API Differences
 The Juno api differs from argo workflows. Examples of many of the differences can be found [here](./api-differences.md).
 
 ## Supported Workflows
