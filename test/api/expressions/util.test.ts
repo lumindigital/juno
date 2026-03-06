@@ -125,9 +125,9 @@ describe('util tests', (): void => {
         });
 
         it('returns task and result when type is TaskAndResult and both task and result are defined', (): void => {
-            expect(getVariableReference({ task: new DagTask('TaskA', {}), result: TaskResult.Failed })).to.equal(
-                'TaskA.Failed',
-            );
+            expect(
+                getVariableReference({ dagTaskResult: new DagTask('TaskA', {}), result: TaskResult.Failed }),
+            ).to.equal('TaskA.Failed');
         });
 
         it('returns task and string when type is StepOutputString and both step and string are defined', (): void => {

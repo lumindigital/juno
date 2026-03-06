@@ -37,7 +37,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         template: helloWorldTemplate,
     });
     const taskD = new DagTask('D', {
-        dependsExpression: and([{ task: taskB, result: TaskResult.Failed }, taskC]),
+        dependsExpression: and([{ dagTaskResult: taskB, result: TaskResult.Failed }, taskC]),
         template: helloWorldTemplate,
     });
     const taskE = new DagTask('E', {

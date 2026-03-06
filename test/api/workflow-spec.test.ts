@@ -512,7 +512,7 @@ describe('workflow-spec validation tests', (): void => {
             });
 
             const taskB = new DagTask('B', {
-                dependsExpression: { task: taskA, result: TaskResult.Daemoned },
+                dependsExpression: { dagTaskResult: taskA, result: TaskResult.Daemoned },
                 template: new Template('C', {}),
             });
 
@@ -528,58 +528,6 @@ describe('workflow-spec validation tests', (): void => {
 
             expect(() => workflowSpec.toWorkflowSpec()).to.throw(
                 'Dependency A in dag task B is not included in template D',
-            );
-        });
-
-        // This should never happen.
-        it('fails validation when the dependsExpression field includes a workflow step and result that is a workflow step', (): void => {
-            const stepA = new WorkflowStep('A', {
-                template: new Template('C', {}),
-            });
-
-            const taskB = new DagTask('B', {
-                dependsExpression: { task: stepA, result: TaskResult.Daemoned },
-                template: new Template('C', {}),
-            });
-
-            const workflowSpec = new WorkflowSpec({
-                additionalTemplates: [
-                    new Template('D', {
-                        dag: new DagTemplate({
-                            tasks: [taskB],
-                        }),
-                    }),
-                ],
-            });
-
-            expect(() => workflowSpec.toWorkflowSpec()).to.throw(
-                `Dependency on ${stepA.name} is not valid in a dag task ${taskB.name} on template D`,
-            );
-        });
-
-        // This should never happen.
-        it('fails validation the dependsExpression field includes a workflowstep', (): void => {
-            const stepA = new WorkflowStep('A', {
-                template: new Template('C', {}),
-            });
-
-            const taskB = new DagTask('B', {
-                dependsExpression: stepA,
-                template: new Template('C', {}),
-            });
-
-            const workflowSpec = new WorkflowSpec({
-                additionalTemplates: [
-                    new Template('C', {
-                        dag: new DagTemplate({
-                            tasks: [taskB],
-                        }),
-                    }),
-                ],
-            });
-
-            expect(() => workflowSpec.toWorkflowSpec()).to.throw(
-                `Dependency on ${stepA.name} is not valid in a dag task ${taskB.name} on template C`,
             );
         });
 

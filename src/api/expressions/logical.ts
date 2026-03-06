@@ -31,7 +31,7 @@ export function and(inputs: LogicalExpressionInputs[]): LogicalExpression {
             output = (input as DagTask).name;
         } else if (input && (input as WorkflowStep)?.isWorkflowStep) {
             output = (input as WorkflowStep).name;
-        } else if (input && (input as TaskAndResult)?.task) {
+        } else if (input && (input as TaskAndResult)?.dagTaskResult) {
             output = getVariableReference(input as TaskAndResult);
         } else {
             output = (input as LogicalExpression).toString();
@@ -56,7 +56,7 @@ export function or(inputs: LogicalExpressionInputs[]): LogicalExpression {
             output = (input as DagTask).name;
         } else if (input && (input as WorkflowStep)?.isWorkflowStep) {
             output = (input as WorkflowStep).name;
-        } else if (input && (input as TaskAndResult)?.task) {
+        } else if (input && (input as TaskAndResult)?.dagTaskResult) {
             output = getVariableReference(input as TaskAndResult);
         } else {
             output = (input as LogicalExpression).toString();
