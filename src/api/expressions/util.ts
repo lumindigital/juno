@@ -59,7 +59,7 @@ export function getVariableReference(expressionArgs: ExpressionArgs): string {
         }
         case ExpressionType.TaskAndResult: {
             const taskAndResult = expressionArgs as TaskAndResult;
-            return `${taskAndResult.task.name}.${taskAndResult.result}`;
+            return `${taskAndResult.dagTaskResult.name}.${taskAndResult.result}`;
         }
         case ExpressionType.InputParameter: {
             const inputParameter = expressionArgs as InputParameter;
@@ -210,7 +210,7 @@ export function wrapStringInQuotes(value: string): string {
 }
 
 function getExpressionType(expressionArgs: ExpressionArgs): ExpressionType {
-    if ((expressionArgs as TaskAndResult).task !== undefined && (expressionArgs as TaskAndResult)) {
+    if ((expressionArgs as TaskAndResult).dagTaskResult !== undefined && (expressionArgs as TaskAndResult)) {
         return ExpressionType.TaskAndResult;
     }
 

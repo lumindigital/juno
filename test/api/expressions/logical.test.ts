@@ -7,21 +7,20 @@ import { TaskResult } from '../../../src/api/expressions/types';
 
 describe('logical tests', (): void => {
     const dagTask = new DagTask('B', {});
-    const dagTaskResult = { task: dagTask, result: TaskResult.Succeeded };
+    const dagTaskResult = { dagTaskResult: dagTask, result: TaskResult.Succeeded };
     const workflowStep = new WorkflowStep('C', {});
-    const workflowStepResult = { task: workflowStep, result: TaskResult.Succeeded };
 
     describe('and', (): void => {
         it('returns successfully', (): void => {
-            const result = and([new LogicalExpression('A'), dagTask, dagTaskResult, workflowStep, workflowStepResult]);
-            expect(result.toString()).to.equal('A && B && B.Succeeded && C && C.Succeeded');
+            const result = and([new LogicalExpression('A'), dagTask, dagTaskResult, workflowStep]);
+            expect(result.toString()).to.equal('A && B && B.Succeeded && C');
         });
     });
 
     describe('or', (): void => {
         it('returns successfully', (): void => {
-            const result = or([new LogicalExpression('A'), dagTask, dagTaskResult, workflowStep, workflowStepResult]);
-            expect(result.toString()).to.equal('A || B || B.Succeeded || C || C.Succeeded');
+            const result = or([new LogicalExpression('A'), dagTask, dagTaskResult, workflowStep]);
+            expect(result.toString()).to.equal('A || B || B.Succeeded || C');
         });
     });
 
