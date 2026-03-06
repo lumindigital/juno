@@ -18,11 +18,11 @@ The following table shows the object signatures for each `ExpressionArgs` type w
 
 | Juno Type| Argo Workflow Output| Comments| Example |
 |----------|---------------------|---------|---------|
-| `simpleTag({string: 'my_string')` | `my_string`| Use this type if there isn't a built in type for the value you need | [custom-metrics](../../examples/argo/custom-metrics.ts)
+| `simpleTag({string: 'my_string'})` | `my_string`| Use this type if there isn't a built in type for the value you need | [custom-metrics](../../examples/argo/custom-metrics.ts)
 | `simpleTag(new InputParameter('input_param', {}))` | `{{inputs.parameters.input_param}}` | | [daemon-step](../../examples/argo/daemon-step.ts)
 | `simpleTag(new InputArtifact('input_art', {}))`| `{{inputs.artifacts.input_art}}`| | [nested-workflow](../../examples/argo/nested-workflow.ts)
 | `simpleTag(new WorkflowParameter('wf_param', {}))` | `{{workflow.parameters.wf_param}}`| | [buildkit-template](../../examples/argo/buildkit-template.ts) |
-| `simpleTag({ dagTaskResult: new DagTask('dag_task', {}) result: TaskResult.Succeeded })` | `{{dag_task.Succeeded}}`| This is only used in `DagTask.dependsExpression`| [dag-continue-on-fail](../../examples/argo/dag-continue-on-fail.ts)
+| `simpleTag({ dagTaskResult: new DagTask('dag_task', {}), result: TaskResult.Succeeded })` | `{{dag_task.Succeeded}}`| This is only used in `DagTask.dependsExpression`| [dag-continue-on-fail](../../examples/argo/dag-continue-on-fail.ts)
 | `simpleTag({ dagTask: new DagTask('dag_task', {}), output: new OutputArtifact('out_art') })` | `{{tasks.dag_task.outputs.artifacts.out_art}}`| | [dag-conditional-artifacts](../../examples/argo/dag-conditional-artifacts.ts)
 | `simpleTag({ dagTask: new DagTask('dag_task', {}), output: new OutputParameter('out_param') })`| `{{tasks.dag_task.outputs.parameters.out_param}}` | |  [dag-conditional-parameters](../../examples/argo/parameter-aggregation-dag.ts)
 | `simpleTag({ dagTask: new DagTask('dag_task', {}), output: new OutputResult() })`| `{{tasks.dag_task.outputs.parameters.result}}`| | [coinflip-recursive](../../examples/argo/coinflip-recursive.ts)
@@ -49,7 +49,7 @@ The following table shows the object signatures for each `ExpressionArgs` type w
 | `simpleTag(new FromItemProperty())`| `{{item}}`| | [data-transformations](../../examples/argo/data-transformations.ts)
 
 ## Parameters and Artifacts
-Objects that represent either a parameter or an artifact do no require use a `simpletag()` These objects have `valueFromExpressionArgs` as a property on the objects that removes the need for it.
+Objects that represent either a parameter or an artifact do not require the use of `simpleTag()`. These objects have `valueFromExpressionArgs` as a property on the objects that removes the need for it.
 
 ## Expression Template Tag
 Expression Tags use the `{{=}}`. Expression tags are substituted with the result of evaluating tag as an expression. Juno currently has partial support for the [Expr](https://expr-lang.org/) library. Most of the example workflows that use the expr library have support in Juno. Juno will not be adding any support for sprig at this time.
