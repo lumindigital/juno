@@ -20,6 +20,7 @@ const enum Comparators {
     GREATER_THAN_OR_EQUAL = '>=',
     LESS_THAN = '<',
     LESS_THAN_OR_EQUAL = '<=',
+    MATCH = 'matches',
 }
 
 export type LeftNumericComparisonTypes =
@@ -85,6 +86,13 @@ export function lessThanOrEqual<T extends LeftNumericComparisonTypes>(
     right: RightNumericComparisonTypes,
 ): ComparisonExpression {
     return comparison(Comparators.LESS_THAN_OR_EQUAL, left, right);
+}
+
+export function matches<T extends LeftEqualityComparisonTypes>(
+    left: T,
+    right: RightEqualityComparisonTypes,
+): ComparisonExpression {
+    return comparison(Comparators.MATCH, left, right);
 }
 
 function comparison<

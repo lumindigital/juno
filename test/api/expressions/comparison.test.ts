@@ -5,6 +5,7 @@ import {
     greaterThanOrEqual,
     lessThan,
     lessThanOrEqual,
+    matches,
     notEquals,
 } from '../../../src/api/expressions/comparison';
 import { DagTask } from '../../../src/api/dag-task';
@@ -185,6 +186,47 @@ describe('comparison tests', (): void => {
             expect(result.toString()).to.equal(
                 `asFloat(tasks.A.outputs.parameters.output1) <= asFloat(tasks.B.outputs.parameters.output2)`,
             );
+        });
+    });
+
+    describe('matches', (): void => {
+        it('returns successfully when comparing simpleTags', (): void => {
+            const result = matches(simpleTemplateTag1, simpleTemplateTag2);
+            expect(result.toString()).to.equal(
+                '{{tasks.A.outputs.parameters.output1}} matches {{tasks.B.outputs.parameters.output2}}',
+            );
+        });
+
+        it('returns successfully when comparing hyphenateExpressionArgs', (): void => {
+            const result = matches(hyphenatedExpressionArgs1, hyphenatedExpressionArgs2);
+            expect(result.toString()).to.equal(
+                `tasks['A-1'].outputs.parameters['output-1'] matches tasks['B-1'].outputs.parameters['output-2']`,
+            );
+        });
+
+        it('returns successfully when comparing hyphenatedExpressionArgs and boolean', (): void => {
+            const result = matches(hyphenatedExpressionArgs1, true);
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] matches 'true'`);
+        });
+
+        it('returns successfully when comparing hyphenatedExpressionArgs and string', (): void => {
+            const result = matches(hyphenatedExpressionArgs1, 'true');
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] matches 'true'`);
+        });
+
+        it('returns successfully when comparing hyphenatedExpressionArgs and boolean', (): void => {
+            const result = matches(hyphenatedExpressionArgs1, true);
+            expect(result.toString()).to.equal(`tasks['A-1'].outputs.parameters['output-1'] matches 'true'`);
+        });
+
+        it('returns successfully when comparing simpleTag and string', (): void => {
+            const result = matches(simpleTemplateTag1, 'my_string');
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} matches my_string`);
+        });
+
+        it('returns successfully when comparing simpleTag and boolean', (): void => {
+            const result = matches(simpleTemplateTag1, true);
+            expect(result.toString()).to.equal(`{{tasks.A.outputs.parameters.output1}} matches true`);
         });
     });
 });
