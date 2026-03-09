@@ -9,7 +9,7 @@ import { ComparisonExpression, ExpressionTemplateTag, LogicalExpression } from '
 import { simpleTag } from './expressions/tag.js';
 import { TaskOutput, StepOutput, StepOutputParameters, TaskOutputParameters } from './expressions/types.js';
 import { LifecycleHook } from './lifecycle-hook.js';
-import { InputParameter } from './parameter.js';
+import { InputParameter, WorkflowParameter } from './parameter.js';
 import { RecursiveTemplate } from './recursive-template.js';
 import { TemplateReference } from './template-reference.js';
 import { InlineTemplate, Template } from './template.js';
@@ -34,7 +34,8 @@ export class BaseTaskOrStep {
         | TaskOutput
         | StepOutput
         | StepOutputParameters
-        | TaskOutputParameters;
+        | TaskOutputParameters
+        | WorkflowParameter;
     withSequence?: IoArgoprojWorkflowV1Alpha1Sequence;
 
     readonly name: string;
@@ -50,7 +51,8 @@ export class BaseTaskOrStep {
             | TaskOutput
             | StepOutput
             | StepOutputParameters
-            | TaskOutputParameters,
+            | TaskOutputParameters
+            | WorkflowParameter,
     ): string | undefined {
         if (!withParam) {
             return undefined;
