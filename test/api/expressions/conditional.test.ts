@@ -3,7 +3,8 @@ import { nilCoalescing, ternary } from '../../../src/api/expressions/conditional
 import { DagTask } from '../../../src/api/dag-task';
 import { OutputParameter } from '../../../src/api/parameter';
 import { hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
-import { equals } from '../../../src/api/expressions/comparison';
+import { equals, notEquals } from '../../../src/api/expressions/comparison';
+import { or } from '../../../src/api/expressions/logical';
 
 describe('conditional tests', (): void => {
     const expressionArg1 = { dagTask: new DagTask('A', {}), output: new OutputParameter('output1') };
@@ -43,6 +44,17 @@ describe('conditional tests', (): void => {
             const result = ternary(comparison, innerTernaryTrue, innerTernaryFalse);
             expect(result.toString()).to.equal(
                 `{{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? {{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? 'innerTrue' : 'innerFalse' : {{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} ? 'innerTrue' : 'innerFalse'`,
+            );
+        });
+
+        it('returns successfully when using a logical expression as the condition', (): void => {
+            const logicalExpression = or([
+                equals(simpleTag(expressionArg1), simpleTag(expressionArg2)),
+                notEquals(simpleTag(expressionArg1), simpleTag(expressionArg2)),
+            ]);
+            const result = ternary(logicalExpression, 'trueValue', 'falseValue');
+            expect(result.toString()).to.equal(
+                `{{tasks.A.outputs.parameters.output1}} == {{tasks.B.outputs.parameters.output2}} || {{tasks.A.outputs.parameters.output1}} != {{tasks.B.outputs.parameters.output2}} ? 'trueValue' : 'falseValue'`,
             );
         });
     });
