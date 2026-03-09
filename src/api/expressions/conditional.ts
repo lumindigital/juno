@@ -1,13 +1,14 @@
 import {
     ComparisonExpression,
     HyphenatedExpressionArgs,
+    LogicalExpression,
     NilCoalescingExpression,
     TernaryExpression,
 } from './classes.js';
 import { wrapStringInQuotes } from './util.js';
 
 export function ternary(
-    condition: ComparisonExpression,
+    condition: ComparisonExpression | LogicalExpression,
     whenTrue: string | HyphenatedExpressionArgs | TernaryExpression,
     whenFalse: string | HyphenatedExpressionArgs | TernaryExpression,
 ): TernaryExpression {
