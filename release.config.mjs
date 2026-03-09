@@ -8,10 +8,11 @@ export default {
                 preset: 'conventionalcommits',
             },
         ],
+        ['@semantic-release/npm'],
         [
-            '@semantic-release/release-notes-generator',
+            '@semantic-release/github',
             {
-                preset: 'conventionalcommits',
+                assets: [],
             },
         ],
     ],
