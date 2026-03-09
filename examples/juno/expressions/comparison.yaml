@@ -18,6 +18,8 @@ spec:
         value: "1"
       - name: two-param
         value: "2"
+      - name: regex-param
+        value: "^t.*e$"
   entrypoint: entrypoint
   templates:
     - dag:
@@ -36,6 +38,9 @@ spec:
                   value: "{{=asInt(workflow.parameters['one-param']) >= asInt(workflow.parameters['one-param']) ? 'true' : 'false'}}"
                 - name: less-than-equal-ternary-param
                   value: "{{=asInt(workflow.parameters['one-param']) <= asInt(workflow.parameters['two-param']) ? 'true' : 'false'}}"
+                - name: matches-ternary-param
+                  value: "{{=workflow.parameters['true-param'] matches workflow.parameters['regex-param'] ? 'true' : 'false'}}"
+
             name: comparison-task
             template: comparison
       name: entrypoint
@@ -47,6 +52,7 @@ spec:
           - name: less-than-ternary-param
           - name: greater-than-equal-ternary-param
           - name: less-than-equal-ternary-param
+          - name: matches-ternary-param
       name: comparison
       script:
         command:

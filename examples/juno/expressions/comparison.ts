@@ -7,6 +7,7 @@ import {
     greaterThanOrEqual,
     lessThan,
     lessThanOrEqual,
+    matches,
     notEquals,
 } from '../../../src/api/expressions/comparison';
 import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
@@ -28,11 +29,13 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const lessThanTernaryParameter = new InputParameter('less-than-ternary-param');
     const greaterThanEqualTernaryParameter = new InputParameter('greater-than-equal-ternary-param');
     const lessThanEqualTernaryParameter = new InputParameter('less-than-equal-ternary-param');
+    const matchesTernaryParameter = new InputParameter('matches-ternary-param');
 
     const trueParam = new WorkflowParameter('true-param', { value: 'true' });
     const falseParam = new WorkflowParameter('false-param', { value: 'false' });
     const oneParam = new WorkflowParameter('one-param', { value: '1' });
     const twoParam = new WorkflowParameter('two-param', { value: '2' });
+    const regexParam = new WorkflowParameter('regex-param', { value: '^t.*e$' });
 
     const comparisonTemplate = new Template('comparison', {
         inputs: new Inputs({
@@ -43,6 +46,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 lessThanTernaryParameter,
                 greaterThanEqualTernaryParameter,
                 lessThanEqualTernaryParameter,
+                matchesTernaryParameter,
             ],
         }),
         script: new Script({
@@ -133,6 +137,18 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                     ),
                                 ),
                             }),
+                            matchesTernaryParameter.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        matches(
+                                            hyphenateExpressionArgs(trueParam),
+                                            hyphenateExpressionArgs(regexParam),
+                                        ),
+                                        'true',
+                                        'false',
+                                    ),
+                                ),
+                            }),
                         ],
                     }),
                     template: comparisonTemplate,
@@ -153,7 +169,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [trueParam, falseParam, oneParam, twoParam],
+                parameters: [trueParam, falseParam, oneParam, twoParam, regexParam],
             }),
             entrypoint: entryPointTemplate,
         }),
