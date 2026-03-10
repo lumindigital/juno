@@ -16,6 +16,8 @@ spec:
         value: "1.5"
       - name: workflow-json-param
         value: '{"isTrue":"true"}'
+      - name: workflow-base64-param
+        value: eyJpc1RydWUiOiJ0cnVlIn0=
 
   entrypoint: entrypoint
   templates:
@@ -31,6 +33,18 @@ spec:
                   value: "{{=jsonpath(workflow.parameters['workflow-json-param'], '$.isTrue') == 'true'}}"
                 - name: string-int-param
                   value: "{{=string(workflow.parameters['workflow-int-param'])}}"
+                - name: to-json-param
+                  value: "{{=toJSON(workflow.parameters['workflow-json-param'])}}"
+                - name: from-json-param
+                  value: "{{=fromJSON(workflow.parameters['workflow-json-param'])}}"
+                - name: type-param
+                  value: "{{=type(workflow.parameters['workflow-int-param'])}}"
+                - name: to-base64-param
+                  value: "{{=toBase64(workflow.parameters['workflow-json-param'])}}"
+                - name: from-base64-param
+                  value: "{{=fromBase64(workflow.parameters['workflow-base64-param'])}}"
+                - name: to-pairs-param
+                  value: "{{=toPairs(fromJSON(workflow.parameters['workflow-json-param']))}}"
             name: cast-task
             template: cast
       name: entrypoint
@@ -40,6 +54,12 @@ spec:
           - name: float-param
           - name: json-param
           - name: string-int-param
+          - name: to-json-param
+          - name: from-json-param
+          - name: type-param
+          - name: to-base64-param
+          - name: from-base64-param
+          - name: to-pairs-param
       name: cast
       script:
         command:
@@ -54,3 +74,9 @@ spec:
                                if [ "{{inputs.parameters.float-param}}" != true ]; then exit 13; fi
                                if [ "{{inputs.parameters.json-param}}" != true ]; then exit 14; fi
                                if [ "$CAST_INT_TO_STRING" != true ]; then exit 16; fi
+                               if [ "{{inputs.parameters.to-json-param}}" != "{\"isTrue\":\"true\"}" ]; then exit 17; fi
+                               if [ "{{inputs.parameters.from-json-param}}" != "{"isTrue":"true"}" ]; then exit 18; fi
+                               if [ "{{inputs.parameters.type-param}}" != "string" ]; then exit 19; fi
+                               if [ "{{inputs.parameters.to-base64-param}}" != "eyJpc1RydWUiOiJ0cnVlIn0=" ]; then exit 20; fi
+                               if [ "{{inputs.parameters.from-base64-param}}" != "{"isTrue":"true"}" ]; then exit 21; fi
+                               if [ "{{inputs.parameters.to-pairs-param}}" != "[["isTrue","true"]]" ]; then exit 22; fi
