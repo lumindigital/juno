@@ -1,5 +1,6 @@
 import {
     ComparisonExpression,
+    ConcatExpression,
     HyphenatedExpressionArgs,
     LogicalExpression,
     NilCoalescingExpression,
@@ -11,8 +12,8 @@ import { wrapStringInQuotes } from './util.js';
 
 export function ternary(
     condition: ComparisonExpression | LogicalExpression | StringOperatorExpressions,
-    whenTrue: string | HyphenatedExpressionArgs | TernaryExpression | StringFunctionExpressions,
-    whenFalse: string | HyphenatedExpressionArgs | TernaryExpression | StringFunctionExpressions,
+    whenTrue: string | HyphenatedExpressionArgs | TernaryExpression | StringFunctionExpressions | ConcatExpression,
+    whenFalse: string | HyphenatedExpressionArgs | TernaryExpression | StringFunctionExpressions | ConcatExpression,
 ): TernaryExpression {
     const conditionalOutput = condition.toString();
 
