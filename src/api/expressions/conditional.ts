@@ -3,14 +3,16 @@ import {
     HyphenatedExpressionArgs,
     LogicalExpression,
     NilCoalescingExpression,
+    StringFunctionExpressions,
+    StringOperatorExpressions,
     TernaryExpression,
 } from './classes.js';
 import { wrapStringInQuotes } from './util.js';
 
 export function ternary(
-    condition: ComparisonExpression | LogicalExpression,
-    whenTrue: string | HyphenatedExpressionArgs | TernaryExpression,
-    whenFalse: string | HyphenatedExpressionArgs | TernaryExpression,
+    condition: ComparisonExpression | LogicalExpression | StringOperatorExpressions,
+    whenTrue: string | HyphenatedExpressionArgs | TernaryExpression | StringFunctionExpressions,
+    whenFalse: string | HyphenatedExpressionArgs | TernaryExpression | StringFunctionExpressions,
 ): TernaryExpression {
     const conditionalOutput = condition.toString();
 
@@ -18,24 +20,16 @@ export function ternary(
 
     if (typeof whenTrue === 'string') {
         whenTrueOutput = wrapStringInQuotes(whenTrue.toString());
-    } else if ((whenTrue as TernaryExpression).isTernaryExpression) {
-        whenTrueOutput = (whenTrue as TernaryExpression).toString();
-    } else if ((whenTrue as HyphenatedExpressionArgs)?.isHyphenatedExpressionArgs) {
-        whenTrueOutput = (whenTrue as HyphenatedExpressionArgs).toString();
     } else {
-        throw new Error(`Invalid type for whenTrue parameter ${whenTrue} in ternary expression`);
+        whenTrueOutput = whenTrue.toString();
     }
 
     let whenFalseOutput: string;
 
     if (typeof whenFalse === 'string') {
         whenFalseOutput = wrapStringInQuotes(whenFalse.toString());
-    } else if ((whenFalse as TernaryExpression)?.isTernaryExpression) {
-        whenFalseOutput = (whenFalse as TernaryExpression).toString();
-    } else if ((whenFalse as HyphenatedExpressionArgs)?.isHyphenatedExpressionArgs) {
-        whenFalseOutput = (whenFalse as HyphenatedExpressionArgs).toString();
     } else {
-        throw new Error(`Invalid type for whenFalse parameter ${whenFalse} in ternary expression`);
+        whenFalseOutput = whenFalse.toString();
     }
 
     return new TernaryExpression(`${conditionalOutput} ? ${whenTrueOutput} : ${whenFalseOutput}`);

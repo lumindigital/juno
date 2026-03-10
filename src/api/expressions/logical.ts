@@ -6,6 +6,7 @@ import {
     LogicalExpression,
     ParenExpression,
     SimpleTemplateTag,
+    StringOperatorExpressions,
 } from './classes.js';
 import { TaskAndResult } from './types.js';
 import { getVariableReference } from './util.js';
@@ -18,7 +19,8 @@ export type LogicalExpressionInputs =
     | ParenExpression
     | DagTask
     | WorkflowStep
-    | TaskAndResult;
+    | TaskAndResult
+    | StringOperatorExpressions;
 
 export function and(inputs: LogicalExpressionInputs[]): LogicalExpression {
     let result = '';
