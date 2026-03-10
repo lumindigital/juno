@@ -8,19 +8,33 @@ import { Template } from '../../../src/api/template';
 import { Workflow } from '../../../src/api/workflow';
 import { WorkflowSpec } from '../../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../../src/workflow-interfaces/data-contracts';
-import { hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
+import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
+import { concatenate, contains, endsWith, startsWith } from '../../../src/api/expressions/string-operator';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const concatenationParam = new InputParameter('concatenation-param');
     const containsParam = new InputParameter('contains-param');
     const startsWithParam = new InputParameter('starts-with-param');
     const endsWithParam = new InputParameter('ends-with-param');
+    const containsExpressionParam = new InputParameter('contains-expression-param');
+    const startsWithExpressionParam = new InputParameter('starts-with-expression-param');
+    const endsWithExpressionParam = new InputParameter('ends-with-expression-param');
 
-    const stringParam = new WorkflowParameter('workflow-string-param', { value: 'Hello World' });
+    const fullStringParam = new WorkflowParameter('workflow-string-param', { value: 'Hello World' });
+    const firstWordParam = new WorkflowParameter('first-word-param', { value: 'Hello' });
+    const secondWordParam = new WorkflowParameter('second-word-param', { value: 'World' });
 
-    const stringoperatorTemplate = new Template('string-operator', {
+    const stringOperatorTemplate = new Template('string-operator', {
         inputs: new Inputs({
-            parameters: [concatenationParam, containsParam, startsWithParam, endsWithParam],
+            parameters: [
+                concatenationParam,
+                containsParam,
+                startsWithParam,
+                endsWithParam,
+                containsExpressionParam,
+                startsWithExpressionParam,
+                endsWithExpressionParam,
+            ],
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
@@ -28,6 +42,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 if [ "${simpleTag(containsParam)}" != "true" ]; then echo "contains failed: got '${simpleTag(containsParam)}'"; exit 12; fi
 if [ "${simpleTag(startsWithParam)}" != "true" ]; then echo "startsWith failed: got '${simpleTag(startsWithParam)}'"; exit 13; fi
 if [ "${simpleTag(endsWithParam)}" != "true" ]; then echo "endsWith failed: got '${simpleTag(endsWithParam)}'"; exit 14; fi
+if [ "${simpleTag(containsExpressionParam)}" != "true" ]; then echo "containsExpression failed: got '${simpleTag(containsExpressionParam)}'"; exit 15; fi
+if [ "${simpleTag(startsWithExpressionParam)}" != "true" ]; then echo "startsWithExpression failed: got '${simpleTag(startsWithExpressionParam)}'"; exit 16; fi
+if [ "${simpleTag(endsWithExpressionParam)}" != "true" ]; then echo "endsWithExpression failed: got '${simpleTag(endsWithExpressionParam)}'"; exit 17; fi
 echo "All string function tests passed"
 `,
             image: 'busybox',
@@ -41,20 +58,52 @@ echo "All string function tests passed"
                     arguments: new Arguments({
                         parameters: [
                             concatenationParam.toArgumentParameter({
-                                value: `{{=${hyphenateExpressionArgs(stringParam)} + "!"}}`,
+                                valueFromExpressionTag: expressionTag(
+                                    concatenate(hyphenateExpressionArgs(fullStringParam), '!'),
+                                ),
                             }),
                             containsParam.toArgumentParameter({
-                                value: `{{=${hyphenateExpressionArgs(stringParam)} contains "World"}}`,
+                                valueFromExpressionTag: expressionTag(
+                                    contains(hyphenateExpressionArgs(fullStringParam), 'World'),
+                                ),
                             }),
                             startsWithParam.toArgumentParameter({
-                                value: `{{=${hyphenateExpressionArgs(stringParam)} startsWith "Hello"}}`,
+                                valueFromExpressionTag: expressionTag(
+                                    startsWith(hyphenateExpressionArgs(fullStringParam), 'Hello'),
+                                ),
                             }),
                             endsWithParam.toArgumentParameter({
-                                value: `{{=${hyphenateExpressionArgs(stringParam)} endsWith "World"}}`,
+                                valueFromExpressionTag: expressionTag(
+                                    endsWith(hyphenateExpressionArgs(fullStringParam), 'World'),
+                                ),
+                            }),
+                            containsExpressionParam.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    contains(
+                                        hyphenateExpressionArgs(fullStringParam),
+                                        hyphenateExpressionArgs(secondWordParam),
+                                    ),
+                                ),
+                            }),
+                            startsWithExpressionParam.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    startsWith(
+                                        hyphenateExpressionArgs(fullStringParam),
+                                        hyphenateExpressionArgs(firstWordParam),
+                                    ),
+                                ),
+                            }),
+                            endsWithExpressionParam.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    endsWith(
+                                        hyphenateExpressionArgs(fullStringParam),
+                                        hyphenateExpressionArgs(secondWordParam),
+                                    ),
+                                ),
                             }),
                         ],
                     }),
-                    template: stringoperatorTemplate,
+                    template: stringOperatorTemplate,
                 }),
             ],
         }),
@@ -72,7 +121,7 @@ echo "All string function tests passed"
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [stringParam],
+                parameters: [fullStringParam, firstWordParam, secondWordParam],
             }),
             entrypoint: entryPointTemplate,
         }),
