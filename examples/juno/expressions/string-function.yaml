@@ -12,6 +12,14 @@ spec:
     parameters:
       - name: workflow-string-param
         value: 'Hello World'
+      - name: first-word-param
+        value: 'Hello'
+      - name: second-word-param
+        value: 'World'
+      - name: delimiter-param
+        value: ' '
+      - name: replacement-param
+        value: 'Universe'
   entrypoint: entrypoint
   templates:
     - dag:
@@ -19,49 +27,88 @@ spec:
           - arguments:
               parameters:
                 - name: trim-param
-                  value: "{{=\" \" + workflow.parameters['workflow-string-param'] + \" \" | trim()}}"
+                  value: "{{=trim(workflow.parameters['workflow-string-param'])}}"
+                - name: trim-param-chars
+                  value: "{{=trim(workflow.parameters['workflow-string-param'], 'Hello')}}"
+                - name: trim-param-chars-expr
+                  value: "{{=trim(workflow.parameters['workflow-string-param'], workflow.parameters['first-word-param'])}}"
                 - name: trim-prefix-param
-                  value: "{{=trimPrefix(workflow.parameters['workflow-string-param'], \"Hello\")}}"
+                  value: "{{=trimPrefix(workflow.parameters['workflow-string-param'], 'Hello')}}"
+                - name: trim-prefix-expr-param
+                  value: "{{=trimPrefix(workflow.parameters['workflow-string-param'], workflow.parameters['first-word-param'])}}"
                 - name: trim-suffix-param
-                  value: "{{=trimSuffix(workflow.parameters['workflow-string-param'], \"World\")}}"
+                  value: "{{=trimSuffix(workflow.parameters['workflow-string-param'], 'World')}}"
+                - name: trim-suffix-expr-param
+                  value: "{{=trimSuffix(workflow.parameters['workflow-string-param'], workflow.parameters['second-word-param'])}}"
                 - name: upper-param
                   value: "{{=upper(workflow.parameters['workflow-string-param'])}}"
                 - name: lower-param
                   value: "{{=lower(workflow.parameters['workflow-string-param'])}}"
                 - name: split-param
-                  value: "{{=split(trim(workflow.parameters['workflow-string-param']), \" \")[0]}}"
+                  value: "{{=split(trim(workflow.parameters['workflow-string-param']), ' ', 1)}}"
+                - name: split-expr-param
+                  value: "{{=split(trim(workflow.parameters['workflow-string-param']), workflow.parameters['delimiter-param'], 1)}}"
+                - name: split-no-index-param
+                  value: "{{=split(trim(workflow.parameters['workflow-string-param']), ' ')}}"
                 - name: split-after-param
-                  value: "{{=splitAfter(trim(workflow.parameters['workflow-string-param']), \"Hello\")[0]}}"
+                  value: "{{=splitAfter(trim(workflow.parameters['workflow-string-param']), 'Hello', 1)}}"
+                - name: split-after-expr-param
+                  value: "{{=splitAfter(trim(workflow.parameters['workflow-string-param']), workflow.parameters['first-word-param'], 1)}}"
+                - name: split-after-no-index-param
+                  value: "{{=splitAfter(trim(workflow.parameters['workflow-string-param']), ' ')}}"
                 - name: replace-param
-                  value: "{{=replace(workflow.parameters['workflow-string-param'], \"World\", \"Universe\")}}"
+                  value: "{{=replace(workflow.parameters['workflow-string-param'], 'World', 'Universe')}}"
+                - name: replace-expr-param
+                  value: "{{=replace(workflow.parameters['workflow-string-param'], workflow.parameters['second-word-param'], workflow.parameters['replacement-param'])}}"
                 - name: repeat-param
                   value: "{{=repeat(workflow.parameters['workflow-string-param'], 3)}}"
                 - name: index-of-param
-                  value: "{{=indexOf(workflow.parameters['workflow-string-param'], \"World\")}}"
+                  value: "{{=indexOf(workflow.parameters['workflow-string-param'], 'World')}}"
+                - name: index-of-expr-param
+                  value: "{{=indexOf(workflow.parameters['workflow-string-param'], workflow.parameters['second-word-param'])}}"
                 - name: last-index-of-param
-                  value: "{{=lastIndexOf(workflow.parameters['workflow-string-param'], \"World\")}}"
+                  value: "{{=lastIndexOf(workflow.parameters['workflow-string-param'], 'World')}}"
+                - name: last-index-of-expr-param
+                  value: "{{=lastIndexOf(workflow.parameters['workflow-string-param'], workflow.parameters['second-word-param'])}}"
                 - name: has-prefix-param
-                  value: "{{=hasPrefix(workflow.parameters['workflow-string-param'], \"Hello\")}}"
+                  value: "{{=hasPrefix(workflow.parameters['workflow-string-param'], 'Hello')}}"
+                - name: has-prefix-expr-param
+                  value: "{{=hasPrefix(workflow.parameters['workflow-string-param'], workflow.parameters['first-word-param'])}}"
                 - name: has-suffix-param
-                  value: "{{=hasSuffix(workflow.parameters['workflow-string-param'], \"World\")}}"
+                  value: "{{=hasSuffix(workflow.parameters['workflow-string-param'], 'World')}}"
+                - name: has-suffix-expr-param
+                  value: "{{=hasSuffix(workflow.parameters['workflow-string-param'], workflow.parameters['second-word-param'])}}"
             name: string-function-task
             template: string-function
       name: entrypoint
     - inputs:
         parameters:
           - name: trim-param
+          - name: trim-param-chars
+          - name: trim-param-chars-expr
           - name: trim-prefix-param
+          - name: trim-prefix-expr-param
           - name: trim-suffix-param
+          - name: trim-suffix-expr-param
           - name: upper-param
           - name: lower-param
           - name: split-param
+          - name: split-expr-param
+          - name: split-no-index-param
           - name: split-after-param
+          - name: split-after-expr-param
+          - name: split-after-no-index-param
           - name: replace-param
+          - name: replace-expr-param
           - name: repeat-param
           - name: index-of-param
+          - name: index-of-expr-param
           - name: last-index-of-param
+          - name: last-index-of-expr-param
           - name: has-prefix-param
+          - name: has-prefix-expr-param
           - name: has-suffix-param
+          - name: has-suffix-expr-param
       name: string-function
       script:
         command:
@@ -70,16 +117,29 @@ spec:
         image: busybox
         source: |
           if [ "{{inputs.parameters.trim-param}}" != "Hello World" ]; then echo "trim failed: got '{{inputs.parameters.trim-param}}'"; exit 11; fi
-          if [ "{{inputs.parameters.trim-prefix-param}}" != " World" ]; then echo "trimPrefix failed: got '{{inputs.parameters.trim-prefix-param}}'"; exit 12; fi
-          if [ "{{inputs.parameters.trim-suffix-param}}" != "Hello " ]; then echo "trimSuffix failed: got '{{inputs.parameters.trim-suffix-param}}'"; exit 13; fi
-          if [ "{{inputs.parameters.upper-param}}" != "HELLO WORLD" ]; then echo "upper failed: got '{{inputs.parameters.upper-param}}'"; exit 14; fi
-          if [ "{{inputs.parameters.lower-param}}" != "hello world" ]; then echo "lower failed: got '{{inputs.parameters.lower-param}}'"; exit 15; fi
-          if [ "{{inputs.parameters.split-param}}" != "Hello" ]; then echo "split failed: got '{{inputs.parameters.split-param}}'"; exit 16; fi
-          if [ "{{inputs.parameters.split-after-param}}" != "Hello" ]; then echo "splitAfter failed: got '{{inputs.parameters.split-after-param}}'"; exit 17; fi
-          if [ "{{inputs.parameters.replace-param}}" != "Hello Universe" ]; then echo "replace failed: got '{{inputs.parameters.replace-param}}'"; exit 18; fi
-          if [ "{{inputs.parameters.repeat-param}}" != "Hello WorldHello WorldHello World" ]; then echo "repeat failed: got '{{inputs.parameters.repeat-param}}'"; exit 19; fi
-          if [ "{{inputs.parameters.index-of-param}}" != "6" ]; then echo "indexOf failed: got '{{inputs.parameters.index-of-param}}'"; exit 20; fi
-          if [ "{{inputs.parameters.last-index-of-param}}" != "6" ]; then echo "lastIndexOf failed: got '{{inputs.parameters.last-index-of-param}}'"; exit 21; fi
-          if [ "{{inputs.parameters.has-prefix-param}}" != "true" ]; then echo "hasPrefix failed: got '{{inputs.parameters.has-prefix-param}}'"; exit 22; fi
-          if [ "{{inputs.parameters.has-suffix-param}}" != "true" ]; then echo "hasSuffix failed: got '{{inputs.parameters.has-suffix-param}}'"; exit 23; fi
+          if [ "{{inputs.parameters.trim-param-chars}}" != " World" ]; then echo "trim with chars failed: got '{{inputs.parameters.trim-param-chars}}'"; exit 12; fi
+          if [ "{{inputs.parameters.trim-param-chars-expr}}" != " World" ]; then echo "trim with chars expr failed: got '{{inputs.parameters.trim-param-chars-expr}}'"; exit 13; fi
+          if [ "{{inputs.parameters.trim-prefix-param}}" != " World" ]; then echo "trimPrefix failed: got '{{inputs.parameters.trim-prefix-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.trim-prefix-expr-param}}" != " World" ]; then echo "trimPrefix expr failed: got '{{inputs.parameters.trim-prefix-expr-param}}'"; exit 15; fi
+          if [ "{{inputs.parameters.trim-suffix-param}}" != "Hello " ]; then echo "trimSuffix failed: got '{{inputs.parameters.trim-suffix-param}}'"; exit 16; fi
+          if [ "{{inputs.parameters.trim-suffix-expr-param}}" != "Hello " ]; then echo "trimSuffix expr failed: got '{{inputs.parameters.trim-suffix-expr-param}}'"; exit 17; fi
+          if [ "{{inputs.parameters.upper-param}}" != "HELLO WORLD" ]; then echo "upper failed: got '{{inputs.parameters.upper-param}}'"; exit 18; fi
+          if [ "{{inputs.parameters.lower-param}}" != "hello world" ]; then echo "lower failed: got '{{inputs.parameters.lower-param}}'"; exit 19; fi
+          if [ "{{inputs.parameters.split-param}}" != "Hello" ]; then echo "split failed: got '{{inputs.parameters.split-param}}'"; exit 20; fi
+          if [ "{{inputs.parameters.split-expr-param}}" != "Hello" ]; then echo "split expr failed: got '{{inputs.parameters.split-expr-param}}'"; exit 21; fi
+          if [ "{{inputs.parameters.split-no-index-param}}" != '[Hello,World]' ]; then echo "split no index failed: got '{{inputs.parameters.split-no-index-param}}'"; exit 35; fi
+          if [ "{{inputs.parameters.split-after-param}}" != "Hello" ]; then echo "splitAfter failed: got '{{inputs.parameters.split-after-param}}'"; exit 22; fi
+          if [ "{{inputs.parameters.split-after-expr-param}}" != "Hello" ]; then echo "splitAfter expr failed: got '{{inputs.parameters.split-after-expr-param}}'"; exit 23; fi
+          if [ "{{inputs.parameters.split-after-no-index-param}}" != '["Hello ","World"]' ]; then echo "splitAfter no index failed: got '{{inputs.parameters.split-after-no-index-param}}'"; exit 36; fi
+          if [ "{{inputs.parameters.replace-param}}" != "Hello Universe" ]; then echo "replace failed: got '{{inputs.parameters.replace-param}}'"; exit 24; fi
+          if [ "{{inputs.parameters.replace-expr-param}}" != "Hello Universe" ]; then echo "replace expr failed: got '{{inputs.parameters.replace-expr-param}}'"; exit 25; fi
+          if [ "{{inputs.parameters.repeat-param}}" != "Hello WorldHello WorldHello World" ]; then echo "repeat failed: got '{{inputs.parameters.repeat-param}}'"; exit 26; fi
+          if [ "{{inputs.parameters.index-of-param}}" != "6" ]; then echo "indexOf failed: got '{{inputs.parameters.index-of-param}}'"; exit 27; fi
+          if [ "{{inputs.parameters.index-of-expr-param}}" != "6" ]; then echo "indexOf expr failed: got '{{inputs.parameters.index-of-expr-param}}'"; exit 28; fi
+          if [ "{{inputs.parameters.last-index-of-param}}" != "6" ]; then echo "lastIndexOf failed: got '{{inputs.parameters.last-index-of-param}}'"; exit 29; fi
+          if [ "{{inputs.parameters.last-index-of-expr-param}}" != "6" ]; then echo "lastIndexOf expr failed: got '{{inputs.parameters.last-index-of-expr-param}}'"; exit 30; fi
+          if [ "{{inputs.parameters.has-prefix-param}}" != "true" ]; then echo "hasPrefix failed: got '{{inputs.parameters.has-prefix-param}}'"; exit 31; fi
+          if [ "{{inputs.parameters.has-prefix-expr-param}}" != "true" ]; then echo "hasPrefix expr failed: got '{{inputs.parameters.has-prefix-expr-param}}'"; exit 32; fi
+          if [ "{{inputs.parameters.has-suffix-param}}" != "true" ]; then echo "hasSuffix failed: got '{{inputs.parameters.has-suffix-param}}'"; exit 33; fi
+          if [ "{{inputs.parameters.has-suffix-expr-param}}" != "true" ]; then echo "hasSuffix expr failed: got '{{inputs.parameters.has-suffix-expr-param}}'"; exit 34; fi
           echo "All string function tests passed"
