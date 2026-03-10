@@ -18,6 +18,12 @@ export type CastExpressions =
     | FloatCastExpression
     | StringCastExpression
     | JsonCastExpression
+    | TypeCastExpression
+    | FromJsonCastExpression
+    | ToBase64CastExpression
+    | FromBase64CastExpression
+    | ToPairsCastExpression
+    // | FromPairsCastExpression
     | NilCoalescingExpression;
 
 export type ArithmeticExpressions =
@@ -202,6 +208,84 @@ export class JsonCastExpression {
         return this.output;
     }
 }
+
+export class TypeCastExpression {
+    private output: string;
+    isTypeCastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FromJsonCastExpression {
+    private output: string;
+    isFromJsonCastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ToBase64CastExpression {
+    private output: string;
+    isToBase64CastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FromBase64CastExpression {
+    private output: string;
+    isFromBase64CastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ToPairsCastExpression {
+    private output: string;
+    isToPairsCastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+// export class FromPairsCastExpression {
+//     private output: string;
+//     isFromPairsCastExpression: boolean = true;
+
+//     constructor(output: string) {
+//         this.output = output;
+//     }
+
+//     toString(): string {
+//         return this.output;
+//     }
+// }
 
 export class JsonPathExpression {
     private output: string;

@@ -36,6 +36,7 @@ export type LeftEqualityComparisonTypes =
     | JsonPathExpression
     | UndefinedExpressionArg
     | StringCastExpression;
+
 export type RightEqualityComparisonTypes =
     | LeftEqualityComparisonTypes
     | boolean
