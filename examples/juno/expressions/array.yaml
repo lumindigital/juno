@@ -1,0 +1,68 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways array expressions can be used.
+  generateName: array-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: workflow-array-param
+        value: '[3,1,2,1]'
+      - name: workflow-nested-param
+        value: '[[1,2],[3,4]]'
+      - name: workflow-array2-param
+        value: '[5,6]'
+  entrypoint: entrypoint
+  templates:
+    - inputs:
+        parameters:
+          - name: first-param
+          - name: last-param
+          - name: flatten-param
+          - name: reverse-param
+          - name: sort-param
+          - name: uniq-param
+          - name: join-param
+          - name: concat-param
+      name: array
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source:  >
+          echo "first: {{inputs.parameters.first-param}}"
+                               echo "last: {{inputs.parameters.last-param}}"
+                               echo "flatten: {{inputs.parameters.flatten-param}}"
+                               echo "reverse: {{inputs.parameters.reverse-param}}"
+                               echo "sort: {{inputs.parameters.sort-param}}"
+                               echo "uniq: {{inputs.parameters.uniq-param}}"
+                               echo "join: {{inputs.parameters.join-param}}"
+                               echo "concat: {{inputs.parameters.concat-param}}"
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: first-param
+                  value: "{{=first(fromJSON(workflow.parameters['workflow-array-param']))}}"
+                - name: last-param
+                  value: "{{=last(fromJSON(workflow.parameters['workflow-array-param']))}}"
+                - name: flatten-param
+                  value: "{{=flatten(fromJSON(workflow.parameters['workflow-nested-param']))}}"
+                - name: reverse-param
+                  value: "{{=reverse(fromJSON(workflow.parameters['workflow-array-param']))}}"
+                - name: sort-param
+                  value: "{{=sort(fromJSON(workflow.parameters['workflow-array-param']))}}"
+                - name: uniq-param
+                  value: "{{=uniq(fromJSON(workflow.parameters['workflow-array-param']))}}"
+                - name: join-param
+                  value: "{{=join(fromJSON(workflow.parameters['workflow-array-param']), ', ')}}"
+                - name: concat-param
+                  value: "{{=concat(fromJSON(workflow.parameters['workflow-array-param']), fromJSON(workflow.parameters['workflow-array2-param']))}}"
+            name: array-task
+            template: array
+      name: entrypoint

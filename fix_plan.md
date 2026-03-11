@@ -7,22 +7,34 @@
 - [x] Update CLAUDE.md with expression class docs, testing docs, and examples section — committed
 - [x] Add number expression functions (`max`, `min`, `abs`, `ceil`, `floor`, `round`) with unit tests, example, and YAML — committed
 - [x] Add map expression functions (`keys`, `values`) with unit tests, example, and YAML — committed
+- [x] Add array expression functions (`first`, `last`, `flatten`, `reverse`, `sort`, `uniq`, `join`, `concat`) with unit tests, example, and YAML — committed
 
 ## Current State
 
-Branch `add_remaining-missing_functions` is ahead of `main` with 4 commits.
-All pre-commit hooks pass. Build succeeds. All 508 tests pass (verified 2026-03-11).
+Branch `add_remaining-missing_functions` is ahead of `main` with 5 commits.
+All pre-commit hooks pass. Build succeeds. All 534 tests pass (verified 2026-03-11).
 
 ## Remaining Work
 
 ### Cleanup
 - [ ] Remove `scripts/gen-number-yaml.ts` (temporary helper, not needed) — blocked by sandbox, needs manual deletion
+- [ ] Remove `scripts/gen-array-yaml.ts` (temporary helper, not needed) — blocked by sandbox, needs manual deletion
 - [ ] Consider squashing the two duplicate "feat: added remaining cast functions" commits before merging
 
 ### Potential Future Expression Functions
 These expr-lang built-in functions are not yet implemented (may or may not be needed for Argo Workflows):
 
-#### Array Functions
+#### Array Functions (simple) — DONE
+- ~~first(array)~~
+- ~~last(array)~~
+- ~~flatten(array)~~
+- ~~reverse(array)~~
+- ~~sort(array)~~
+- ~~uniq(array)~~
+- ~~join(array[, delimiter])~~
+- ~~concat(array1, array2[, ...])~~
+
+#### Array Functions (predicate-based) — remaining
 - all(array, predicate)
 - any(array, predicate)
 - one(array, predicate)
@@ -35,20 +47,14 @@ These expr-lang built-in functions are not yet implemented (may or may not be ne
 - findLastIndex(array, predicate)
 - groupBy(array, predicate)
 - count(array[, predicate])
-- concat(array1, array2[, ...])
-- flatten(array)
-- uniq(array)
-- join(array[, delimiter])
 - reduce(array, predicate[, initialValue])
 - sum(array[, predicate])
+- sortBy(array[, predicate, order])
+
+#### Array Functions (other) — remaining
 - mean(array)
 - median(array)
-- first(array)
-- last(array)
 - take(array, n)
-- reverse(array)
-- sort(array[, order])
-- sortBy(array[, predicate, order])
 
 #### Map Functions — DONE
 - ~~keys(map)~~
