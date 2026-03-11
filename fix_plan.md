@@ -10,11 +10,12 @@
 - [x] Add array expression functions (`first`, `last`, `flatten`, `reverse`, `sort`, `uniq`, `join`, `concat`) with unit tests, example, and YAML — committed
 - [x] Add array expression functions (`mean`, `median`, `take`) with unit tests, example, and YAML — committed
 - [x] Add date expression functions (`now`, `duration`, `date`, `timezone`) with unit tests, example, and YAML — committed
+- [x] Add predicate-based array expression functions (`all`, `any`, `one`, `none`, `map`, `filter`, `find`, `findIndex`, `findLast`, `findLastIndex`, `groupBy`, `count`, `reduce`, `sum`, `sortBy`) with unit tests, example, and YAML — committed
 
 ## Current State
 
-Branch `add_remaining-missing_functions` is ahead of `main` with 7 commits.
-All pre-commit hooks pass. Build succeeds. All 556 tests pass (verified 2026-03-11).
+Branch `add_remaining-missing_functions` is ahead of `main` with 8 commits.
+All pre-commit hooks pass. Build succeeds. All 606 tests pass (verified 2026-03-11).
 
 ## Remaining Work
 
@@ -36,22 +37,22 @@ These expr-lang built-in functions are not yet implemented (may or may not be ne
 - ~~join(array[, delimiter])~~
 - ~~concat(array1, array2[, ...])~~
 
-#### Array Functions (predicate-based) — remaining
-- all(array, predicate)
-- any(array, predicate)
-- one(array, predicate)
-- none(array, predicate)
-- map(array, predicate)
-- filter(array, predicate)
-- find(array, predicate)
-- findIndex(array, predicate)
-- findLast(array, predicate)
-- findLastIndex(array, predicate)
-- groupBy(array, predicate)
-- count(array[, predicate])
-- reduce(array, predicate[, initialValue])
-- sum(array[, predicate])
-- sortBy(array[, predicate, order])
+#### Array Functions (predicate-based) — DONE
+- ~~all(array, predicate)~~
+- ~~any(array, predicate)~~
+- ~~one(array, predicate)~~
+- ~~none(array, predicate)~~
+- ~~map(array, predicate)~~
+- ~~filter(array, predicate)~~
+- ~~find(array, predicate)~~
+- ~~findIndex(array, predicate)~~
+- ~~findLast(array, predicate)~~
+- ~~findLastIndex(array, predicate)~~
+- ~~groupBy(array, predicate)~~
+- ~~count(array[, predicate])~~
+- ~~reduce(array, predicate[, initialValue])~~
+- ~~sum(array[, predicate])~~
+- ~~sortBy(array[, predicate, order])~~
 
 #### Array Functions (other) — DONE
 - ~~mean(array)~~

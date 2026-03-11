@@ -1,15 +1,30 @@
 import {
+    AllExpression,
+    AnyExpression,
     ArrayConcatExpression,
+    CountExpression,
+    FilterExpression,
+    FindExpression,
+    FindIndexExpression,
+    FindLastExpression,
+    FindLastIndexExpression,
     FirstExpression,
     FlattenExpression,
     FromJsonCastExpression,
+    GroupByExpression,
     HyphenatedExpressionArgs,
     JoinExpression,
     LastExpression,
+    MapExpression,
     MeanExpression,
     MedianExpression,
+    NoneExpression,
+    OneExpression,
+    ReduceExpression,
     ReverseExpression,
+    SortByExpression,
     SortExpression,
+    SumExpression,
     TakeExpression,
     UniqExpression,
 } from './classes.js';
@@ -74,4 +89,92 @@ export function median(input: ArrayInput): MedianExpression {
 
 export function take(input: ArrayInput, n: number): TakeExpression {
     return new TakeExpression(`take(${resolveInput(input)}, ${n})`);
+}
+
+export function all(input: ArrayInput, predicate: string): AllExpression {
+    return new AllExpression(`all(${resolveInput(input)}, ${predicate})`);
+}
+
+export function any(input: ArrayInput, predicate: string): AnyExpression {
+    return new AnyExpression(`any(${resolveInput(input)}, ${predicate})`);
+}
+
+export function one(input: ArrayInput, predicate: string): OneExpression {
+    return new OneExpression(`one(${resolveInput(input)}, ${predicate})`);
+}
+
+export function none(input: ArrayInput, predicate: string): NoneExpression {
+    return new NoneExpression(`none(${resolveInput(input)}, ${predicate})`);
+}
+
+export function arrayMap(input: ArrayInput, predicate: string): MapExpression {
+    return new MapExpression(`map(${resolveInput(input)}, ${predicate})`);
+}
+
+export function filter(input: ArrayInput, predicate: string): FilterExpression {
+    return new FilterExpression(`filter(${resolveInput(input)}, ${predicate})`);
+}
+
+export function find(input: ArrayInput, predicate: string): FindExpression {
+    return new FindExpression(`find(${resolveInput(input)}, ${predicate})`);
+}
+
+export function findIndex(input: ArrayInput, predicate: string): FindIndexExpression {
+    return new FindIndexExpression(`findIndex(${resolveInput(input)}, ${predicate})`);
+}
+
+export function findLast(input: ArrayInput, predicate: string): FindLastExpression {
+    return new FindLastExpression(`findLast(${resolveInput(input)}, ${predicate})`);
+}
+
+export function findLastIndex(input: ArrayInput, predicate: string): FindLastIndexExpression {
+    return new FindLastIndexExpression(`findLastIndex(${resolveInput(input)}, ${predicate})`);
+}
+
+export function groupBy(input: ArrayInput, predicate: string): GroupByExpression {
+    return new GroupByExpression(`groupBy(${resolveInput(input)}, ${predicate})`);
+}
+
+export function count(input: ArrayInput, predicate?: string): CountExpression {
+    const inputStr = resolveInput(input);
+
+    if (predicate !== undefined) {
+        return new CountExpression(`count(${inputStr}, ${predicate})`);
+    }
+
+    return new CountExpression(`count(${inputStr})`);
+}
+
+export function reduce(input: ArrayInput, predicate: string, initialValue?: string): ReduceExpression {
+    const inputStr = resolveInput(input);
+
+    if (initialValue !== undefined) {
+        return new ReduceExpression(`reduce(${inputStr}, ${predicate}, ${initialValue})`);
+    }
+
+    return new ReduceExpression(`reduce(${inputStr}, ${predicate})`);
+}
+
+export function sum(input: ArrayInput, predicate?: string): SumExpression {
+    const inputStr = resolveInput(input);
+
+    if (predicate !== undefined) {
+        return new SumExpression(`sum(${inputStr}, ${predicate})`);
+    }
+
+    return new SumExpression(`sum(${inputStr})`);
+}
+
+export function sortBy(input: ArrayInput, predicate?: string, order?: string): SortByExpression {
+    const inputStr = resolveInput(input);
+
+    if (predicate !== undefined && order !== undefined) {
+        return new SortByExpression(`sortBy(${inputStr}, ${predicate}, '${order}')`);
+    }
+
+    if (predicate !== undefined) {
+        return new SortByExpression(`sortBy(${inputStr}, ${predicate})`);
+    }
+
+    return new SortByExpression(`sortBy(${inputStr})`);
 }

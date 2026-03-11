@@ -31,6 +31,21 @@ spec:
           - name: mean-param
           - name: median-param
           - name: take-param
+          - name: all-param
+          - name: any-param
+          - name: one-param
+          - name: none-param
+          - name: map-param
+          - name: filter-param
+          - name: find-param
+          - name: find-index-param
+          - name: find-last-param
+          - name: find-last-index-param
+          - name: group-by-param
+          - name: count-param
+          - name: reduce-param
+          - name: sum-param
+          - name: sort-by-param
       name: array
       script:
         command:
@@ -49,6 +64,21 @@ spec:
                                echo "mean: {{inputs.parameters.mean-param}}"
                                echo "median: {{inputs.parameters.median-param}}"
                                echo "take: {{inputs.parameters.take-param}}"
+                               echo "all: {{inputs.parameters.all-param}}"
+                               echo "any: {{inputs.parameters.any-param}}"
+                               echo "one: {{inputs.parameters.one-param}}"
+                               echo "none: {{inputs.parameters.none-param}}"
+                               echo "map: {{inputs.parameters.map-param}}"
+                               echo "filter: {{inputs.parameters.filter-param}}"
+                               echo "find: {{inputs.parameters.find-param}}"
+                               echo "findIndex: {{inputs.parameters.find-index-param}}"
+                               echo "findLast: {{inputs.parameters.find-last-param}}"
+                               echo "findLastIndex: {{inputs.parameters.find-last-index-param}}"
+                               echo "groupBy: {{inputs.parameters.group-by-param}}"
+                               echo "count: {{inputs.parameters.count-param}}"
+                               echo "reduce: {{inputs.parameters.reduce-param}}"
+                               echo "sum: {{inputs.parameters.sum-param}}"
+                               echo "sortBy: {{inputs.parameters.sort-by-param}}"
     - dag:
         tasks:
           - arguments:
@@ -75,6 +105,36 @@ spec:
                   value: "{{=median(fromJSON(workflow.parameters['workflow-array-param']))}}"
                 - name: take-param
                   value: "{{=take(fromJSON(workflow.parameters['workflow-array-param']), 2)}}"
+                - name: all-param
+                  value: "{{=all(fromJSON(workflow.parameters['workflow-array-param']), {# > 0})}}"
+                - name: any-param
+                  value: "{{=any(fromJSON(workflow.parameters['workflow-array-param']), {# > 2})}}"
+                - name: one-param
+                  value: "{{=one(fromJSON(workflow.parameters['workflow-array-param']), {# == 3})}}"
+                - name: none-param
+                  value: "{{=none(fromJSON(workflow.parameters['workflow-array-param']), {# < 0})}}"
+                - name: map-param
+                  value: "{{=map(fromJSON(workflow.parameters['workflow-array-param']), {# * 2})}}"
+                - name: filter-param
+                  value: "{{=filter(fromJSON(workflow.parameters['workflow-array-param']), {# > 1})}}"
+                - name: find-param
+                  value: "{{=find(fromJSON(workflow.parameters['workflow-array-param']), {# > 1})}}"
+                - name: find-index-param
+                  value: "{{=findIndex(fromJSON(workflow.parameters['workflow-array-param']), {# > 1})}}"
+                - name: find-last-param
+                  value: "{{=findLast(fromJSON(workflow.parameters['workflow-array-param']), {# > 1})}}"
+                - name: find-last-index-param
+                  value: "{{=findLastIndex(fromJSON(workflow.parameters['workflow-array-param']), {# > 1})}}"
+                - name: group-by-param
+                  value: "{{=groupBy(fromJSON(workflow.parameters['workflow-array-param']), {# % 2})}}"
+                - name: count-param
+                  value: "{{=count(fromJSON(workflow.parameters['workflow-array-param']), {# > 1})}}"
+                - name: reduce-param
+                  value: "{{=reduce(fromJSON(workflow.parameters['workflow-array-param']), {#acc + #}, 0)}}"
+                - name: sum-param
+                  value: "{{=sum(fromJSON(workflow.parameters['workflow-array-param']))}}"
+                - name: sort-by-param
+                  value: "{{=sortBy(fromJSON(workflow.parameters['workflow-array-param']))}}"
             name: array-task
             template: array
       name: entrypoint
