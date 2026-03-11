@@ -450,4 +450,5 @@ pnpm-lock.yaml
 ##############################
 ### END Additional Entries ###
 ##############################
-
+.ralphrc
+.ralph/

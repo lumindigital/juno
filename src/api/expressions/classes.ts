@@ -11,7 +11,10 @@ export type ExpressionTemplateInputs =
     | FromItemProperty
     | InMembershipExpression
     | StringFunctionExpressions
-    | StringOperatorExpressions;
+    | StringOperatorExpressions
+    | MiscExpressions;
+
+export type MiscExpressions = LenExpression | GetExpression;
 
 export type CastExpressions =
     | IntCastExpression
@@ -286,6 +289,32 @@ export class ToPairsCastExpression {
 //         return this.output;
 //     }
 // }
+
+export class LenExpression {
+    private output: string;
+    isLenExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class GetExpression {
+    private output: string;
+    isGetExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
 
 export class JsonPathExpression {
     private output: string;
