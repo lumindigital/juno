@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways number expressions can be used.
+  generateName: number-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: param-a
+        value: '10.7'
+      - name: param-b
+        value: '3.2'
+      - name: param-c
+        value: '-5.5'
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: max-param
+                  value: "{{=max(asFloat(workflow.parameters['param-a']), asFloat(workflow.parameters['param-b']))}}"
+                - name: min-param
+                  value: "{{=min(asFloat(workflow.parameters['param-a']), asFloat(workflow.parameters['param-b']))}}"
+                - name: abs-param
+                  value: "{{=abs(asFloat(workflow.parameters['param-c']))}}"
+                - name: ceil-param
+                  value: "{{=ceil(asFloat(workflow.parameters['param-a']))}}"
+                - name: floor-param
+                  value: "{{=floor(asFloat(workflow.parameters['param-a']))}}"
+                - name: round-param
+                  value: "{{=round(asFloat(workflow.parameters['param-a']))}}"
+            name: number-task
+            template: number
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: max-param
+          - name: min-param
+          - name: abs-param
+          - name: ceil-param
+          - name: floor-param
+          - name: round-param
+      name: number
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source:  >
+          echo "max: {{inputs.parameters.max-param}}"
+
+          echo "min: {{inputs.parameters.min-param}}"
+
+          echo "abs: {{inputs.parameters.abs-param}}"
+
+          echo "ceil: {{inputs.parameters.ceil-param}}"
+
+          echo "floor: {{inputs.parameters.floor-param}}"
+
+          echo "round: {{inputs.parameters.round-param}}"
