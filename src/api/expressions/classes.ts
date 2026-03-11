@@ -13,9 +13,12 @@ export type ExpressionTemplateInputs =
     | StringFunctionExpressions
     | StringOperatorExpressions
     | MiscExpressions
-    | NumberExpressions;
+    | NumberExpressions
+    | MapExpressions;
 
 export type MiscExpressions = LenExpression | GetExpression;
+
+export type MapExpressions = KeysExpression | ValuesExpression;
 
 export type NumberExpressions =
     | MaxExpression
@@ -724,6 +727,32 @@ export class FloorExpression {
 export class RoundExpression {
     private output: string;
     isRoundExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class KeysExpression {
+    private output: string;
+    isKeysExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ValuesExpression {
+    private output: string;
+    isValuesExpression: boolean = true;
 
     constructor(output: string) {
         this.output = output;

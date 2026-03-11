@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways map expressions can be used.
+  generateName: map-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: workflow-json-param
+        value: '{"name":"juno","version":"1"}'
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: keys-param
+                  value: "{{=keys(fromJSON(workflow.parameters['workflow-json-param']))}}"
+                - name: values-param
+                  value: "{{=values(fromJSON(workflow.parameters['workflow-json-param']))}}"
+            name: map-task
+            template: map
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: keys-param
+          - name: values-param
+      name: map
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source:  >
+          echo "keys: {{inputs.parameters.keys-param}}"
+                               echo "values: {{inputs.parameters.values-param}}"

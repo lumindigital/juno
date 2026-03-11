@@ -6,11 +6,12 @@
 - [x] Add misc expression functions (`len`, `get`) with unit tests, example, and YAML — committed
 - [x] Update CLAUDE.md with expression class docs, testing docs, and examples section — committed
 - [x] Add number expression functions (`max`, `min`, `abs`, `ceil`, `floor`, `round`) with unit tests, example, and YAML — committed
+- [x] Add map expression functions (`keys`, `values`) with unit tests, example, and YAML — committed
 
 ## Current State
 
 Branch `add_remaining-missing_functions` is ahead of `main` with 4 commits.
-All pre-commit hooks pass. Build succeeds. All 501 tests pass (verified 2026-03-11).
+All pre-commit hooks pass. Build succeeds. All 508 tests pass (verified 2026-03-11).
 
 ## Remaining Work
 
@@ -49,9 +50,9 @@ These expr-lang built-in functions are not yet implemented (may or may not be ne
 - sort(array[, order])
 - sortBy(array[, predicate, order])
 
-#### Map Functions
-- keys(map)
-- values(map)
+#### Map Functions — DONE
+- ~~keys(map)~~
+- ~~values(map)~~
 
 #### Date Functions
 - now()
