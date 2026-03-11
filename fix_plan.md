@@ -9,11 +9,12 @@
 - [x] Add map expression functions (`keys`, `values`) with unit tests, example, and YAML — committed
 - [x] Add array expression functions (`first`, `last`, `flatten`, `reverse`, `sort`, `uniq`, `join`, `concat`) with unit tests, example, and YAML — committed
 - [x] Add array expression functions (`mean`, `median`, `take`) with unit tests, example, and YAML — committed
+- [x] Add date expression functions (`now`, `duration`, `date`, `timezone`) with unit tests, example, and YAML — committed
 
 ## Current State
 
-Branch `add_remaining-missing_functions` is ahead of `main` with 6 commits.
-All pre-commit hooks pass. Build succeeds. All 543 tests pass (verified 2026-03-11).
+Branch `add_remaining-missing_functions` is ahead of `main` with 7 commits.
+All pre-commit hooks pass. Build succeeds. All 556 tests pass (verified 2026-03-11).
 
 ## Remaining Work
 
@@ -61,11 +62,11 @@ These expr-lang built-in functions are not yet implemented (may or may not be ne
 - ~~keys(map)~~
 - ~~values(map)~~
 
-#### Date Functions
-- now()
-- duration(str)
-- date(str[, format[, timezone]])
-- timezone(str)
+#### Date Functions — DONE
+- ~~now()~~
+- ~~duration(str)~~
+- ~~date(str[, format[, timezone]])~~
+- ~~timezone(str)~~
 
 #### Number Functions — DONE
 - ~~max(n1, n2)~~

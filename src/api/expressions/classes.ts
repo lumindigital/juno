@@ -15,7 +15,8 @@ export type ExpressionTemplateInputs =
     | MiscExpressions
     | NumberExpressions
     | MapExpressions
-    | ArrayExpressions;
+    | ArrayExpressions
+    | DateExpressions;
 
 export type MiscExpressions = LenExpression | GetExpression;
 
@@ -33,6 +34,8 @@ export type ArrayExpressions =
     | MeanExpression
     | MedianExpression
     | TakeExpression;
+
+export type DateExpressions = NowExpression | DurationExpression | DateExpression | TimezoneExpression;
 
 export type NumberExpressions =
     | MaxExpression
@@ -910,6 +913,58 @@ export class MedianExpression {
 export class TakeExpression {
     private output: string;
     isTakeExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class NowExpression {
+    private output: string;
+    isNowExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class DurationExpression {
+    private output: string;
+    isDurationExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class DateExpression {
+    private output: string;
+    isDateExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class TimezoneExpression {
+    private output: string;
+    isTimezoneExpression: boolean = true;
 
     constructor(output: string) {
         this.output = output;
