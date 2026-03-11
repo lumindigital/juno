@@ -1,0 +1,58 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways date expressions can be used.
+  generateName: date-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: date-str
+        value: '2024-01-15'
+      - name: tz
+        value: America/New_York
+  entrypoint: entrypoint
+  templates:
+    - inputs:
+        parameters:
+          - name: now-param
+          - name: duration-param
+          - name: date-param
+          - name: date-format-param
+          - name: timezone-param
+      name: date
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source:  >
+          echo "now: {{inputs.parameters.now-param}}"
+
+          echo "duration: {{inputs.parameters.duration-param}}"
+
+          echo "date: {{inputs.parameters.date-param}}"
+
+          echo "date-format: {{inputs.parameters.date-format-param}}"
+
+          echo "timezone: {{inputs.parameters.timezone-param}}"
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: now-param
+                  value: "{{=now()}}"
+                - name: duration-param
+                  value: "{{=duration('1h30m')}}"
+                - name: date-param
+                  value: "{{=date(workflow.parameters['date-str'])}}"
+                - name: date-format-param
+                  value: "{{=date(workflow.parameters['date-str'], '2006-01-02', workflow.parameters.tz)}}"
+                - name: timezone-param
+                  value: "{{=timezone(workflow.parameters.tz)}}"
+            name: date-task
+            template: date
+      name: entrypoint
