@@ -29,7 +29,10 @@ export type ArrayExpressions =
     | SortExpression
     | UniqExpression
     | JoinExpression
-    | ArrayConcatExpression;
+    | ArrayConcatExpression
+    | MeanExpression
+    | MedianExpression
+    | TakeExpression;
 
 export type NumberExpressions =
     | MaxExpression
@@ -868,6 +871,45 @@ export class JoinExpression {
 export class ArrayConcatExpression {
     private output: string;
     isArrayConcatExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MeanExpression {
+    private output: string;
+    isMeanExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MedianExpression {
+    private output: string;
+    isMedianExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class TakeExpression {
+    private output: string;
+    isTakeExpression: boolean = true;
 
     constructor(output: string) {
         this.output = output;

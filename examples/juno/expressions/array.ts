@@ -1,7 +1,19 @@
 import { Arguments, WorkflowArguments } from '../../../src/api/arguments';
 import { DagTask } from '../../../src/api/dag-task';
 import { DagTemplate } from '../../../src/api/dag-template';
-import { arrayConcat, first, flatten, join, last, reverse, sort, uniq } from '../../../src/api/expressions/array';
+import {
+    arrayConcat,
+    first,
+    flatten,
+    join,
+    last,
+    mean,
+    median,
+    reverse,
+    sort,
+    take,
+    uniq,
+} from '../../../src/api/expressions/array';
 import { fromJson } from '../../../src/api/expressions/cast';
 import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
 import { Inputs } from '../../../src/api/inputs';
@@ -21,6 +33,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const uniqParam = new InputParameter('uniq-param');
     const joinParam = new InputParameter('join-param');
     const concatParam = new InputParameter('concat-param');
+    const meanParam = new InputParameter('mean-param');
+    const medianParam = new InputParameter('median-param');
+    const takeParam = new InputParameter('take-param');
 
     const workflowArrayParam = new WorkflowParameter('workflow-array-param', {
         value: '[3,1,2,1]',
@@ -45,6 +60,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 uniqParam,
                 joinParam,
                 concatParam,
+                meanParam,
+                medianParam,
+                takeParam,
             ],
         }),
         script: new Script({
@@ -57,6 +75,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                      echo "uniq: ${simpleTag(uniqParam)}"
                      echo "join: ${simpleTag(joinParam)}"
                      echo "concat: ${simpleTag(concatParam)}"
+                     echo "mean: ${simpleTag(meanParam)}"
+                     echo "median: ${simpleTag(medianParam)}"
+                     echo "take: ${simpleTag(takeParam)}"
 `,
             image: 'busybox',
         }),
@@ -109,6 +130,21 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                         fromJson(hyphenateExpressionArgs(workflowArrayParam)),
                                         fromJson(hyphenateExpressionArgs(workflowArray2Param)),
                                     ),
+                                ),
+                            }),
+                            meanParam.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    mean(fromJson(hyphenateExpressionArgs(workflowArrayParam))),
+                                ),
+                            }),
+                            medianParam.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    median(fromJson(hyphenateExpressionArgs(workflowArrayParam))),
+                                ),
+                            }),
+                            takeParam.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    take(fromJson(hyphenateExpressionArgs(workflowArrayParam)), 2),
                                 ),
                             }),
                         ],
