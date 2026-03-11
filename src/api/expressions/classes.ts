@@ -33,7 +33,22 @@ export type ArrayExpressions =
     | ArrayConcatExpression
     | MeanExpression
     | MedianExpression
-    | TakeExpression;
+    | TakeExpression
+    | AllExpression
+    | AnyExpression
+    | OneExpression
+    | NoneExpression
+    | MapExpression
+    | FilterExpression
+    | FindExpression
+    | FindIndexExpression
+    | FindLastExpression
+    | FindLastIndexExpression
+    | GroupByExpression
+    | CountExpression
+    | ReduceExpression
+    | SumExpression
+    | SortByExpression;
 
 export type DateExpressions = NowExpression | DurationExpression | DateExpression | TimezoneExpression;
 
@@ -965,6 +980,201 @@ export class DateExpression {
 export class TimezoneExpression {
     private output: string;
     isTimezoneExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class AllExpression {
+    private output: string;
+    isAllExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class AnyExpression {
+    private output: string;
+    isAnyExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class OneExpression {
+    private output: string;
+    isOneExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class NoneExpression {
+    private output: string;
+    isNoneExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MapExpression {
+    private output: string;
+    isMapExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FilterExpression {
+    private output: string;
+    isFilterExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FindExpression {
+    private output: string;
+    isFindExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FindIndexExpression {
+    private output: string;
+    isFindIndexExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FindLastExpression {
+    private output: string;
+    isFindLastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FindLastIndexExpression {
+    private output: string;
+    isFindLastIndexExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class GroupByExpression {
+    private output: string;
+    isGroupByExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class CountExpression {
+    private output: string;
+    isCountExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ReduceExpression {
+    private output: string;
+    isReduceExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class SumExpression {
+    private output: string;
+    isSumExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class SortByExpression {
+    private output: string;
+    isSortByExpression: boolean = true;
 
     constructor(output: string) {
         this.output = output;
