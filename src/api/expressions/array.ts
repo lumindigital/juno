@@ -6,8 +6,11 @@ import {
     HyphenatedExpressionArgs,
     JoinExpression,
     LastExpression,
+    MeanExpression,
+    MedianExpression,
     ReverseExpression,
     SortExpression,
+    TakeExpression,
     UniqExpression,
 } from './classes.js';
 import { UndefinedExpressionArg } from './tag.js';
@@ -59,4 +62,16 @@ export function join(input: ArrayInput, delimiter?: string): JoinExpression {
 export function arrayConcat(...inputs: ArrayInput[]): ArrayConcatExpression {
     const resolved = inputs.map((i) => resolveInput(i));
     return new ArrayConcatExpression(`concat(${resolved.join(', ')})`);
+}
+
+export function mean(input: ArrayInput): MeanExpression {
+    return new MeanExpression(`mean(${resolveInput(input)})`);
+}
+
+export function median(input: ArrayInput): MedianExpression {
+    return new MedianExpression(`median(${resolveInput(input)})`);
+}
+
+export function take(input: ArrayInput, n: number): TakeExpression {
+    return new TakeExpression(`take(${resolveInput(input)}, ${n})`);
 }

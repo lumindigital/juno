@@ -2,7 +2,19 @@ import { expect } from 'chai';
 
 import { DagTask } from '../../../src/api/dag-task';
 import { fromJson } from '../../../src/api/expressions/cast';
-import { arrayConcat, first, flatten, join, last, reverse, sort, uniq } from '../../../src/api/expressions/array';
+import {
+    arrayConcat,
+    first,
+    flatten,
+    join,
+    last,
+    mean,
+    median,
+    reverse,
+    sort,
+    take,
+    uniq,
+} from '../../../src/api/expressions/array';
 import { hyphenateExpressionArgs } from '../../../src/api/expressions/tag';
 import { OutputParameter } from '../../../src/api/parameter';
 
@@ -157,6 +169,57 @@ describe('array tests', (): void => {
             expect(result.toString()).to.equal(
                 `concat(fromJSON(tasks['A-1'].outputs.parameters['output-1']), fromJSON(tasks['A-1'].outputs.parameters['output-1']))`,
             );
+        });
+    });
+
+    describe('mean', (): void => {
+        it('returns successfully if expressionArg', (): void => {
+            const result = mean(hyphenatedExpressionArgs);
+            expect(result.toString()).to.equal(`mean(tasks['A-1'].outputs.parameters['output-1'])`);
+        });
+
+        it('returns successfully if string', (): void => {
+            const result = mean({ string: 'myArray' });
+            expect(result.toString()).to.equal(`mean(myArray)`);
+        });
+
+        it('returns successfully if fromJson expression', (): void => {
+            const result = mean(fromJson(hyphenatedExpressionArgs));
+            expect(result.toString()).to.equal(`mean(fromJSON(tasks['A-1'].outputs.parameters['output-1']))`);
+        });
+    });
+
+    describe('median', (): void => {
+        it('returns successfully if expressionArg', (): void => {
+            const result = median(hyphenatedExpressionArgs);
+            expect(result.toString()).to.equal(`median(tasks['A-1'].outputs.parameters['output-1'])`);
+        });
+
+        it('returns successfully if string', (): void => {
+            const result = median({ string: 'myArray' });
+            expect(result.toString()).to.equal(`median(myArray)`);
+        });
+
+        it('returns successfully if fromJson expression', (): void => {
+            const result = median(fromJson(hyphenatedExpressionArgs));
+            expect(result.toString()).to.equal(`median(fromJSON(tasks['A-1'].outputs.parameters['output-1']))`);
+        });
+    });
+
+    describe('take', (): void => {
+        it('returns successfully if expressionArg', (): void => {
+            const result = take(hyphenatedExpressionArgs, 3);
+            expect(result.toString()).to.equal(`take(tasks['A-1'].outputs.parameters['output-1'], 3)`);
+        });
+
+        it('returns successfully if string', (): void => {
+            const result = take({ string: 'myArray' }, 5);
+            expect(result.toString()).to.equal(`take(myArray, 5)`);
+        });
+
+        it('returns successfully if fromJson expression', (): void => {
+            const result = take(fromJson(hyphenatedExpressionArgs), 2);
+            expect(result.toString()).to.equal(`take(fromJSON(tasks['A-1'].outputs.parameters['output-1']), 2)`);
         });
     });
 });

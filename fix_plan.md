@@ -8,11 +8,12 @@
 - [x] Add number expression functions (`max`, `min`, `abs`, `ceil`, `floor`, `round`) with unit tests, example, and YAML — committed
 - [x] Add map expression functions (`keys`, `values`) with unit tests, example, and YAML — committed
 - [x] Add array expression functions (`first`, `last`, `flatten`, `reverse`, `sort`, `uniq`, `join`, `concat`) with unit tests, example, and YAML — committed
+- [x] Add array expression functions (`mean`, `median`, `take`) with unit tests, example, and YAML — committed
 
 ## Current State
 
-Branch `add_remaining-missing_functions` is ahead of `main` with 5 commits.
-All pre-commit hooks pass. Build succeeds. All 534 tests pass (verified 2026-03-11).
+Branch `add_remaining-missing_functions` is ahead of `main` with 6 commits.
+All pre-commit hooks pass. Build succeeds. All 543 tests pass (verified 2026-03-11).
 
 ## Remaining Work
 
@@ -51,10 +52,10 @@ These expr-lang built-in functions are not yet implemented (may or may not be ne
 - sum(array[, predicate])
 - sortBy(array[, predicate, order])
 
-#### Array Functions (other) — remaining
-- mean(array)
-- median(array)
-- take(array, n)
+#### Array Functions (other) — DONE
+- ~~mean(array)~~
+- ~~median(array)~~
+- ~~take(array, n)~~
 
 #### Map Functions — DONE
 - ~~keys(map)~~

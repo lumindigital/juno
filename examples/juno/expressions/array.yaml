@@ -28,6 +28,9 @@ spec:
           - name: uniq-param
           - name: join-param
           - name: concat-param
+          - name: mean-param
+          - name: median-param
+          - name: take-param
       name: array
       script:
         command:
@@ -43,6 +46,9 @@ spec:
                                echo "uniq: {{inputs.parameters.uniq-param}}"
                                echo "join: {{inputs.parameters.join-param}}"
                                echo "concat: {{inputs.parameters.concat-param}}"
+                               echo "mean: {{inputs.parameters.mean-param}}"
+                               echo "median: {{inputs.parameters.median-param}}"
+                               echo "take: {{inputs.parameters.take-param}}"
     - dag:
         tasks:
           - arguments:
@@ -63,6 +69,12 @@ spec:
                   value: "{{=join(fromJSON(workflow.parameters['workflow-array-param']), ', ')}}"
                 - name: concat-param
                   value: "{{=concat(fromJSON(workflow.parameters['workflow-array-param']), fromJSON(workflow.parameters['workflow-array2-param']))}}"
+                - name: mean-param
+                  value: "{{=mean(fromJSON(workflow.parameters['workflow-array-param']))}}"
+                - name: median-param
+                  value: "{{=median(fromJSON(workflow.parameters['workflow-array-param']))}}"
+                - name: take-param
+                  value: "{{=take(fromJSON(workflow.parameters['workflow-array-param']), 2)}}"
             name: array-task
             template: array
       name: entrypoint
