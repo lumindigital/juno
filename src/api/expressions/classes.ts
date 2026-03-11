@@ -12,9 +12,18 @@ export type ExpressionTemplateInputs =
     | InMembershipExpression
     | StringFunctionExpressions
     | StringOperatorExpressions
-    | MiscExpressions;
+    | MiscExpressions
+    | NumberExpressions;
 
 export type MiscExpressions = LenExpression | GetExpression;
+
+export type NumberExpressions =
+    | MaxExpression
+    | MinExpression
+    | AbsExpression
+    | CeilExpression
+    | FloorExpression
+    | RoundExpression;
 
 export type CastExpressions =
     | IntCastExpression
@@ -637,6 +646,84 @@ export class StartsWithExpression {
 export class EndsWithExpression {
     private output: string;
     isEndsWithExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MaxExpression {
+    private output: string;
+    isMaxExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MinExpression {
+    private output: string;
+    isMinExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class AbsExpression {
+    private output: string;
+    isAbsExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class CeilExpression {
+    private output: string;
+    isCeilExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FloorExpression {
+    private output: string;
+    isFloorExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class RoundExpression {
+    private output: string;
+    isRoundExpression: boolean = true;
 
     constructor(output: string) {
         this.output = output;
