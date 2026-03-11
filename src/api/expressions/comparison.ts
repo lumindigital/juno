@@ -5,6 +5,7 @@ import {
     HyphenatedExpressionArgs,
     IntCastExpression,
     JsonPathExpression,
+    LenExpression,
     NilResult,
     SimpleTemplateTag,
     StringCastExpression,
@@ -27,7 +28,8 @@ export type LeftNumericComparisonTypes =
     | IntCastExpression
     | FloatCastExpression
     | JsonPathExpression
-    | UndefinedExpressionArg;
+    | UndefinedExpressionArg
+    | LenExpression;
 
 export type LeftEqualityComparisonTypes =
     | LeftNumericComparisonTypes
@@ -102,7 +104,8 @@ function comparison<
         | SimpleTemplateTag
         | CastExpressions
         | JsonPathExpression
-        | UndefinedExpressionArg,
+        | UndefinedExpressionArg
+        | LenExpression,
 >(
     operator: Comparators,
     left: T,
