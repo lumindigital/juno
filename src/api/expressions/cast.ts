@@ -5,6 +5,7 @@ import {
     HyphenatedExpressionArgs,
     IntCastExpression,
     JsonCastExpression,
+    LenExpression,
     StringCastExpression,
     ToBase64CastExpression,
     ToPairsCastExpression,
@@ -28,7 +29,9 @@ export function asFloat(input: HyphenatedExpressionArgs | UndefinedExpressionArg
     return new FloatCastExpression(`asFloat(${input})`);
 }
 
-export function asString(input: HyphenatedExpressionArgs | UndefinedExpressionArg | number): StringCastExpression {
+export function asString(
+    input: HyphenatedExpressionArgs | UndefinedExpressionArg | LenExpression | number,
+): StringCastExpression {
     if ((input as UndefinedExpressionArg)?.string) {
         return new StringCastExpression(`string(${(input as UndefinedExpressionArg).string})`);
     }
