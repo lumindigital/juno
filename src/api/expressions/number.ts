@@ -1,17 +1,26 @@
 import {
     AbsExpression,
     ArithmeticExpressions,
-    CastExpressions,
     CeilExpression,
+    FloatCastExpression,
     FloorExpression,
     HyphenatedExpressionArgs,
+    IntCastExpression,
+    LenExpression,
     MaxExpression,
     MinExpression,
     RoundExpression,
 } from './classes.js';
 import { UndefinedExpressionArg } from './tag.js';
 
-type NumberInput = HyphenatedExpressionArgs | UndefinedExpressionArg | CastExpressions | ArithmeticExpressions | number;
+type NumberInput =
+    | HyphenatedExpressionArgs
+    | UndefinedExpressionArg
+    | ArithmeticExpressions
+    | number
+    | LenExpression
+    | IntCastExpression
+    | FloatCastExpression;
 
 function resolveInput(input: NumberInput): string {
     if (typeof input === 'number') {
