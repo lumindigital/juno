@@ -14,11 +14,22 @@ export type ExpressionTemplateInputs =
     | StringOperatorExpressions
     | MiscExpressions
     | NumberExpressions
-    | MapExpressions;
+    | MapExpressions
+    | ArrayExpressions;
 
 export type MiscExpressions = LenExpression | GetExpression;
 
 export type MapExpressions = KeysExpression | ValuesExpression;
+
+export type ArrayExpressions =
+    | FirstExpression
+    | LastExpression
+    | FlattenExpression
+    | ReverseExpression
+    | SortExpression
+    | UniqExpression
+    | JoinExpression
+    | ArrayConcatExpression;
 
 export type NumberExpressions =
     | MaxExpression
@@ -753,6 +764,110 @@ export class KeysExpression {
 export class ValuesExpression {
     private output: string;
     isValuesExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FirstExpression {
+    private output: string;
+    isFirstExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class LastExpression {
+    private output: string;
+    isLastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FlattenExpression {
+    private output: string;
+    isFlattenExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ReverseExpression {
+    private output: string;
+    isReverseExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class SortExpression {
+    private output: string;
+    isSortExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class UniqExpression {
+    private output: string;
+    isUniqExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class JoinExpression {
+    private output: string;
+    isJoinExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ArrayConcatExpression {
+    private output: string;
+    isArrayConcatExpression: boolean = true;
 
     constructor(output: string) {
         this.output = output;
