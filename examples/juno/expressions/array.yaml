@@ -52,33 +52,34 @@ spec:
           - '/bin/sh'
           - '-e'
         image: busybox
-        source:  >
-          echo "first: {{inputs.parameters.first-param}}"
-                               echo "last: {{inputs.parameters.last-param}}"
-                               echo "flatten: {{inputs.parameters.flatten-param}}"
-                               echo "reverse: {{inputs.parameters.reverse-param}}"
-                               echo "sort: {{inputs.parameters.sort-param}}"
-                               echo "uniq: {{inputs.parameters.uniq-param}}"
-                               echo "join: {{inputs.parameters.join-param}}"
-                               echo "concat: {{inputs.parameters.concat-param}}"
-                               echo "mean: {{inputs.parameters.mean-param}}"
-                               echo "median: {{inputs.parameters.median-param}}"
-                               echo "take: {{inputs.parameters.take-param}}"
-                               echo "all: {{inputs.parameters.all-param}}"
-                               echo "any: {{inputs.parameters.any-param}}"
-                               echo "one: {{inputs.parameters.one-param}}"
-                               echo "none: {{inputs.parameters.none-param}}"
-                               echo "map: {{inputs.parameters.map-param}}"
-                               echo "filter: {{inputs.parameters.filter-param}}"
-                               echo "find: {{inputs.parameters.find-param}}"
-                               echo "findIndex: {{inputs.parameters.find-index-param}}"
-                               echo "findLast: {{inputs.parameters.find-last-param}}"
-                               echo "findLastIndex: {{inputs.parameters.find-last-index-param}}"
-                               echo "groupBy: {{inputs.parameters.group-by-param}}"
-                               echo "count: {{inputs.parameters.count-param}}"
-                               echo "reduce: {{inputs.parameters.reduce-param}}"
-                               echo "sum: {{inputs.parameters.sum-param}}"
-                               echo "sortBy: {{inputs.parameters.sort-by-param}}"
+        source: |
+          if [ "{{inputs.parameters.first-param}}" != "3" ]; then echo "first failed: got '{{inputs.parameters.first-param}}'"; exit 11; fi
+          if [ "{{inputs.parameters.last-param}}" != "1" ]; then echo "last failed: got '{{inputs.parameters.last-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.flatten-param}}" != "" ]; then echo "flatten failed: got '{{inputs.parameters.flatten-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.reverse-param}}" != "" ]; then echo "reverse failed: got '{{inputs.parameters.reverse-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.sort-param}}" != "" ]; then echo "sort failed: got '{{inputs.parameters.sort-param}}'"; exit 15; fi
+          if [ "{{inputs.parameters.uniq-param}}" != "" ]; then echo "uniq failed: got '{{inputs.parameters.uniq-param}}'"; exit 16; fi
+          if [ "{{inputs.parameters.join-param}}" != "3, 1, 2, 1" ]; then echo "join failed: got '{{inputs.parameters.join-param}}'"; exit 17; fi
+          if [ "{{inputs.parameters.concat-param}}" != "" ]; then echo "concat failed: got '{{inputs.parameters.concat-param}}'"; exit 18; fi
+          if [ "{{inputs.parameters.mean-param}}" != "1.75" ]; then echo "mean failed: got '{{inputs.parameters.mean-param}}'"; exit 19; fi
+          if [ "{{inputs.parameters.median-param}}" != "1.5" ]; then echo "median failed: got '{{inputs.parameters.median-param}}'"; exit 20; fi
+          if [ "{{inputs.parameters.take-param}}" != "" ]; then echo "take failed: got '{{inputs.parameters.take-param}}'"; exit 21; fi
+          if [ "{{inputs.parameters.all-param}}" != "true" ]; then echo "all failed: got '{{inputs.parameters.all-param}}'"; exit 22; fi
+          if [ "{{inputs.parameters.any-param}}" != "true" ]; then echo "any failed: got '{{inputs.parameters.any-param}}'"; exit 23; fi
+          if [ "{{inputs.parameters.one-param}}" != "true" ]; then echo "one failed: got '{{inputs.parameters.one-param}}'"; exit 24; fi
+          if [ "{{inputs.parameters.none-param}}" != "true" ]; then echo "none failed: got '{{inputs.parameters.none-param}}'"; exit 25; fi
+          if [ "{{inputs.parameters.map-param}}" != "" ]; then echo "map failed: got '{{inputs.parameters.map-param}}'"; exit 26; fi
+          if [ "{{inputs.parameters.filter-param}}" != "" ]; then echo "filter failed: got '{{inputs.parameters.filter-param}}'"; exit 27; fi
+          if [ "{{inputs.parameters.find-param}}" != "3" ]; then echo "find failed: got '{{inputs.parameters.find-param}}'"; exit 28; fi
+          if [ "{{inputs.parameters.find-index-param}}" != "0" ]; then echo "findIndex failed: got '{{inputs.parameters.find-index-param}}'"; exit 29; fi
+          if [ "{{inputs.parameters.find-last-param}}" != "2" ]; then echo "findLast failed: got '{{inputs.parameters.find-last-param}}'"; exit 30; fi
+          if [ "{{inputs.parameters.find-last-index-param}}" != "2" ]; then echo "findLastIndex failed: got '{{inputs.parameters.find-last-index-param}}'"; exit 31; fi
+          if [ "{{inputs.parameters.group-by-param}}" != "" ]; then echo "groupBy failed: got '{{inputs.parameters.group-by-param}}'"; exit 32; fi
+          if [ "{{inputs.parameters.count-param}}" != "2" ]; then echo "count failed: got '{{inputs.parameters.count-param}}'"; exit 33; fi
+          if [ "{{inputs.parameters.reduce-param}}" != "7" ]; then echo "reduce failed: got '{{inputs.parameters.reduce-param}}'"; exit 34; fi
+          if [ "{{inputs.parameters.sum-param}}" != "7" ]; then echo "sum failed: got '{{inputs.parameters.sum-param}}'"; exit 35; fi
+          if [ "{{inputs.parameters.sort-by-param}}" != "" ]; then echo "sortBy failed: got '{{inputs.parameters.sort-by-param}}'"; exit 36; fi
+          echo "All array function tests passed"
     - dag:
         tasks:
           - arguments:
