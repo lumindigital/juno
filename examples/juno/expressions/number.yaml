@@ -51,15 +51,11 @@ spec:
           - '/bin/sh'
           - '-e'
         image: busybox
-        source:  >
-          echo "max: {{inputs.parameters.max-param}}"
-
-          echo "min: {{inputs.parameters.min-param}}"
-
-          echo "abs: {{inputs.parameters.abs-param}}"
-
-          echo "ceil: {{inputs.parameters.ceil-param}}"
-
-          echo "floor: {{inputs.parameters.floor-param}}"
-
-          echo "round: {{inputs.parameters.round-param}}"
+        source: |
+          if [ "{{inputs.parameters.max-param}}" != "10.7" ]; then echo "max failed: got '{{inputs.parameters.max-param}}'"; exit 11; fi
+          if [ "{{inputs.parameters.min-param}}" != "3.2" ]; then echo "min failed: got '{{inputs.parameters.min-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.abs-param}}" != "5.5" ]; then echo "abs failed: got '{{inputs.parameters.abs-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.ceil-param}}" != "11" ]; then echo "ceil failed: got '{{inputs.parameters.ceil-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.floor-param}}" != "10" ]; then echo "floor failed: got '{{inputs.parameters.floor-param}}'"; exit 15; fi
+          if [ "{{inputs.parameters.round-param}}" != "11" ]; then echo "round failed: got '{{inputs.parameters.round-param}}'"; exit 16; fi
+          echo "All number function tests passed"

@@ -35,6 +35,7 @@ spec:
           - '/bin/sh'
           - '-e'
         image: busybox
-        source:  >
-          echo "keys: {{inputs.parameters.keys-param}}"
-                               echo "values: {{inputs.parameters.values-param}}"
+        source: |
+          if [ "{{inputs.parameters.keys-param}}" != "" ]; then echo "keys failed: got '{{inputs.parameters.keys-param}}'"; exit 11; fi
+          if [ "{{inputs.parameters.values-param}}" != "" ]; then echo "values failed: got '{{inputs.parameters.values-param}}'"; exit 12; fi
+          echo "All map function tests passed"

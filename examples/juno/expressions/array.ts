@@ -112,32 +112,33 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `echo "first: ${simpleTag(firstParam)}"
-                     echo "last: ${simpleTag(lastParam)}"
-                     echo "flatten: ${simpleTag(flattenParam)}"
-                     echo "reverse: ${simpleTag(reverseParam)}"
-                     echo "sort: ${simpleTag(sortParam)}"
-                     echo "uniq: ${simpleTag(uniqParam)}"
-                     echo "join: ${simpleTag(joinParam)}"
-                     echo "concat: ${simpleTag(concatParam)}"
-                     echo "mean: ${simpleTag(meanParam)}"
-                     echo "median: ${simpleTag(medianParam)}"
-                     echo "take: ${simpleTag(takeParam)}"
-                     echo "all: ${simpleTag(allParam)}"
-                     echo "any: ${simpleTag(anyParam)}"
-                     echo "one: ${simpleTag(oneParam)}"
-                     echo "none: ${simpleTag(noneParam)}"
-                     echo "map: ${simpleTag(mapParam)}"
-                     echo "filter: ${simpleTag(filterParam)}"
-                     echo "find: ${simpleTag(findParam)}"
-                     echo "findIndex: ${simpleTag(findIndexParam)}"
-                     echo "findLast: ${simpleTag(findLastParam)}"
-                     echo "findLastIndex: ${simpleTag(findLastIndexParam)}"
-                     echo "groupBy: ${simpleTag(groupByParam)}"
-                     echo "count: ${simpleTag(countParam)}"
-                     echo "reduce: ${simpleTag(reduceParam)}"
-                     echo "sum: ${simpleTag(sumParam)}"
-                     echo "sortBy: ${simpleTag(sortByParam)}"
+            source: `if [ "${simpleTag(firstParam)}" != "3" ]; then echo "first failed: got '${simpleTag(firstParam)}'"; exit 11; fi
+if [ "${simpleTag(lastParam)}" != "1" ]; then echo "last failed: got '${simpleTag(lastParam)}'"; exit 12; fi
+if [ "${simpleTag(flattenParam)}" != "" ]; then echo "flatten failed: got '${simpleTag(flattenParam)}'"; exit 13; fi
+if [ "${simpleTag(reverseParam)}" != "" ]; then echo "reverse failed: got '${simpleTag(reverseParam)}'"; exit 14; fi
+if [ "${simpleTag(sortParam)}" != "" ]; then echo "sort failed: got '${simpleTag(sortParam)}'"; exit 15; fi
+if [ "${simpleTag(uniqParam)}" != "" ]; then echo "uniq failed: got '${simpleTag(uniqParam)}'"; exit 16; fi
+if [ "${simpleTag(joinParam)}" != "3, 1, 2, 1" ]; then echo "join failed: got '${simpleTag(joinParam)}'"; exit 17; fi
+if [ "${simpleTag(concatParam)}" != "" ]; then echo "concat failed: got '${simpleTag(concatParam)}'"; exit 18; fi
+if [ "${simpleTag(meanParam)}" != "1.75" ]; then echo "mean failed: got '${simpleTag(meanParam)}'"; exit 19; fi
+if [ "${simpleTag(medianParam)}" != "1.5" ]; then echo "median failed: got '${simpleTag(medianParam)}'"; exit 20; fi
+if [ "${simpleTag(takeParam)}" != "" ]; then echo "take failed: got '${simpleTag(takeParam)}'"; exit 21; fi
+if [ "${simpleTag(allParam)}" != "true" ]; then echo "all failed: got '${simpleTag(allParam)}'"; exit 22; fi
+if [ "${simpleTag(anyParam)}" != "true" ]; then echo "any failed: got '${simpleTag(anyParam)}'"; exit 23; fi
+if [ "${simpleTag(oneParam)}" != "true" ]; then echo "one failed: got '${simpleTag(oneParam)}'"; exit 24; fi
+if [ "${simpleTag(noneParam)}" != "true" ]; then echo "none failed: got '${simpleTag(noneParam)}'"; exit 25; fi
+if [ "${simpleTag(mapParam)}" != "" ]; then echo "map failed: got '${simpleTag(mapParam)}'"; exit 26; fi
+if [ "${simpleTag(filterParam)}" != "" ]; then echo "filter failed: got '${simpleTag(filterParam)}'"; exit 27; fi
+if [ "${simpleTag(findParam)}" != "3" ]; then echo "find failed: got '${simpleTag(findParam)}'"; exit 28; fi
+if [ "${simpleTag(findIndexParam)}" != "0" ]; then echo "findIndex failed: got '${simpleTag(findIndexParam)}'"; exit 29; fi
+if [ "${simpleTag(findLastParam)}" != "2" ]; then echo "findLast failed: got '${simpleTag(findLastParam)}'"; exit 30; fi
+if [ "${simpleTag(findLastIndexParam)}" != "2" ]; then echo "findLastIndex failed: got '${simpleTag(findLastIndexParam)}'"; exit 31; fi
+if [ "${simpleTag(groupByParam)}" != "" ]; then echo "groupBy failed: got '${simpleTag(groupByParam)}'"; exit 32; fi
+if [ "${simpleTag(countParam)}" != "2" ]; then echo "count failed: got '${simpleTag(countParam)}'"; exit 33; fi
+if [ "${simpleTag(reduceParam)}" != "7" ]; then echo "reduce failed: got '${simpleTag(reduceParam)}'"; exit 34; fi
+if [ "${simpleTag(sumParam)}" != "7" ]; then echo "sum failed: got '${simpleTag(sumParam)}'"; exit 35; fi
+if [ "${simpleTag(sortByParam)}" != "" ]; then echo "sortBy failed: got '${simpleTag(sortByParam)}'"; exit 36; fi
+echo "All array function tests passed"
 `,
             image: 'busybox',
         }),

@@ -30,12 +30,13 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `echo "max: ${simpleTag(maxParam)}"
-echo "min: ${simpleTag(minParam)}"
-echo "abs: ${simpleTag(absParam)}"
-echo "ceil: ${simpleTag(ceilParam)}"
-echo "floor: ${simpleTag(floorParam)}"
-echo "round: ${simpleTag(roundParam)}"
+            source: `if [ "${simpleTag(maxParam)}" != "10.7" ]; then echo "max failed: got '${simpleTag(maxParam)}'"; exit 11; fi
+if [ "${simpleTag(minParam)}" != "3.2" ]; then echo "min failed: got '${simpleTag(minParam)}'"; exit 12; fi
+if [ "${simpleTag(absParam)}" != "5.5" ]; then echo "abs failed: got '${simpleTag(absParam)}'"; exit 13; fi
+if [ "${simpleTag(ceilParam)}" != "11" ]; then echo "ceil failed: got '${simpleTag(ceilParam)}'"; exit 14; fi
+if [ "${simpleTag(floorParam)}" != "10" ]; then echo "floor failed: got '${simpleTag(floorParam)}'"; exit 15; fi
+if [ "${simpleTag(roundParam)}" != "11" ]; then echo "round failed: got '${simpleTag(roundParam)}'"; exit 16; fi
+echo "All number function tests passed"
 `,
             image: 'busybox',
         }),

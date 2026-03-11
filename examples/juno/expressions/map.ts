@@ -26,8 +26,9 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `echo "keys: ${simpleTag(keysParam)}"
-                     echo "values: ${simpleTag(valuesParam)}"
+            source: `if [ "${simpleTag(keysParam)}" != "" ]; then echo "keys failed: got '${simpleTag(keysParam)}'"; exit 11; fi
+if [ "${simpleTag(valuesParam)}" != "" ]; then echo "values failed: got '${simpleTag(valuesParam)}'"; exit 12; fi
+echo "All map function tests passed"
 `,
             image: 'busybox',
         }),
