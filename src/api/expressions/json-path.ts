@@ -1,5 +1,5 @@
 import { ExpressionArgs } from '../expressions/types.js';
-import { JsonCastExpression, JsonPathExpression } from './classes.js';
+import { FromJsonCastExpression, JsonCastExpression, JsonPathExpression } from './classes.js';
 import { hyphenateExpressionArgs } from './tag.js';
 export class WorkflowParametersJson {
     isWorkflowParametersJson = true;
@@ -49,7 +49,8 @@ export function jsonPath(
         | WorkflowLabelsJson
         | CronWorkflowAnnotationsJson
         | CronWorkflowLabelsJson
-        | JsonCastExpression,
+        | JsonCastExpression
+        | FromJsonCastExpression,
     value: string,
 ): JsonPathExpression {
     if ((input as WorkflowParametersJson)?.isWorkflowParametersJson) {
@@ -63,6 +64,8 @@ export function jsonPath(
     } else if ((input as CronWorkflowLabelsJson)?.isCronWorkflowLabelsJson) {
         return new JsonPathExpression(`jsonpath(${input}, '${value}')`);
     } else if ((input as JsonCastExpression)?.isJsonCastExpression) {
+        return new JsonPathExpression(`jsonpath(${input}, '${value}')`);
+    } else if ((input as FromJsonCastExpression)?.isFromJsonCastExpression) {
         return new JsonPathExpression(`jsonpath(${input}, '${value}')`);
     } else {
         return new JsonPathExpression(`jsonpath(${hyphenateExpressionArgs(input as ExpressionArgs)}, '${value}')`);
