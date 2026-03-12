@@ -1,14 +1,13 @@
 import { Arguments, WorkflowArguments } from '../../../src/api/arguments';
 import { DagTask } from '../../../src/api/dag-task';
 import { DagTemplate } from '../../../src/api/dag-template';
-import { fromJson } from '../../../src/api/expressions/cast';
 import {
     jsonPath,
     WorkflowAnnotationsJson,
     WorkflowLabelsJson,
     WorkflowParametersJson,
 } from '../../../src/api/expressions/json-path';
-import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
+import { expressionTag, simpleTag } from '../../../src/api/expressions/tag';
 import { Inputs } from '../../../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../../../src/api/parameter';
 import { Script } from '../../../src/api/script';
@@ -24,7 +23,6 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const workflowParamsJsonParam = new InputParameter('workflow-params-json-param');
     const workflowAnnotationsJsonParam = new InputParameter('workflow-annotations-json-param');
     const workflowLabelsJsonParam = new InputParameter('workflow-labels-json-param');
-    const fromJsonPathParam = new InputParameter('from-json-path-param');
 
     const workflowJsonParam = new WorkflowParameter('workflow-json-param', {
         value: '{"name":"test","nested":{"key":"deep-value"},"items":["a","b","c"]}',
@@ -39,7 +37,6 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 workflowParamsJsonParam,
                 workflowAnnotationsJsonParam,
                 workflowLabelsJsonParam,
-                fromJsonPathParam,
             ],
         }),
         script: new Script({
@@ -47,10 +44,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             source: `if [ "${simpleTag(simplePropertyParam)}" != "test" ]; then echo "simple property failed: got '${simpleTag(simplePropertyParam)}'"; exit 11; fi
 if [ "${simpleTag(nestedPropertyParam)}" != "deep-value" ]; then echo "nested property failed: got '${simpleTag(nestedPropertyParam)}'"; exit 12; fi
 if [ "${simpleTag(arrayElementParam)}" != "a" ]; then echo "array element failed: got '${simpleTag(arrayElementParam)}'"; exit 13; fi
-if [ "${simpleTag(workflowParamsJsonParam)}" != "" ]; then echo "workflow params json failed: got '${simpleTag(workflowParamsJsonParam)}'"; exit 14; fi
-if [ "${simpleTag(workflowAnnotationsJsonParam)}" != "" ]; then echo "workflow annotations json failed: got '${simpleTag(workflowAnnotationsJsonParam)}'"; exit 15; fi
-if [ "${simpleTag(workflowLabelsJsonParam)}" != "" ]; then echo "workflow labels json failed: got '${simpleTag(workflowLabelsJsonParam)}'"; exit 16; fi
-if [ "${simpleTag(fromJsonPathParam)}" != "test" ]; then echo "fromJson path failed: got '${simpleTag(fromJsonPathParam)}'"; exit 17; fi
+if [ "${simpleTag(workflowParamsJsonParam)}" != "workflow-json-param" ]; then echo "workflow params json failed: got '${simpleTag(workflowParamsJsonParam)}'"; exit 14; fi
+if [ "${simpleTag(workflowAnnotationsJsonParam)}" != "This is an example of the ways jsonPath expressions can be used.
+" ]; then echo "workflow annotations json failed: got '${simpleTag(workflowAnnotationsJsonParam)}'"; exit 15; fi
+if [ "${simpleTag(workflowLabelsJsonParam)}" != "false" ]; then echo "workflow labels json failed: got '${simpleTag(workflowLabelsJsonParam)}'"; exit 16; fi
 echo "All jsonPath function tests passed"
 `,
             image: 'busybox',
@@ -74,22 +71,17 @@ echo "All jsonPath function tests passed"
                             }),
                             workflowParamsJsonParam.toArgumentParameter({
                                 valueFromExpressionTag: expressionTag(
-                                    jsonPath(new WorkflowParametersJson(), '$.workflow-json-param'),
+                                    jsonPath(new WorkflowParametersJson(), '$[0].name'),
                                 ),
                             }),
                             workflowAnnotationsJsonParam.toArgumentParameter({
                                 valueFromExpressionTag: expressionTag(
-                                    jsonPath(new WorkflowAnnotationsJson(), '$.workflows.argoproj.io/description'),
+                                    jsonPath(new WorkflowAnnotationsJson(), '$["workflows.argoproj.io/description"]'),
                                 ),
                             }),
                             workflowLabelsJsonParam.toArgumentParameter({
                                 valueFromExpressionTag: expressionTag(
-                                    jsonPath(new WorkflowLabelsJson(), '$.workflows.argoproj.io/archive-strategy'),
-                                ),
-                            }),
-                            fromJsonPathParam.toArgumentParameter({
-                                valueFromExpressionTag: expressionTag(
-                                    jsonPath(fromJson(hyphenateExpressionArgs(workflowJsonParam)), '$.name'),
+                                    jsonPath(new WorkflowLabelsJson(), '$["workflows.argoproj.io/archive-strategy"]'),
                                 ),
                             }),
                         ],
