@@ -36,6 +36,6 @@ spec:
           - '-e'
         image: busybox
         source: |
-          if [ "{{inputs.parameters.keys-param}}" != "" ]; then echo "keys failed: got '{{inputs.parameters.keys-param}}'"; exit 11; fi
-          if [ "{{inputs.parameters.values-param}}" != "" ]; then echo "values failed: got '{{inputs.parameters.values-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.keys-param}}" != "["name","version"]" ]; then echo "keys failed: got '{{inputs.parameters.keys-param}}'"; exit 11; fi
+          if [ "{{inputs.parameters.values-param}}" != "["juno","1"]" ]; then echo "values failed: got '{{inputs.parameters.values-param}}'"; exit 12; fi
           echo "All map function tests passed"
