@@ -131,6 +131,7 @@ export function findLastIndex(input: ArrayInput, predicate: string): FindLastInd
     return new FindLastIndexExpression(`findLastIndex(${resolveInput(input)}, ${predicate})`);
 }
 
+// This function has issues in argo workflow. It will not work by itself. In some cases it might work. For example toPairs(groupBy(["1","2","3"], { # })) will return a valid result but groupBy(["1","2","3"], { # }) fails.
 export function groupBy(input: ArrayInput, predicate: string): GroupByExpression {
     return new GroupByExpression(`groupBy(${resolveInput(input)}, ${predicate})`);
 }
@@ -165,7 +166,7 @@ export function sum(input: ArrayInput, predicate?: string): SumExpression {
     return new SumExpression(`sum(${inputStr})`);
 }
 
-export function sortBy(input: ArrayInput, predicate?: string, order?: string): SortByExpression {
+export function sortBy(input: ArrayInput, predicate: string, order?: 'asc' | 'desc'): SortByExpression {
     const inputStr = resolveInput(input);
 
     if (predicate !== undefined && order !== undefined) {
