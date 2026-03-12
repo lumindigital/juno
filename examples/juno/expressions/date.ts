@@ -1,7 +1,7 @@
 import { Arguments, WorkflowArguments } from '../../../src/api/arguments';
 import { DagTask } from '../../../src/api/dag-task';
 import { DagTemplate } from '../../../src/api/dag-template';
-import { date, duration, now, timezone } from '../../../src/api/expressions/date';
+import { date, duration, now, dateInTimezone } from '../../../src/api/expressions/date';
 import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
 import { Inputs } from '../../../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../../../src/api/parameter';
@@ -23,7 +23,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     });
 
     const workflowTimezone = new WorkflowParameter('tz', {
-        value: 'America/New_York',
+        value: 'UTC',
     });
 
     const dateTemplate = new Template('date', {
@@ -32,11 +32,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `if [ "${simpleTag(nowParam)}" != "" ]; then echo "now failed: got '${simpleTag(nowParam)}'"; exit 11; fi
-if [ "${simpleTag(durationParam)}" != "" ]; then echo "duration failed: got '${simpleTag(durationParam)}'"; exit 12; fi
-if [ "${simpleTag(dateParam)}" != "" ]; then echo "date failed: got '${simpleTag(dateParam)}'"; exit 13; fi
-if [ "${simpleTag(dateFormatParam)}" != "" ]; then echo "date-format failed: got '${simpleTag(dateFormatParam)}'"; exit 14; fi
-if [ "${simpleTag(timezoneParam)}" != "" ]; then echo "timezone failed: got '${simpleTag(timezoneParam)}'"; exit 15; fi
+            source: `if [ -z "${simpleTag(nowParam)}" ]; then echo "now failed: got '${simpleTag(nowParam)}'"; exit 11; fi
+if [ "${simpleTag(durationParam)}" != "5400000000000" ]; then echo "duration failed: got '${simpleTag(durationParam)}'"; exit 12; fi
+if [ "${simpleTag(dateParam)}" != "2024-01-15T00:00:00Z" ]; then echo "date failed: got '${simpleTag(dateParam)}'"; exit 13; fi
+if [ "${simpleTag(dateFormatParam)}" != "2024-01-15T00:00:00Z" ]; then echo "date-format failed: got '${simpleTag(dateFormatParam)}'"; exit 14; fi
+if [ "${simpleTag(timezoneParam)}" != "2024-01-15T00:00:00Z" ]; then echo "timezone failed: got '${simpleTag(timezoneParam)}'"; exit 15; fi
 echo "All date function tests passed"
 `,
             image: 'busybox',
@@ -53,7 +53,7 @@ echo "All date function tests passed"
                                 valueFromExpressionTag: expressionTag(now()),
                             }),
                             durationParam.toArgumentParameter({
-                                valueFromExpressionTag: expressionTag(duration('1h30m')),
+                                valueFromExpressionTag: expressionTag(duration({ string: '1h30m' })),
                             }),
                             dateParam.toArgumentParameter({
                                 valueFromExpressionTag: expressionTag(date(hyphenateExpressionArgs(workflowDateStr))),
@@ -62,14 +62,17 @@ echo "All date function tests passed"
                                 valueFromExpressionTag: expressionTag(
                                     date(
                                         hyphenateExpressionArgs(workflowDateStr),
-                                        '2006-01-02',
+                                        { string: '2006-01-02' },
                                         hyphenateExpressionArgs(workflowTimezone),
                                     ),
                                 ),
                             }),
                             timezoneParam.toArgumentParameter({
                                 valueFromExpressionTag: expressionTag(
-                                    timezone(hyphenateExpressionArgs(workflowTimezone)),
+                                    dateInTimezone(
+                                        hyphenateExpressionArgs(workflowDateStr),
+                                        hyphenateExpressionArgs(workflowTimezone),
+                                    ),
                                 ),
                             }),
                         ],
