@@ -1,0 +1,82 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways jsonPath expressions can be used.
+  generateName: json-path-
+  labels:
+    workflows.argoproj.io/archive-strategy: 'false'
+spec:
+  arguments:
+    parameters:
+      - name: workflow-json-param
+        value: '{"name":"test","nested":{"key":"deep-value"},"items":["a","b","c"]}'
+  entrypoint: entrypoint
+  templates:
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: simple-property-param
+                  value: "{{=jsonpath(workflow.parameters['workflow-json-param'], '$.name')}}"
+                - name: nested-property-param
+                  value: "{{=jsonpath(workflow.parameters['workflow-json-param'], '$.nested.key')}}"
+                - name: array-element-param
+                  value: "{{=jsonpath(workflow.parameters['workflow-json-param'], '$.items[0]')}}"
+                - name: workflow-params-json-param
+                  value: "{{=jsonpath(workflow.parameters.json, '$.workflow-json-param')}}"
+                - name: workflow-annotations-json-param
+                  value: "{{=jsonpath(workflow.annotations.json, '$.workflows.argoproj.io/description')}}"
+                - name: workflow-labels-json-param
+                  value: "{{=jsonpath(workflow.labels.json, '$.workflows.argoproj.io/archive-strategy')}}"
+                - name: from-json-path-param
+                  value: "{{=jsonpath(fromJSON(workflow.parameters['workflow-json-param']), '$.name')}}"
+            name: json-path-task
+            template: json-path
+      name: entrypoint
+    - inputs:
+        parameters:
+          - name: simple-property-param
+          - name: nested-property-param
+          - name: array-element-param
+          - name: workflow-params-json-param
+          - name: workflow-annotations-json-param
+          - name: workflow-labels-json-param
+          - name: from-json-path-param
+      name: json-path
+      script:
+        command:
+          - '/bin/sh'
+          - '-e'
+        image: busybox
+        source: >
+          if [ "{{inputs.parameters.simple-property-param}}" != "test" ]; then
+          echo "simple property failed: got
+          '{{inputs.parameters.simple-property-param}}'"; exit 11; fi
+
+          if [ "{{inputs.parameters.nested-property-param}}" != "deep-value" ];
+          then echo "nested property failed: got
+          '{{inputs.parameters.nested-property-param}}'"; exit 12; fi
+
+          if [ "{{inputs.parameters.array-element-param}}" != "a" ]; then echo
+          "array element failed: got
+          '{{inputs.parameters.array-element-param}}'"; exit 13; fi
+
+          if [ "{{inputs.parameters.workflow-params-json-param}}" != "" ]; then
+          echo "workflow params json failed: got
+          '{{inputs.parameters.workflow-params-json-param}}'"; exit 14; fi
+
+          if [ "{{inputs.parameters.workflow-annotations-json-param}}" != "" ];
+          then echo "workflow annotations json failed: got
+          '{{inputs.parameters.workflow-annotations-json-param}}'"; exit 15; fi
+
+          if [ "{{inputs.parameters.workflow-labels-json-param}}" != "" ]; then
+          echo "workflow labels json failed: got
+          '{{inputs.parameters.workflow-labels-json-param}}'"; exit 16; fi
+
+          if [ "{{inputs.parameters.from-json-path-param}}" != "test" ]; then
+          echo "fromJson path failed: got
+          '{{inputs.parameters.from-json-path-param}}'"; exit 17; fi
+
+          echo "All jsonPath function tests passed"
