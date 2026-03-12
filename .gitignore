@@ -452,3 +452,4 @@ pnpm-lock.yaml
 ##############################
 .ralphrc
 .ralph/
+./output/
