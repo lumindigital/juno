@@ -7,15 +7,11 @@ import {
 } from './classes.js';
 import { UndefinedExpressionArg } from './tag.js';
 
-type StringInput = HyphenatedExpressionArgs | UndefinedExpressionArg | string;
+type DateInput = HyphenatedExpressionArgs | UndefinedExpressionArg;
 
-function resolveInput(input: StringInput): string {
-    if (typeof input === 'string') {
-        return `'${input}'`;
-    }
-
+function resolveInput(input: DateInput): string {
     if ((input as UndefinedExpressionArg)?.string) {
-        return (input as UndefinedExpressionArg).string;
+        return `'${(input as UndefinedExpressionArg).string}'`;
     }
 
     return `${input}`;
@@ -25,11 +21,11 @@ export function now(): NowExpression {
     return new NowExpression(`now()`);
 }
 
-export function duration(input: StringInput): DurationExpression {
+export function duration(input: DateInput): DurationExpression {
     return new DurationExpression(`duration(${resolveInput(input)})`);
 }
 
-export function date(input: StringInput, format?: StringInput, tz?: StringInput): DateExpression {
+export function date(input: DateInput, format?: DateInput, tz?: DateInput): DateExpression {
     const args = [resolveInput(input)];
 
     if (format !== undefined) {
@@ -43,6 +39,6 @@ export function date(input: StringInput, format?: StringInput, tz?: StringInput)
     return new DateExpression(`date(${args.join(', ')})`);
 }
 
-export function timezone(input: StringInput): TimezoneExpression {
-    return new TimezoneExpression(`timezone(${resolveInput(input)})`);
+export function dateInTimezone(input: DateInput, tz: DateInput): TimezoneExpression {
+    return new TimezoneExpression(`date(${resolveInput(input)}).In(timezone(${resolveInput(tz)}))`);
 }
