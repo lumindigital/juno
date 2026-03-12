@@ -29,16 +29,26 @@ spec:
           - '/bin/sh'
           - '-e'
         image: busybox
-        source:  >
-          echo "now: {{inputs.parameters.now-param}}"
+        source: >
+          if [ "{{inputs.parameters.now-param}}" != "" ]; then echo "now failed:
+          got '{{inputs.parameters.now-param}}'"; exit 11; fi
 
-          echo "duration: {{inputs.parameters.duration-param}}"
+          if [ "{{inputs.parameters.duration-param}}" != "" ]; then echo
+          "duration failed: got '{{inputs.parameters.duration-param}}'"; exit 12;
+          fi
 
-          echo "date: {{inputs.parameters.date-param}}"
+          if [ "{{inputs.parameters.date-param}}" != "" ]; then echo "date
+          failed: got '{{inputs.parameters.date-param}}'"; exit 13; fi
 
-          echo "date-format: {{inputs.parameters.date-format-param}}"
+          if [ "{{inputs.parameters.date-format-param}}" != "" ]; then echo
+          "date-format failed: got '{{inputs.parameters.date-format-param}}'";
+          exit 14; fi
 
-          echo "timezone: {{inputs.parameters.timezone-param}}"
+          if [ "{{inputs.parameters.timezone-param}}" != "" ]; then echo
+          "timezone failed: got '{{inputs.parameters.timezone-param}}'"; exit 15;
+          fi
+
+          echo "All date function tests passed"
     - dag:
         tasks:
           - arguments:

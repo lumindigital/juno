@@ -32,11 +32,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `echo "now: ${simpleTag(nowParam)}"
-echo "duration: ${simpleTag(durationParam)}"
-echo "date: ${simpleTag(dateParam)}"
-echo "date-format: ${simpleTag(dateFormatParam)}"
-echo "timezone: ${simpleTag(timezoneParam)}"
+            source: `if [ "${simpleTag(nowParam)}" != "" ]; then echo "now failed: got '${simpleTag(nowParam)}'"; exit 11; fi
+if [ "${simpleTag(durationParam)}" != "" ]; then echo "duration failed: got '${simpleTag(durationParam)}'"; exit 12; fi
+if [ "${simpleTag(dateParam)}" != "" ]; then echo "date failed: got '${simpleTag(dateParam)}'"; exit 13; fi
+if [ "${simpleTag(dateFormatParam)}" != "" ]; then echo "date-format failed: got '${simpleTag(dateFormatParam)}'"; exit 14; fi
+if [ "${simpleTag(timezoneParam)}" != "" ]; then echo "timezone failed: got '${simpleTag(timezoneParam)}'"; exit 15; fi
+echo "All date function tests passed"
 `,
             image: 'busybox',
         }),
