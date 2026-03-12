@@ -76,6 +76,26 @@ describe('logical tests', (): void => {
             const result = not(containsExpr);
             expect(result.toString()).to.equal(`!( tasks['A-1'].outputs.parameters['output-1'] contains 'search' )`);
         });
+
+        it('returns successfully with a hyphenated expression', (): void => {
+            const result = not(hyphenatedExpressionArgs);
+            expect(result.toString()).to.equal(`!( tasks['A-1'].outputs.parameters['output-1'] )`);
+        });
+
+        it('returns successfully with a dagTask', (): void => {
+            const result = not(dagTask);
+            expect(result.toString()).to.equal(`!( B )`);
+        });
+
+        it('returns successfully with a workflowStep', (): void => {
+            const result = not(workflowStep);
+            expect(result.toString()).to.equal(`!( C )`);
+        });
+
+        it('returns successfully with a task result', (): void => {
+            const result = not(dagTaskResult);
+            expect(result.toString()).to.equal(`!( B.Succeeded )`);
+        });
     });
 
     describe('paren', (): void => {

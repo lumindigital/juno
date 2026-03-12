@@ -77,6 +77,18 @@ export function not(input: LogicalExpressionInputs): LogicalExpression {
         return new LogicalExpression(`!${(input as ParenExpression).toString()}`);
     }
 
+    if (input && (input as DagTask)?.isDagTask) {
+        return new LogicalExpression(`!( ${(input as DagTask).name} )`);
+    }
+
+    if (input && (input as WorkflowStep)?.isWorkflowStep) {
+        return new LogicalExpression(`!( ${(input as WorkflowStep).name} )`);
+    }
+
+    if (input && (input as TaskAndResult)?.dagTaskResult) {
+        return new LogicalExpression(`!( ${getVariableReference(input as TaskAndResult)} )`);
+    }
+
     return new LogicalExpression(`!${paren(input as LogicalExpression).toString()}`);
 }
 
