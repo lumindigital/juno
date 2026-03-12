@@ -2,6 +2,7 @@ import {
     FloatCastExpression,
     FromBase64CastExpression,
     FromJsonCastExpression,
+    GroupByExpression,
     HyphenatedExpressionArgs,
     IntCastExpression,
     JsonCastExpression,
@@ -79,7 +80,9 @@ export function fromBase64(input: HyphenatedExpressionArgs | UndefinedExpression
     return new FromBase64CastExpression(`fromBase64(${input})`);
 }
 
-export function toPairs(input: UndefinedExpressionArg | FromJsonCastExpression): ToPairsCastExpression {
+export function toPairs(
+    input: UndefinedExpressionArg | FromJsonCastExpression | GroupByExpression,
+): ToPairsCastExpression {
     if ((input as UndefinedExpressionArg)?.string) {
         return new ToPairsCastExpression(`toPairs(${(input as UndefinedExpressionArg).string})`);
     }

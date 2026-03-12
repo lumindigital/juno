@@ -29,7 +29,7 @@ import {
     take,
     uniq,
 } from '../../../src/api/expressions/array';
-import { fromJson } from '../../../src/api/expressions/cast';
+import { fromJson, toPairs } from '../../../src/api/expressions/cast';
 import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
 import { Inputs } from '../../../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../../../src/api/parameter';
@@ -79,6 +79,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         value: '[5,6]',
     });
 
+    const workflowArrayStringParam = new WorkflowParameter('workflow-array-string-param', {
+        value: '["3","1","2","1"]',
+    });
+
     const arrayTemplate = new Template('array', {
         inputs: new Inputs({
             parameters: [
@@ -114,30 +118,30 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             command: ['/bin/sh', '-e'],
             source: `if [ "${simpleTag(firstParam)}" != "3" ]; then echo "first failed: got '${simpleTag(firstParam)}'"; exit 11; fi
 if [ "${simpleTag(lastParam)}" != "1" ]; then echo "last failed: got '${simpleTag(lastParam)}'"; exit 12; fi
-if [ "${simpleTag(flattenParam)}" != "" ]; then echo "flatten failed: got '${simpleTag(flattenParam)}'"; exit 13; fi
-if [ "${simpleTag(reverseParam)}" != "" ]; then echo "reverse failed: got '${simpleTag(reverseParam)}'"; exit 14; fi
-if [ "${simpleTag(sortParam)}" != "" ]; then echo "sort failed: got '${simpleTag(sortParam)}'"; exit 15; fi
-if [ "${simpleTag(uniqParam)}" != "" ]; then echo "uniq failed: got '${simpleTag(uniqParam)}'"; exit 16; fi
+if [ "${simpleTag(flattenParam)}" != "[1,2,3,4]" ]; then echo "flatten failed: got '${simpleTag(flattenParam)}'"; exit 13; fi
+if [ "${simpleTag(reverseParam)}" != "[1,2,1,3]" ]; then echo "reverse failed: got '${simpleTag(reverseParam)}'"; exit 14; fi
+if [ "${simpleTag(sortParam)}" != "[1,1,2,3]" ]; then echo "sort failed: got '${simpleTag(sortParam)}'"; exit 15; fi
+if [ "${simpleTag(uniqParam)}" != "[3,1,2]" ]; then echo "uniq failed: got '${simpleTag(uniqParam)}'"; exit 16; fi
 if [ "${simpleTag(joinParam)}" != "3, 1, 2, 1" ]; then echo "join failed: got '${simpleTag(joinParam)}'"; exit 17; fi
-if [ "${simpleTag(concatParam)}" != "" ]; then echo "concat failed: got '${simpleTag(concatParam)}'"; exit 18; fi
+if [ "${simpleTag(concatParam)}" != "[3,1,2,1,5,6]" ]; then echo "concat failed: got '${simpleTag(concatParam)}'"; exit 18; fi
 if [ "${simpleTag(meanParam)}" != "1.75" ]; then echo "mean failed: got '${simpleTag(meanParam)}'"; exit 19; fi
 if [ "${simpleTag(medianParam)}" != "1.5" ]; then echo "median failed: got '${simpleTag(medianParam)}'"; exit 20; fi
-if [ "${simpleTag(takeParam)}" != "" ]; then echo "take failed: got '${simpleTag(takeParam)}'"; exit 21; fi
+if [ "${simpleTag(takeParam)}" != "[3,1]" ]; then echo "take failed: got '${simpleTag(takeParam)}'"; exit 21; fi
 if [ "${simpleTag(allParam)}" != "true" ]; then echo "all failed: got '${simpleTag(allParam)}'"; exit 22; fi
 if [ "${simpleTag(anyParam)}" != "true" ]; then echo "any failed: got '${simpleTag(anyParam)}'"; exit 23; fi
 if [ "${simpleTag(oneParam)}" != "true" ]; then echo "one failed: got '${simpleTag(oneParam)}'"; exit 24; fi
 if [ "${simpleTag(noneParam)}" != "true" ]; then echo "none failed: got '${simpleTag(noneParam)}'"; exit 25; fi
-if [ "${simpleTag(mapParam)}" != "" ]; then echo "map failed: got '${simpleTag(mapParam)}'"; exit 26; fi
-if [ "${simpleTag(filterParam)}" != "" ]; then echo "filter failed: got '${simpleTag(filterParam)}'"; exit 27; fi
+if [ "${simpleTag(mapParam)}" != "[6,2,4,2]" ]; then echo "map failed: got '${simpleTag(mapParam)}'"; exit 26; fi
+if [ "${simpleTag(filterParam)}" != "[3,2]" ]; then echo "filter failed: got '${simpleTag(filterParam)}'"; exit 27; fi
 if [ "${simpleTag(findParam)}" != "3" ]; then echo "find failed: got '${simpleTag(findParam)}'"; exit 28; fi
 if [ "${simpleTag(findIndexParam)}" != "0" ]; then echo "findIndex failed: got '${simpleTag(findIndexParam)}'"; exit 29; fi
 if [ "${simpleTag(findLastParam)}" != "2" ]; then echo "findLast failed: got '${simpleTag(findLastParam)}'"; exit 30; fi
 if [ "${simpleTag(findLastIndexParam)}" != "2" ]; then echo "findLastIndex failed: got '${simpleTag(findLastIndexParam)}'"; exit 31; fi
-if [ "${simpleTag(groupByParam)}" != "" ]; then echo "groupBy failed: got '${simpleTag(groupByParam)}'"; exit 32; fi
+if [ "${simpleTag(groupByParam)}" != "[["3",["3"]],["1",["1","1"]],["2",["2"]]]" ]; then echo "groupBy failed: got '${simpleTag(groupByParam)}'"; exit 32; fi
 if [ "${simpleTag(countParam)}" != "2" ]; then echo "count failed: got '${simpleTag(countParam)}'"; exit 33; fi
 if [ "${simpleTag(reduceParam)}" != "7" ]; then echo "reduce failed: got '${simpleTag(reduceParam)}'"; exit 34; fi
 if [ "${simpleTag(sumParam)}" != "7" ]; then echo "sum failed: got '${simpleTag(sumParam)}'"; exit 35; fi
-if [ "${simpleTag(sortByParam)}" != "" ]; then echo "sortBy failed: got '${simpleTag(sortByParam)}'"; exit 36; fi
+if [ "${simpleTag(sortByParam)}" != [1,1,2,3] ]; then echo "sortBy failed: got '${simpleTag(sortByParam)}'"; exit 36; fi
 echo "All array function tests passed"
 `,
             image: 'busybox',
@@ -182,7 +186,7 @@ echo "All array function tests passed"
                             }),
                             joinParam.toArgumentParameter({
                                 valueFromExpressionTag: expressionTag(
-                                    join(fromJson(hyphenateExpressionArgs(workflowArrayParam)), ', '),
+                                    join(fromJson(hyphenateExpressionArgs(workflowArrayStringParam)), ', '),
                                 ),
                             }),
                             concatParam.toArgumentParameter({
@@ -260,7 +264,9 @@ echo "All array function tests passed"
                             }),
                             groupByParam.toArgumentParameter({
                                 valueFromExpressionTag: expressionTag(
-                                    groupBy(fromJson(hyphenateExpressionArgs(workflowArrayParam)), '{# % 2}'),
+                                    toPairs(
+                                        groupBy(fromJson(hyphenateExpressionArgs(workflowArrayStringParam)), '{#}'),
+                                    ),
                                 ),
                             }),
                             countParam.toArgumentParameter({
@@ -280,7 +286,7 @@ echo "All array function tests passed"
                             }),
                             sortByParam.toArgumentParameter({
                                 valueFromExpressionTag: expressionTag(
-                                    sortBy(fromJson(hyphenateExpressionArgs(workflowArrayParam))),
+                                    sortBy(fromJson(hyphenateExpressionArgs(workflowArrayParam)), '{ # }'),
                                 ),
                             }),
                         ],
@@ -303,7 +309,7 @@ echo "All array function tests passed"
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [workflowArrayParam, workflowNestedParam, workflowArray2Param],
+                parameters: [workflowArrayParam, workflowNestedParam, workflowArray2Param, workflowArrayStringParam],
             }),
             entrypoint: entryPointTemplate,
         }),
