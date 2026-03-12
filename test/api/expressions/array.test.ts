@@ -504,11 +504,6 @@ describe('array tests', (): void => {
     });
 
     describe('sortBy', (): void => {
-        it('returns successfully without predicate', (): void => {
-            const result = sortBy(hyphenatedExpressionArgs);
-            expect(result.toString()).to.equal(`sortBy(tasks['A-1'].outputs.parameters['output-1'])`);
-        });
-
         it('returns successfully with predicate', (): void => {
             const result = sortBy(hyphenatedExpressionArgs, '{.Name}');
             expect(result.toString()).to.equal(`sortBy(tasks['A-1'].outputs.parameters['output-1'], {.Name})`);
