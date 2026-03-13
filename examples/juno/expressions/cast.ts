@@ -22,7 +22,6 @@ import { Workflow } from '../../../src/api/workflow';
 import { WorkflowSpec } from '../../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../../src/workflow-interfaces/data-contracts';
 import { equals } from '../../../src/api/expressions/comparison';
-import { EnvironmentVariable } from '../../../src/api/environment-variable';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const intParam = new InputParameter('int-param');
@@ -35,6 +34,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const toBase64Param = new InputParameter('to-base64-param');
     const fromBase64Param = new InputParameter('from-base64-param');
     const toPairsParam = new InputParameter('to-pairs-param');
+    const castLiteralStringParam = new InputParameter('cast-literal-string-param');
 
     const workflowIntParam = new WorkflowParameter('workflow-int-param', { value: '1' });
     const workflowFloatParam = new WorkflowParameter('workflow-float-param', { value: '1.5' });
@@ -54,26 +54,22 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 toBase64Param,
                 fromBase64Param,
                 toPairsParam,
+                castLiteralStringParam,
             ],
         }),
         script: new Script({
-            env: [
-                new EnvironmentVariable('CAST_INT_TO_STRING', {
-                    // using asString to cast number to string as an ENV instead of passing it in as a number, as passing it seems to convert it to a string.
-                    valueFromExpressionTag: expressionTag(equals(asString(1), '1')),
-                }),
-            ],
             command: ['/bin/sh', '-e'],
-            source: `if [ "${simpleTag(intParam)}" != true ]; then exit 12; fi
-                     if [ "${simpleTag(floatParam)}" != true ]; then exit 13; fi
-                     if [ "${simpleTag(jsonParam)}" != true ]; then exit 14; fi
-                     if [ "$CAST_INT_TO_STRING" != true ]; then exit 16; fi
-                     if [ "${simpleTag(toJsonParam)}" != "{\\"isTrue\\":\\"true\\"}" ]; then exit 17; fi
-                     if [ "${simpleTag(fromJsonParam)}" != "{"isTrue":"true"}" ]; then exit 18; fi
-                     if [ "${simpleTag(typeParam)}" != "string" ]; then exit 19; fi
-                     if [ "${simpleTag(toBase64Param)}" != "eyJpc1RydWUiOiJ0cnVlIn0=" ]; then exit 20; fi
-                     if [ "${simpleTag(fromBase64Param)}" != "{"isTrue":"true"}" ]; then exit 21; fi
-                     if [ "${simpleTag(toPairsParam)}" != "[["isTrue","true"]]" ]; then exit 22; fi
+            source: `if [ "${simpleTag(intParam)}" != "true" ]; then echo "asInt failed: got '${simpleTag(intParam)}'"; exit 12; fi
+if [ "${simpleTag(floatParam)}" != "true" ]; then echo "asFloat failed: got '${simpleTag(floatParam)}'"; exit 13; fi
+if [ "${simpleTag(jsonParam)}" != "true" ]; then echo "jsonPath failed: got '${simpleTag(jsonParam)}'"; exit 14; fi
+if [ "${simpleTag(castLiteralStringParam)}" != "true" ]; then echo "asString literal failed: got '${simpleTag(castLiteralStringParam)}'"; exit 16; fi
+if [ "${simpleTag(toJsonParam)}" != "{\\"isTrue\\":\\"true\\"}" ]; then echo "toJson failed: got '${simpleTag(toJsonParam)}'"; exit 17; fi
+if [ "${simpleTag(fromJsonParam)}" != "{"isTrue":"true"}" ]; then echo "fromJson failed: got '${simpleTag(fromJsonParam)}'"; exit 18; fi
+if [ "${simpleTag(typeParam)}" != "string" ]; then echo "asType failed: got '${simpleTag(typeParam)}'"; exit 19; fi
+if [ "${simpleTag(toBase64Param)}" != "eyJpc1RydWUiOiJ0cnVlIn0=" ]; then echo "toBase64 failed: got '${simpleTag(toBase64Param)}'"; exit 20; fi
+if [ "${simpleTag(fromBase64Param)}" != "{"isTrue":"true"}" ]; then echo "fromBase64 failed: got '${simpleTag(fromBase64Param)}'"; exit 21; fi
+if [ "${simpleTag(toPairsParam)}" != "[["isTrue","true"]]" ]; then echo "toPairs failed: got '${simpleTag(toPairsParam)}'"; exit 22; fi
+echo "All cast tests passed"
 `,
             image: 'busybox',
         }),
@@ -135,6 +131,10 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                 valueFromExpressionTag: expressionTag(
                                     toPairs(fromJson(hyphenateExpressionArgs(workflowJsonParam))),
                                 ),
+                            }),
+                            // using asString to cast a literal number to string
+                            castLiteralStringParam.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(equals(asString(1), '1')),
                             }),
                             // There doesn't seem to be a valid way to use this in argo workflows.
                             // fromPairsParam.toArgumentParameter({

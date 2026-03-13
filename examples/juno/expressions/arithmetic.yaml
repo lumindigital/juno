@@ -46,24 +46,12 @@ spec:
         command:
           - '/bin/sh'
           - '-e'
-        env:
-          - name: ADD_EQUALS
-            value: "{{=inputs.parameters['add-param'] == '3'}}"
-          - name: SUBTRACT_EQUALS
-            value: "{{=inputs.parameters['subtract-param'] == '-1'}}"
-          - name: DIVIDE_EQUALS
-            value: "{{=inputs.parameters['divide-param'] == '1'}}"
-          - name: MULTIPLY_EQUALS
-            value: "{{=inputs.parameters['multiply-param'] == '4'}}"
-          - name: MODULUS_EQUALS
-            value: "{{=inputs.parameters['modulus-param'] == '0'}}"
-          - name: EXPONENT_EQUALS
-            value: "{{=inputs.parameters['exponent-param'] == '8'}}"
         image: busybox
-        source:  >
-          if [ "$ADD_EQUALS" != true ]; then exit 12; fi
-                               if [ "$SUBTRACT_EQUALS" != true ]; then exit 13; fi
-                               if [ "$DIVIDE_EQUALS" != true ]; then exit 14; fi
-                               if [ "$MULTIPLY_EQUALS" != true ]; then exit 15; fi
-                               if [ "$MODULUS_EQUALS" != true ]; then exit 16; fi
-                               if [ "$EXPONENT_EQUALS" != true ]; then exit 17; fi
+        source: |
+          if [ "{{inputs.parameters.add-param}}" != "3" ]; then echo "add failed: got '{{inputs.parameters.add-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.subtract-param}}" != "-1" ]; then echo "subtract failed: got '{{inputs.parameters.subtract-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.divide-param}}" != "1" ]; then echo "divide failed: got '{{inputs.parameters.divide-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.multiply-param}}" != "4" ]; then echo "multiply failed: got '{{inputs.parameters.multiply-param}}'"; exit 15; fi
+          if [ "{{inputs.parameters.modulus-param}}" != "0" ]; then echo "modulus failed: got '{{inputs.parameters.modulus-param}}'"; exit 16; fi
+          if [ "{{inputs.parameters.exponent-param}}" != "8" ]; then echo "exponent failed: got '{{inputs.parameters.exponent-param}}'"; exit 17; fi
+          echo "All arithmetic tests passed"

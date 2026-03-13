@@ -37,11 +37,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `if [ "${simpleTag(ternaryStringOutputParameter)}" != true ]; then exit 12; fi
-                     if [ "${simpleTag(ternaryExpressionArgsOutputParameter)}" != true ]; then exit 13; fi
-                     if [ "${simpleTag(nestedTernaryParameter)}" != true ]; then exit 14; fi
-                     if [ "${simpleTag(nilCoalescingStringParameter)}" != "defaultValue" ]; then exit 15; fi
-                     if [ "${simpleTag(nilCoalescingHyphenatedParameter)}" != "true" ]; then exit 16; fi
+            source: `if [ "${simpleTag(ternaryStringOutputParameter)}" != "true" ]; then echo "ternary string output failed: got '${simpleTag(ternaryStringOutputParameter)}'"; exit 12; fi
+if [ "${simpleTag(ternaryExpressionArgsOutputParameter)}" != "true" ]; then echo "ternary expression args output failed: got '${simpleTag(ternaryExpressionArgsOutputParameter)}'"; exit 13; fi
+if [ "${simpleTag(nestedTernaryParameter)}" != "true" ]; then echo "nested ternary failed: got '${simpleTag(nestedTernaryParameter)}'"; exit 14; fi
+if [ "${simpleTag(nilCoalescingStringParameter)}" != "defaultValue" ]; then echo "nil coalescing string failed: got '${simpleTag(nilCoalescingStringParameter)}'"; exit 15; fi
+if [ "${simpleTag(nilCoalescingHyphenatedParameter)}" != "true" ]; then echo "nil coalescing hyphenated failed: got '${simpleTag(nilCoalescingHyphenatedParameter)}'"; exit 16; fi
+echo "All conditional tests passed"
 `,
             image: 'busybox',
         }),

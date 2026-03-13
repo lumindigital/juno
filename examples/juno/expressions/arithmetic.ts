@@ -1,7 +1,7 @@
 import { Arguments, WorkflowArguments } from '../../../src/api/arguments';
 import { DagTask } from '../../../src/api/dag-task';
 import { DagTemplate } from '../../../src/api/dag-template';
-import { expressionTag, hyphenateExpressionArgs } from '../../../src/api/expressions/tag';
+import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
 import { add, divide, exponent, modulus, multiply, subtract } from '../../../src/api/expressions/arithmetic';
 import { Inputs } from '../../../src/api/inputs';
 import { InputParameter, WorkflowParameter } from '../../../src/api/parameter';
@@ -10,8 +10,6 @@ import { Template } from '../../../src/api/template';
 import { Workflow } from '../../../src/api/workflow';
 import { WorkflowSpec } from '../../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../../src/workflow-interfaces/data-contracts';
-import { equals } from '../../../src/api/expressions/comparison';
-import { EnvironmentVariable } from '../../../src/api/environment-variable';
 import { asInt } from '../../../src/api/expressions/cast';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
@@ -29,34 +27,14 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
             parameters: [addParam, subtractParam, divideParam, multiplyParam, modulusParam, exponentParam],
         }),
         script: new Script({
-            env: [
-                // numbers are passed as strings so we are comparing to string values not numbers here
-                new EnvironmentVariable('ADD_EQUALS', {
-                    valueFromExpressionTag: expressionTag(equals(hyphenateExpressionArgs(addParam), '3')),
-                }),
-                new EnvironmentVariable('SUBTRACT_EQUALS', {
-                    valueFromExpressionTag: expressionTag(equals(hyphenateExpressionArgs(subtractParam), '-1')),
-                }),
-                new EnvironmentVariable('DIVIDE_EQUALS', {
-                    valueFromExpressionTag: expressionTag(equals(hyphenateExpressionArgs(divideParam), '1')),
-                }),
-                new EnvironmentVariable('MULTIPLY_EQUALS', {
-                    valueFromExpressionTag: expressionTag(equals(hyphenateExpressionArgs(multiplyParam), '4')),
-                }),
-                new EnvironmentVariable('MODULUS_EQUALS', {
-                    valueFromExpressionTag: expressionTag(equals(hyphenateExpressionArgs(modulusParam), '0')),
-                }),
-                new EnvironmentVariable('EXPONENT_EQUALS', {
-                    valueFromExpressionTag: expressionTag(equals(hyphenateExpressionArgs(exponentParam), '8')),
-                }),
-            ],
             command: ['/bin/sh', '-e'],
-            source: `if [ "$ADD_EQUALS" != true ]; then exit 12; fi
-                     if [ "$SUBTRACT_EQUALS" != true ]; then exit 13; fi
-                     if [ "$DIVIDE_EQUALS" != true ]; then exit 14; fi
-                     if [ "$MULTIPLY_EQUALS" != true ]; then exit 15; fi
-                     if [ "$MODULUS_EQUALS" != true ]; then exit 16; fi
-                     if [ "$EXPONENT_EQUALS" != true ]; then exit 17; fi
+            source: `if [ "${simpleTag(addParam)}" != "3" ]; then echo "add failed: got '${simpleTag(addParam)}'"; exit 12; fi
+if [ "${simpleTag(subtractParam)}" != "-1" ]; then echo "subtract failed: got '${simpleTag(subtractParam)}'"; exit 13; fi
+if [ "${simpleTag(divideParam)}" != "1" ]; then echo "divide failed: got '${simpleTag(divideParam)}'"; exit 14; fi
+if [ "${simpleTag(multiplyParam)}" != "4" ]; then echo "multiply failed: got '${simpleTag(multiplyParam)}'"; exit 15; fi
+if [ "${simpleTag(modulusParam)}" != "0" ]; then echo "modulus failed: got '${simpleTag(modulusParam)}'"; exit 16; fi
+if [ "${simpleTag(exponentParam)}" != "8" ]; then echo "exponent failed: got '${simpleTag(exponentParam)}'"; exit 17; fi
+echo "All arithmetic tests passed"
 `,
             image: 'busybox',
         }),
