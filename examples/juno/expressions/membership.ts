@@ -28,10 +28,11 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `if [ "${simpleTag(inParamTest)}" != false ]; then exit 12; fi
-                     if [ "${simpleTag(dotParamTest)}" != true ]; then exit 13; fi
-                     if [ "${simpleTag(bracketParamTest)}" != true ]; then exit 14; fi
-                     if [ "${simpleTag(arrayBracketParamTest)}" != "one" ]; then exit 15; fi
+            source: `if [ "${simpleTag(inParamTest)}" != "false" ]; then echo "in failed: got '${simpleTag(inParamTest)}'"; exit 12; fi
+if [ "${simpleTag(dotParamTest)}" != "true" ]; then echo "dot access failed: got '${simpleTag(dotParamTest)}'"; exit 13; fi
+if [ "${simpleTag(bracketParamTest)}" != "true" ]; then echo "bracket access failed: got '${simpleTag(bracketParamTest)}'"; exit 14; fi
+if [ "${simpleTag(arrayBracketParamTest)}" != "one" ]; then echo "array bracket access failed: got '${simpleTag(arrayBracketParamTest)}'"; exit 15; fi
+echo "All membership tests passed"
 `,
             image: 'busybox',
         }),

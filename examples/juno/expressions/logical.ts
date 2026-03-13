@@ -29,11 +29,12 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `if [ "${simpleTag(andParameter)}" != true ]; then exit 12; fi
-                    if [ "${simpleTag(orParameter)}" != true ]; then exit 13; fi
-                    if [ "${simpleTag(parenParameter)}" != true ]; then exit 14; fi
-                    if [ "${simpleTag(notParameter)}" != true ]; then exit 15; fi
-                    if [ "${simpleTag(combinedParameter)}" != true ]; then exit 16; fi
+            source: `if [ "${simpleTag(andParameter)}" != "true" ]; then echo "and failed: got '${simpleTag(andParameter)}'"; exit 12; fi
+if [ "${simpleTag(orParameter)}" != "true" ]; then echo "or failed: got '${simpleTag(orParameter)}'"; exit 13; fi
+if [ "${simpleTag(parenParameter)}" != "true" ]; then echo "paren failed: got '${simpleTag(parenParameter)}'"; exit 14; fi
+if [ "${simpleTag(notParameter)}" != "true" ]; then echo "not failed: got '${simpleTag(notParameter)}'"; exit 15; fi
+if [ "${simpleTag(combinedParameter)}" != "true" ]; then echo "combined failed: got '${simpleTag(combinedParameter)}'"; exit 16; fi
+echo "All logical tests passed"
 `,
             image: 'busybox',
         }),

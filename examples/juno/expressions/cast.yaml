@@ -45,6 +45,8 @@ spec:
                   value: "{{=fromBase64(workflow.parameters['workflow-base64-param'])}}"
                 - name: to-pairs-param
                   value: "{{=toPairs(fromJSON(workflow.parameters['workflow-json-param']))}}"
+                - name: cast-literal-string-param
+                  value: "{{=string(1) == '1'}}"
             name: cast-task
             template: cast
       name: entrypoint
@@ -60,23 +62,22 @@ spec:
           - name: to-base64-param
           - name: from-base64-param
           - name: to-pairs-param
+          - name: cast-literal-string-param
       name: cast
       script:
         command:
           - '/bin/sh'
           - '-e'
-        env:
-          - name: CAST_INT_TO_STRING
-            value: "{{=string(1) == '1'}}"
         image: busybox
-        source:  >
-          if [ "{{inputs.parameters.int-param}}" != true ]; then exit 12; fi
-                               if [ "{{inputs.parameters.float-param}}" != true ]; then exit 13; fi
-                               if [ "{{inputs.parameters.json-param}}" != true ]; then exit 14; fi
-                               if [ "$CAST_INT_TO_STRING" != true ]; then exit 16; fi
-                               if [ "{{inputs.parameters.to-json-param}}" != "{\"isTrue\":\"true\"}" ]; then exit 17; fi
-                               if [ "{{inputs.parameters.from-json-param}}" != "{"isTrue":"true"}" ]; then exit 18; fi
-                               if [ "{{inputs.parameters.type-param}}" != "string" ]; then exit 19; fi
-                               if [ "{{inputs.parameters.to-base64-param}}" != "eyJpc1RydWUiOiJ0cnVlIn0=" ]; then exit 20; fi
-                               if [ "{{inputs.parameters.from-base64-param}}" != "{"isTrue":"true"}" ]; then exit 21; fi
-                               if [ "{{inputs.parameters.to-pairs-param}}" != "[["isTrue","true"]]" ]; then exit 22; fi
+        source: |
+          if [ "{{inputs.parameters.int-param}}" != "true" ]; then echo "asInt failed: got '{{inputs.parameters.int-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.float-param}}" != "true" ]; then echo "asFloat failed: got '{{inputs.parameters.float-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.json-param}}" != "true" ]; then echo "jsonPath failed: got '{{inputs.parameters.json-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.cast-literal-string-param}}" != "true" ]; then echo "asString literal failed: got '{{inputs.parameters.cast-literal-string-param}}'"; exit 16; fi
+          if [ "{{inputs.parameters.to-json-param}}" != "{\"isTrue\":\"true\"}" ]; then echo "toJson failed: got '{{inputs.parameters.to-json-param}}'"; exit 17; fi
+          if [ "{{inputs.parameters.from-json-param}}" != "{"isTrue":"true"}" ]; then echo "fromJson failed: got '{{inputs.parameters.from-json-param}}'"; exit 18; fi
+          if [ "{{inputs.parameters.type-param}}" != "string" ]; then echo "asType failed: got '{{inputs.parameters.type-param}}'"; exit 19; fi
+          if [ "{{inputs.parameters.to-base64-param}}" != "eyJpc1RydWUiOiJ0cnVlIn0=" ]; then echo "toBase64 failed: got '{{inputs.parameters.to-base64-param}}'"; exit 20; fi
+          if [ "{{inputs.parameters.from-base64-param}}" != "{"isTrue":"true"}" ]; then echo "fromBase64 failed: got '{{inputs.parameters.from-base64-param}}'"; exit 21; fi
+          if [ "{{inputs.parameters.to-pairs-param}}" != "[["isTrue","true"]]" ]; then echo "toPairs failed: got '{{inputs.parameters.to-pairs-param}}'"; exit 22; fi
+          echo "All cast tests passed"
