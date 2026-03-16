@@ -1,8 +1,11 @@
 import {
+    FindExpression,
+    FindLastExpression,
     HasPrefixExpression,
     HasSuffixExpression,
     HyphenatedExpressionArgs,
     IndexOfExpression,
+    JoinExpression,
     JsonPathExpression,
     LastIndexOfExpression,
     LowerExpression,
@@ -13,6 +16,7 @@ import {
     StringCastExpression,
     StringFunctionExpressions,
     TernaryExpression,
+    ToJsonCastExpression,
     TrimExpression,
     TrimPrefixExpression,
     TrimSuffixExpression,
@@ -20,7 +24,15 @@ import {
 } from './classes.js';
 import { wrapStringInQuotes } from './util.js';
 
-export type StringInputTypes = HyphenatedExpressionArgs | StringCastExpression | JsonPathExpression | TernaryExpression;
+export type StringInputTypes =
+    | HyphenatedExpressionArgs
+    | StringCastExpression
+    | JsonPathExpression
+    | TernaryExpression
+    | JoinExpression
+    | ToJsonCastExpression
+    | FindExpression
+    | FindLastExpression;
 
 export function lower(input: StringFunctionExpressions | StringInputTypes): LowerExpression {
     return new LowerExpression(`lower(${input})`);

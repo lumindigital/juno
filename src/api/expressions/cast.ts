@@ -5,7 +5,7 @@ import {
     GroupByExpression,
     HyphenatedExpressionArgs,
     IntCastExpression,
-    JsonCastExpression,
+    ToJsonCastExpression,
     LenExpression,
     StringCastExpression,
     ToBase64CastExpression,
@@ -40,12 +40,12 @@ export function asString(
     return new StringCastExpression(`string(${input})`);
 }
 
-export function toJson(input: HyphenatedExpressionArgs | UndefinedExpressionArg): JsonCastExpression {
+export function toJson(input: HyphenatedExpressionArgs | UndefinedExpressionArg): ToJsonCastExpression {
     if ((input as UndefinedExpressionArg)?.string) {
-        return new JsonCastExpression(`toJSON(${(input as UndefinedExpressionArg).string})`);
+        return new ToJsonCastExpression(`toJSON(${(input as UndefinedExpressionArg).string})`);
     }
 
-    return new JsonCastExpression(`toJSON(${input})`);
+    return new ToJsonCastExpression(`toJSON(${input})`);
 }
 
 export function fromJson(input: HyphenatedExpressionArgs | UndefinedExpressionArg): FromJsonCastExpression {
