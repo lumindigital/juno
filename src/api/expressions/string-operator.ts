@@ -4,13 +4,16 @@ import {
     StartsWithExpression,
     EndsWithExpression,
     ConcatExpression,
+    JoinExpression,
 } from './classes.js';
 import { StringInputTypes } from './string-function.js';
 import { wrapStringInQuotes } from './util.js';
 
+export type StringSubstringExpressions = StringFunctionExpressions | StringInputTypes | JoinExpression | string;
+
 export function contains(
     input: StringFunctionExpressions | StringInputTypes,
-    substring: StringFunctionExpressions | StringInputTypes | string,
+    substring: StringSubstringExpressions,
 ): ContainsExpression {
     if (typeof substring === 'string') {
         return new ContainsExpression(`${input} contains ${wrapStringInQuotes(substring.toString())}`);
@@ -21,7 +24,7 @@ export function contains(
 
 export function startsWith(
     input: StringFunctionExpressions | StringInputTypes,
-    prefix: StringFunctionExpressions | StringInputTypes | string,
+    prefix: StringSubstringExpressions,
 ): StartsWithExpression {
     if (typeof prefix === 'string') {
         return new StartsWithExpression(`${input} startsWith ${wrapStringInQuotes(prefix.toString())}`);
@@ -32,7 +35,7 @@ export function startsWith(
 
 export function endsWith(
     input: StringFunctionExpressions | StringInputTypes,
-    suffix: StringFunctionExpressions | StringInputTypes | string,
+    suffix: StringSubstringExpressions,
 ): EndsWithExpression {
     if (typeof suffix === 'string') {
         return new EndsWithExpression(`${input} endsWith ${wrapStringInQuotes(suffix.toString())}`);
@@ -41,7 +44,7 @@ export function endsWith(
     return new EndsWithExpression(`${input} endsWith ${suffix}`);
 }
 
-export function concatenate(...inputs: (StringInputTypes | string | StringFunctionExpressions)[]): ConcatExpression {
+export function concatenate(...inputs: (StringFunctionExpressions | StringInputTypes | string)[]): ConcatExpression {
     let output = '';
 
     for (let i = 0; i < inputs.length; i++) {

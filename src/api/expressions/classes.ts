@@ -64,7 +64,7 @@ export type CastExpressions =
     | IntCastExpression
     | FloatCastExpression
     | StringCastExpression
-    | JsonCastExpression
+    | ToJsonCastExpression
     | TypeCastExpression
     | FromJsonCastExpression
     | ToBase64CastExpression
@@ -243,7 +243,7 @@ export class StringCastExpression {
     }
 }
 
-export class JsonCastExpression {
+export class ToJsonCastExpression {
     private output: string;
     isJsonCastExpression: boolean = true;
 
