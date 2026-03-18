@@ -16,9 +16,11 @@ updates:
       prefix: build
       include: scope
   - package-ecosystem: "github-actions" # See documentation for possible values
-    directory: "/.github" # Location of package manifests
+    directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 14
     commit-message:
       prefix: ci
       include: scope
