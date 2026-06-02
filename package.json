@@ -15,7 +15,7 @@
     "yaml": "2"
   },
   "devDependencies": {
-    "@commitlint/cli": "20",
+    "@commitlint/cli": "21",
     "@commitlint/config-conventional": "^20.4.3",
     "@eslint/eslintrc": "3",
     "@eslint/js": "10",
