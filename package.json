@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "21",
-    "@commitlint/config-conventional": "^20.4.3",
+    "@commitlint/config-conventional": "^21.0.1",
     "@eslint/eslintrc": "3",
     "@eslint/js": "10",
     "@oclif/prettier-config": "0",
