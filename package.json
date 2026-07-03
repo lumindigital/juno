@@ -23,7 +23,7 @@
     "@oclif/test": "4",
     "@types/chai": "5",
     "@types/mocha": "10",
-    "@types/node": "25",
+    "@types/node": "26",
     "c8": "11",
     "chai": "6",
     "eslint": "10",
