@@ -25,11 +25,7 @@ const enum Comparators {
 }
 
 export type LeftNumericComparisonTypes =
-    | IntCastExpression
-    | FloatCastExpression
-    | JsonPathExpression
-    | UndefinedExpressionArg
-    | LenExpression;
+    IntCastExpression | FloatCastExpression | JsonPathExpression | UndefinedExpressionArg | LenExpression;
 
 export type LeftEqualityComparisonTypes =
     | LeftNumericComparisonTypes
@@ -40,12 +36,7 @@ export type LeftEqualityComparisonTypes =
     | StringCastExpression;
 
 export type RightEqualityComparisonTypes =
-    | LeftEqualityComparisonTypes
-    | boolean
-    | string
-    | number
-    | NilResult
-    | TaskResult;
+    LeftEqualityComparisonTypes | boolean | string | number | NilResult | TaskResult;
 
 export type RightNumericComparisonTypes = LeftNumericComparisonTypes | boolean | number | NilResult;
 
