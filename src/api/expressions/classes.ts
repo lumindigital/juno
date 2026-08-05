@@ -53,12 +53,7 @@ export type ArrayExpressions =
 export type DateExpressions = NowExpression | DurationExpression | DateExpression | TimezoneExpression;
 
 export type NumberExpressions =
-    | MaxExpression
-    | MinExpression
-    | AbsExpression
-    | CeilExpression
-    | FloorExpression
-    | RoundExpression;
+    MaxExpression | MinExpression | AbsExpression | CeilExpression | FloorExpression | RoundExpression;
 
 export type CastExpressions =
     | IntCastExpression
@@ -74,12 +69,7 @@ export type CastExpressions =
     | NilCoalescingExpression;
 
 export type ArithmeticExpressions =
-    | AddExpression
-    | SubtractExpression
-    | MultiplyExpression
-    | DivideExpression
-    | ModulusExpression
-    | ExponentExpression;
+    AddExpression | SubtractExpression | MultiplyExpression | DivideExpression | ModulusExpression | ExponentExpression;
 
 export type StringFunctionExpressions =
     | LowerExpression
@@ -97,10 +87,7 @@ export type StringFunctionExpressions =
     | SplitAfterExpression;
 
 export type StringOperatorExpressions =
-    | ConcatExpression
-    | ContainsExpression
-    | StartsWithExpression
-    | EndsWithExpression;
+    ConcatExpression | ContainsExpression | StartsWithExpression | EndsWithExpression;
 
 export class SimpleTemplateTag {
     private output: string;
