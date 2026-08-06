@@ -24,7 +24,7 @@
     "@types/chai": "5",
     "@types/mocha": "10",
     "@types/node": "26",
-    "c8": "11",
+    "c8": "12",
     "chai": "6",
     "eslint": "10",
     "eslint-config-oclif": "6",
