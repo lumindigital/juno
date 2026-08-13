@@ -120,6 +120,16 @@ describe('array tests', (): void => {
             const result = sort(fromJson(hyphenatedExpressionArgs));
             expect(result.toString()).to.equal(`sort(fromJSON(tasks['A-1'].outputs.parameters['output-1']))`);
         });
+
+        it('returns successfully with descending order', (): void => {
+            const result = sort(hyphenatedExpressionArgs, 'desc');
+            expect(result.toString()).to.equal(`sort(tasks['A-1'].outputs.parameters['output-1'], 'desc')`);
+        });
+
+        it('returns successfully with ascending order', (): void => {
+            const result = sort({ string: 'myArray' }, 'asc');
+            expect(result.toString()).to.equal(`sort(myArray, 'asc')`);
+        });
     });
 
     describe('uniq', (): void => {

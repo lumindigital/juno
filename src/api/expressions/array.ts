@@ -56,8 +56,14 @@ export function reverse(input: ArrayInput): ReverseExpression {
     return new ReverseExpression(`reverse(${resolveInput(input)})`);
 }
 
-export function sort(input: ArrayInput): SortExpression {
-    return new SortExpression(`sort(${resolveInput(input)})`);
+export function sort(input: ArrayInput, order?: 'asc' | 'desc'): SortExpression {
+    const inputStr = resolveInput(input);
+
+    if (order !== undefined) {
+        return new SortExpression(`sort(${inputStr}, '${order}')`);
+    }
+
+    return new SortExpression(`sort(${inputStr})`);
 }
 
 export function uniq(input: ArrayInput): UniqExpression {
