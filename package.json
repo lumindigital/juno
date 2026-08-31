@@ -27,7 +27,7 @@
     "c8": "12",
     "chai": "6",
     "eslint": "10",
-    "eslint-config-oclif": "6",
+    "eslint-config-oclif": "7",
     "eslint-config-oclif-typescript": "3",
     "eslint-config-prettier": "10",
     "mocha": "11",
