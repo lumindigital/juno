@@ -48,8 +48,9 @@ spec:
           - '/bin/sh'
           - '-e'
         image: busybox
-        source:  >
-          if [ "{{inputs.parameters.in-param}}" != false ]; then exit 12; fi
-                               if [ "{{inputs.parameters.dot-param}}" != true ]; then exit 13; fi
-                               if [ "{{inputs.parameters.bracket-param}}" != true ]; then exit 14; fi
-                               if [ "{{inputs.parameters.array-bracket-param}}" != "one" ]; then exit 15; fi
+        source: |
+          if [ "{{inputs.parameters.in-param}}" != "false" ]; then echo "in failed: got '{{inputs.parameters.in-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.dot-param}}" != "true" ]; then echo "dot access failed: got '{{inputs.parameters.dot-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.bracket-param}}" != "true" ]; then echo "bracket access failed: got '{{inputs.parameters.bracket-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.array-bracket-param}}" != "one" ]; then echo "array bracket access failed: got '{{inputs.parameters.array-bracket-param}}'"; exit 15; fi
+          echo "All membership tests passed"

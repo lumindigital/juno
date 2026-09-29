@@ -5,6 +5,7 @@ import {
     HyphenatedExpressionArgs,
     IntCastExpression,
     JsonPathExpression,
+    LenExpression,
     NilResult,
     SimpleTemplateTag,
     StringCastExpression,
@@ -20,13 +21,11 @@ const enum Comparators {
     GREATER_THAN_OR_EQUAL = '>=',
     LESS_THAN = '<',
     LESS_THAN_OR_EQUAL = '<=',
+    MATCH = 'matches',
 }
 
 export type LeftNumericComparisonTypes =
-    | IntCastExpression
-    | FloatCastExpression
-    | JsonPathExpression
-    | UndefinedExpressionArg;
+    IntCastExpression | FloatCastExpression | JsonPathExpression | UndefinedExpressionArg | LenExpression;
 
 export type LeftEqualityComparisonTypes =
     | LeftNumericComparisonTypes
@@ -35,13 +34,9 @@ export type LeftEqualityComparisonTypes =
     | JsonPathExpression
     | UndefinedExpressionArg
     | StringCastExpression;
+
 export type RightEqualityComparisonTypes =
-    | LeftEqualityComparisonTypes
-    | boolean
-    | string
-    | number
-    | NilResult
-    | TaskResult;
+    LeftEqualityComparisonTypes | boolean | string | number | NilResult | TaskResult;
 
 export type RightNumericComparisonTypes = LeftNumericComparisonTypes | boolean | number | NilResult;
 
@@ -87,13 +82,21 @@ export function lessThanOrEqual<T extends LeftNumericComparisonTypes>(
     return comparison(Comparators.LESS_THAN_OR_EQUAL, left, right);
 }
 
+export function matches<T extends LeftEqualityComparisonTypes>(
+    left: T,
+    right: RightEqualityComparisonTypes,
+): ComparisonExpression {
+    return comparison(Comparators.MATCH, left, right);
+}
+
 function comparison<
     T extends
         | HyphenatedExpressionArgs
         | SimpleTemplateTag
         | CastExpressions
         | JsonPathExpression
-        | UndefinedExpressionArg,
+        | UndefinedExpressionArg
+        | LenExpression,
 >(
     operator: Comparators,
     left: T,

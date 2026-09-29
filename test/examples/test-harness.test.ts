@@ -3,7 +3,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 
 import { Logger, createLogger, format, transports } from 'winston';
 import { Template } from '../../src/api/template';
-import { parse } from 'yaml';
+import { parse, stringify } from 'yaml';
+import fs from 'fs';
 
 describe('example tests', (): void => {
     let logger: Logger;
@@ -49,6 +50,11 @@ describe('example tests', (): void => {
 
                     const result = await hw.generateTemplate();
 
+                    if (process.env.OUTPUT_YAML) {
+                        const yaml = stringify(result, { lineWidth: 0, aliasDuplicateObjects: false });
+                        fs.writeFileSync(`./output/${testName}-result.yaml`, yaml, 'utf8');
+                    }
+
                     // This removes the undefined values from the object. And is what the cli will likely do as well
                     const result2 = parse(JSON.stringify(result));
                     expect(result2, `${path}`).to.deep.equal(workflow);
@@ -56,10 +62,6 @@ describe('example tests', (): void => {
             });
         });
     });
-
-    //     for (const test of tests) {
-
-    // });
 });
 
 function getExamples(): Map<string, string> {

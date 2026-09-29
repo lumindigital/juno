@@ -46,9 +46,10 @@ spec:
           - '/bin/sh'
           - '-e'
         image: busybox
-        source:  >
-          if [ "{{inputs.parameters.ternary-string-output-param}}" != true ]; then exit 12; fi
-                               if [ "{{inputs.parameters.ternary-expression-args-output-param}}" != true ]; then exit 13; fi
-                               if [ "{{inputs.parameters.nested-ternary-param}}" != true ]; then exit 14; fi
-                               if [ "{{inputs.parameters.nil-coalescing-string-param}}" != "defaultValue" ]; then exit 15; fi
-                               if [ "{{inputs.parameters.nil-coalescing-hyphenated-param}}" != "true" ]; then exit 16; fi
+        source: |
+          if [ "{{inputs.parameters.ternary-string-output-param}}" != "true" ]; then echo "ternary string output failed: got '{{inputs.parameters.ternary-string-output-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.ternary-expression-args-output-param}}" != "true" ]; then echo "ternary expression args output failed: got '{{inputs.parameters.ternary-expression-args-output-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.nested-ternary-param}}" != "true" ]; then echo "nested ternary failed: got '{{inputs.parameters.nested-ternary-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.nil-coalescing-string-param}}" != "defaultValue" ]; then echo "nil coalescing string failed: got '{{inputs.parameters.nil-coalescing-string-param}}'"; exit 15; fi
+          if [ "{{inputs.parameters.nil-coalescing-hyphenated-param}}" != "true" ]; then echo "nil coalescing hyphenated failed: got '{{inputs.parameters.nil-coalescing-hyphenated-param}}'"; exit 16; fi
+          echo "All conditional tests passed"

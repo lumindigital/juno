@@ -24,35 +24,37 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
-    const loopsDagTemplate = new Template('loops-dag', {
-        dag: new DagTemplate({
-            tasks: [
-                new DagTask('A', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'A' })],
-                    }),
-                    template: printMessageTemplate,
-                }),
-                new DagTask('B', {
-                    arguments: new Arguments({
-                        parameters: [
-                            messageInputParameter.toArgumentParameter({
-                                valueFromExpressionArgs: new FromItemProperty(),
-                            }),
-                        ],
-                    }),
-                    depends: 'A',
-                    template: printMessageTemplate,
-                    withItems: ['foo', 'bar', 'baz'],
-                }),
-                new DagTask('C', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
-                    }),
-                    depends: 'B',
-                    template: printMessageTemplate,
+    const taskA = new DagTask('A', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'A' })],
+        }),
+        template: printMessageTemplate,
+    });
+
+    const taskB = new DagTask('B', {
+        arguments: new Arguments({
+            parameters: [
+                messageInputParameter.toArgumentParameter({
+                    valueFromExpressionArgs: new FromItemProperty(),
                 }),
             ],
+        }),
+        dependsExpression: taskA,
+        template: printMessageTemplate,
+        withItems: ['foo', 'bar', 'baz'],
+    });
+
+    const taskC = new DagTask('C', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
+        }),
+        dependsExpression: taskB,
+        template: printMessageTemplate,
+    });
+
+    const loopsDagTemplate = new Template('loops-dag', {
+        dag: new DagTemplate({
+            tasks: [taskA, taskB, taskC],
         }),
     });
 

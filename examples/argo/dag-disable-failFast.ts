@@ -45,30 +45,30 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
+    const taskA = new DagTask('A', {
+        template: aTemplate,
+    });
+    const taskB = new DagTask('B', {
+        dependsExpression: taskA,
+        template: bTemplate,
+    });
+    const taskC = new DagTask('C', {
+        dependsExpression: taskA,
+        template: cTemplate,
+    });
+    const taskD = new DagTask('D', {
+        dependsExpression: taskB,
+        template: dTemplate,
+    });
+    const taskE = new DagTask('E', {
+        dependsExpression: taskD,
+        template: dTemplate,
+    });
+
     const statisTemplate = new Template('statis', {
         dag: new DagTemplate({
             failFast: false,
-            tasks: [
-                new DagTask('A', {
-                    template: aTemplate,
-                }),
-                new DagTask('B', {
-                    depends: 'A',
-                    template: bTemplate,
-                }),
-                new DagTask('C', {
-                    depends: 'A',
-                    template: cTemplate,
-                }),
-                new DagTask('D', {
-                    depends: 'B',
-                    template: dTemplate,
-                }),
-                new DagTask('E', {
-                    depends: 'D',
-                    template: dTemplate,
-                }),
-            ],
+            tasks: [taskA, taskB, taskC, taskD, taskE],
         }),
     });
 

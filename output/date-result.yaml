@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  annotations:
+    workflows.argoproj.io/description: |
+      This is an example of the ways date expressions can be used.
+  generateName: date-
+  labels:
+    workflows.argoproj.io/archive-strategy: "false"
+spec:
+  arguments:
+    parameters:
+      - name: date-str
+        value: 2024-01-15
+      - name: tz
+        value: UTC
+  entrypoint: entrypoint
+  templates:
+    - inputs:
+        parameters:
+          - name: now-param
+          - name: duration-param
+          - name: date-param
+          - name: date-format-param
+          - name: timezone-param
+      name: date
+      script:
+        command:
+          - /bin/sh
+          - -e
+        image: busybox
+        source: |
+          if [ -z "{{inputs.parameters.now-param}}" ]; then echo "now failed: got '{{inputs.parameters.now-param}}'"; exit 11; fi
+          if [ "{{inputs.parameters.duration-param}}" != "5400000000000" ]; then echo "duration failed: got '{{inputs.parameters.duration-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.date-param}}" != "2024-01-15T00:00:00Z" ]; then echo "date failed: got '{{inputs.parameters.date-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.date-format-param}}" != "2024-01-15T00:00:00Z" ]; then echo "date-format failed: got '{{inputs.parameters.date-format-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.timezone-param}}" != "2024-01-15T00:00:00Z" ]; then echo "timezone failed: got '{{inputs.parameters.timezone-param}}'"; exit 15; fi
+          echo "All date function tests passed"
+    - dag:
+        tasks:
+          - arguments:
+              parameters:
+                - name: now-param
+                  value: "{{=now()}}"
+                - name: duration-param
+                  value: "{{=duration('1h30m')}}"
+                - name: date-param
+                  value: "{{=date(workflow.parameters['date-str'])}}"
+                - name: date-format-param
+                  value: "{{=date(workflow.parameters['date-str'], '2006-01-02', workflow.parameters.tz)}}"
+                - name: timezone-param
+                  value: "{{=date(workflow.parameters['date-str']).In(timezone(workflow.parameters.tz))}}"
+            name: date-task
+            template: date
+      name: entrypoint

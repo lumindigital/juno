@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(npm run build:*)",
+      "Bash(TEST_NAME=string-functions.ts npm run testExample:*)",
+      "Bash(npm run test:*)",
+      "Bash(TEST_NAME=string-function npm run testExample:*)",
+      "WebFetch(domain:expr-lang.org)",
+      "Bash(TEST_NAME=string-operator npm run testExample:*)",
+      "Bash(TEST_NAME=cast npm run testExample 2>&1 | tail -30)",
+      "Bash(TEST_NAME=cast npm run testExample 2>&1 | tail -20)",
+      "Bash(TEST_NAME=cast npm run testExample 2>&1 | tail -40)",
+      "Bash(TEST_NAME=cast npm run testExample 2>&1 | tail -15)"
+    ]
+  }
+}

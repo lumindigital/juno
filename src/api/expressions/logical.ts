@@ -6,6 +6,7 @@ import {
     LogicalExpression,
     ParenExpression,
     SimpleTemplateTag,
+    StringOperatorExpressions,
 } from './classes.js';
 import { TaskAndResult } from './types.js';
 import { getVariableReference } from './util.js';
@@ -18,7 +19,8 @@ export type LogicalExpressionInputs =
     | ParenExpression
     | DagTask
     | WorkflowStep
-    | TaskAndResult;
+    | TaskAndResult
+    | StringOperatorExpressions;
 
 export function and(inputs: LogicalExpressionInputs[]): LogicalExpression {
     let result = '';
@@ -31,7 +33,7 @@ export function and(inputs: LogicalExpressionInputs[]): LogicalExpression {
             output = (input as DagTask).name;
         } else if (input && (input as WorkflowStep)?.isWorkflowStep) {
             output = (input as WorkflowStep).name;
-        } else if (input && (input as TaskAndResult)?.task) {
+        } else if (input && (input as TaskAndResult)?.dagTaskResult) {
             output = getVariableReference(input as TaskAndResult);
         } else {
             output = (input as LogicalExpression).toString();
@@ -56,7 +58,7 @@ export function or(inputs: LogicalExpressionInputs[]): LogicalExpression {
             output = (input as DagTask).name;
         } else if (input && (input as WorkflowStep)?.isWorkflowStep) {
             output = (input as WorkflowStep).name;
-        } else if (input && (input as TaskAndResult)?.task) {
+        } else if (input && (input as TaskAndResult)?.dagTaskResult) {
             output = getVariableReference(input as TaskAndResult);
         } else {
             output = (input as LogicalExpression).toString();
@@ -73,6 +75,18 @@ export function or(inputs: LogicalExpressionInputs[]): LogicalExpression {
 export function not(input: LogicalExpressionInputs): LogicalExpression {
     if (input && (input as ParenExpression)?.isParenExpression) {
         return new LogicalExpression(`!${(input as ParenExpression).toString()}`);
+    }
+
+    if (input && (input as DagTask)?.isDagTask) {
+        return new LogicalExpression(`!( ${(input as DagTask).name} )`);
+    }
+
+    if (input && (input as WorkflowStep)?.isWorkflowStep) {
+        return new LogicalExpression(`!( ${(input as WorkflowStep).name} )`);
+    }
+
+    if (input && (input as TaskAndResult)?.dagTaskResult) {
+        return new LogicalExpression(`!( ${getVariableReference(input as TaskAndResult)} )`);
     }
 
     return new LogicalExpression(`!${paren(input as LogicalExpression).toString()}`);

@@ -9,22 +9,86 @@ export type ExpressionTemplateInputs =
     | ArithmeticExpressions
     | JsonPathExpression
     | FromItemProperty
-    | InMembershipExpression;
+    | InMembershipExpression
+    | StringFunctionExpressions
+    | StringOperatorExpressions
+    | MiscExpressions
+    | NumberExpressions
+    | MapExpressions
+    | ArrayExpressions
+    | DateExpressions;
+
+export type MiscExpressions = LenExpression | GetExpression;
+
+export type MapExpressions = KeysExpression | ValuesExpression;
+
+export type ArrayExpressions =
+    | FirstExpression
+    | LastExpression
+    | FlattenExpression
+    | ReverseExpression
+    | SortExpression
+    | UniqExpression
+    | JoinExpression
+    | ArrayConcatExpression
+    | MeanExpression
+    | MedianExpression
+    | TakeExpression
+    | AllExpression
+    | AnyExpression
+    | OneExpression
+    | NoneExpression
+    | MapExpression
+    | FilterExpression
+    | FindExpression
+    | FindIndexExpression
+    | FindLastExpression
+    | FindLastIndexExpression
+    | GroupByExpression
+    | CountExpression
+    | ReduceExpression
+    | SumExpression
+    | SortByExpression;
+
+export type DateExpressions = NowExpression | DurationExpression | DateExpression | TimezoneExpression;
+
+export type NumberExpressions =
+    MaxExpression | MinExpression | AbsExpression | CeilExpression | FloorExpression | RoundExpression;
 
 export type CastExpressions =
     | IntCastExpression
     | FloatCastExpression
     | StringCastExpression
-    | JsonCastExpression
+    | ToJsonCastExpression
+    | TypeCastExpression
+    | FromJsonCastExpression
+    | ToBase64CastExpression
+    | FromBase64CastExpression
+    | ToPairsCastExpression
+    // | FromPairsCastExpression
     | NilCoalescingExpression;
 
 export type ArithmeticExpressions =
-    | AddExpression
-    | SubtractExpression
-    | MultiplyExpression
-    | DivideExpression
-    | ModulusExpression
-    | ExponentExpression;
+    AddExpression | SubtractExpression | MultiplyExpression | DivideExpression | ModulusExpression | ExponentExpression;
+
+export type StringFunctionExpressions =
+    | LowerExpression
+    | UpperExpression
+    | TrimExpression
+    | TrimPrefixExpression
+    | TrimSuffixExpression
+    | ReplaceExpression
+    | RepeatExpression
+    | IndexOfExpression
+    | LastIndexOfExpression
+    | HasPrefixExpression
+    | HasSuffixExpression
+    | SplitExpression
+    | SplitAfterExpression;
+
+export type StringOperatorExpressions =
+    ConcatExpression | ContainsExpression | StartsWithExpression | EndsWithExpression;
+
 export class SimpleTemplateTag {
     private output: string;
     isSimpleTagExpression: boolean = true;
@@ -166,9 +230,113 @@ export class StringCastExpression {
     }
 }
 
-export class JsonCastExpression {
+export class ToJsonCastExpression {
     private output: string;
     isJsonCastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class TypeCastExpression {
+    private output: string;
+    isTypeCastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FromJsonCastExpression {
+    private output: string;
+    isFromJsonCastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ToBase64CastExpression {
+    private output: string;
+    isToBase64CastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FromBase64CastExpression {
+    private output: string;
+    isFromBase64CastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ToPairsCastExpression {
+    private output: string;
+    isToPairsCastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+// export class FromPairsCastExpression {
+//     private output: string;
+//     isFromPairsCastExpression: boolean = true;
+
+//     constructor(output: string) {
+//         this.output = output;
+//     }
+
+//     toString(): string {
+//         return this.output;
+//     }
+// }
+
+export class LenExpression {
+    private output: string;
+    isLenExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class GetExpression {
+    private output: string;
+    isGetExpression: boolean = true;
 
     constructor(output: string) {
         this.output = output;
@@ -279,6 +447,721 @@ export class ExponentExpression {
 export class InMembershipExpression {
     private output: string;
     isInMembershipExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class LowerExpression {
+    private output: string;
+    isLowerExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ConcatExpression {
+    private output: string;
+    isConcatExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class UpperExpression {
+    private output: string;
+    isUpperExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class TrimExpression {
+    private output: string;
+    isTrimExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class TrimPrefixExpression {
+    private output: string;
+    isTrimPrefixExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class TrimSuffixExpression {
+    private output: string;
+    isTrimSuffixExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ReplaceExpression {
+    private output: string;
+    isReplaceExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class RepeatExpression {
+    private output: string;
+    isRepeatExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class IndexOfExpression {
+    private output: string;
+    isIndexOfExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class LastIndexOfExpression {
+    private output: string;
+    isLastIndexOfExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class HasPrefixExpression {
+    private output: string;
+    isHasPrefixExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class HasSuffixExpression {
+    private output: string;
+    isHasSuffixExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class SplitExpression {
+    private output: string;
+    isSplitExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class SplitAfterExpression {
+    private output: string;
+    isSplitAfterExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ContainsExpression {
+    private output: string;
+    isContainsExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class StartsWithExpression {
+    private output: string;
+    isStartsWithExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class EndsWithExpression {
+    private output: string;
+    isEndsWithExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MaxExpression {
+    private output: string;
+    isMaxExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MinExpression {
+    private output: string;
+    isMinExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class AbsExpression {
+    private output: string;
+    isAbsExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class CeilExpression {
+    private output: string;
+    isCeilExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FloorExpression {
+    private output: string;
+    isFloorExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class RoundExpression {
+    private output: string;
+    isRoundExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class KeysExpression {
+    private output: string;
+    isKeysExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ValuesExpression {
+    private output: string;
+    isValuesExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FirstExpression {
+    private output: string;
+    isFirstExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class LastExpression {
+    private output: string;
+    isLastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FlattenExpression {
+    private output: string;
+    isFlattenExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ReverseExpression {
+    private output: string;
+    isReverseExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class SortExpression {
+    private output: string;
+    isSortExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class UniqExpression {
+    private output: string;
+    isUniqExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class JoinExpression {
+    private output: string;
+    isJoinExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ArrayConcatExpression {
+    private output: string;
+    isArrayConcatExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MeanExpression {
+    private output: string;
+    isMeanExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MedianExpression {
+    private output: string;
+    isMedianExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class TakeExpression {
+    private output: string;
+    isTakeExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class NowExpression {
+    private output: string;
+    isNowExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class DurationExpression {
+    private output: string;
+    isDurationExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class DateExpression {
+    private output: string;
+    isDateExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class TimezoneExpression {
+    private output: string;
+    isTimezoneExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class AllExpression {
+    private output: string;
+    isAllExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class AnyExpression {
+    private output: string;
+    isAnyExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class OneExpression {
+    private output: string;
+    isOneExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class NoneExpression {
+    private output: string;
+    isNoneExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class MapExpression {
+    private output: string;
+    isMapExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FilterExpression {
+    private output: string;
+    isFilterExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FindExpression {
+    private output: string;
+    isFindExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FindIndexExpression {
+    private output: string;
+    isFindIndexExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FindLastExpression {
+    private output: string;
+    isFindLastExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class FindLastIndexExpression {
+    private output: string;
+    isFindLastIndexExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class GroupByExpression {
+    private output: string;
+    isGroupByExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class CountExpression {
+    private output: string;
+    isCountExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class ReduceExpression {
+    private output: string;
+    isReduceExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class SumExpression {
+    private output: string;
+    isSumExpression: boolean = true;
+
+    constructor(output: string) {
+        this.output = output;
+    }
+
+    toString(): string {
+        return this.output;
+    }
+}
+
+export class SortByExpression {
+    private output: string;
+    isSortByExpression: boolean = true;
 
     constructor(output: string) {
         this.output = output;

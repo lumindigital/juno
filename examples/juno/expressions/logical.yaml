@@ -46,9 +46,10 @@ spec:
           - '/bin/sh'
           - '-e'
         image: busybox
-        source: >
-          if [ "{{inputs.parameters.and-param}}" != true ]; then exit 12; fi
-                              if [ "{{inputs.parameters.or-param}}" != true ]; then exit 13; fi
-                              if [ "{{inputs.parameters.paren-param}}" != true ]; then exit 14; fi
-                              if [ "{{inputs.parameters.not-param}}" != true ]; then exit 15; fi
-                              if [ "{{inputs.parameters.combined-param}}" != true ]; then exit 16; fi
+        source: |
+          if [ "{{inputs.parameters.and-param}}" != "true" ]; then echo "and failed: got '{{inputs.parameters.and-param}}'"; exit 12; fi
+          if [ "{{inputs.parameters.or-param}}" != "true" ]; then echo "or failed: got '{{inputs.parameters.or-param}}'"; exit 13; fi
+          if [ "{{inputs.parameters.paren-param}}" != "true" ]; then echo "paren failed: got '{{inputs.parameters.paren-param}}'"; exit 14; fi
+          if [ "{{inputs.parameters.not-param}}" != "true" ]; then echo "not failed: got '{{inputs.parameters.not-param}}'"; exit 15; fi
+          if [ "{{inputs.parameters.combined-param}}" != "true" ]; then echo "combined failed: got '{{inputs.parameters.combined-param}}'"; exit 16; fi
+          echo "All logical tests passed"

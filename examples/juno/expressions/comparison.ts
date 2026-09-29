@@ -7,6 +7,7 @@ import {
     greaterThanOrEqual,
     lessThan,
     lessThanOrEqual,
+    matches,
     notEquals,
 } from '../../../src/api/expressions/comparison';
 import { expressionTag, hyphenateExpressionArgs, simpleTag } from '../../../src/api/expressions/tag';
@@ -28,11 +29,13 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
     const lessThanTernaryParameter = new InputParameter('less-than-ternary-param');
     const greaterThanEqualTernaryParameter = new InputParameter('greater-than-equal-ternary-param');
     const lessThanEqualTernaryParameter = new InputParameter('less-than-equal-ternary-param');
+    const matchesTernaryParameter = new InputParameter('matches-ternary-param');
 
     const trueParam = new WorkflowParameter('true-param', { value: 'true' });
     const falseParam = new WorkflowParameter('false-param', { value: 'false' });
     const oneParam = new WorkflowParameter('one-param', { value: '1' });
     const twoParam = new WorkflowParameter('two-param', { value: '2' });
+    const regexParam = new WorkflowParameter('regex-param', { value: '^t.*e$' });
 
     const comparisonTemplate = new Template('comparison', {
         inputs: new Inputs({
@@ -43,16 +46,18 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                 lessThanTernaryParameter,
                 greaterThanEqualTernaryParameter,
                 lessThanEqualTernaryParameter,
+                matchesTernaryParameter,
             ],
         }),
         script: new Script({
             command: ['/bin/sh', '-e'],
-            source: `if [ "${simpleTag(equalsTernaryParameters)}" != true ]; then exit 12; fi
-                     if [ "${simpleTag(notEqualsTernaryParameter)}" != true ]; then exit 13; fi
-                     if [ "${simpleTag(greaterThanTernaryParameter)}" != true ]; then exit 14; fi
-                     if [ "${simpleTag(lessThanTernaryParameter)}" != true ]; then exit 15; fi
-                     if [ "${simpleTag(greaterThanEqualTernaryParameter)}" != true ]; then exit 16; fi
-                     if [ "${simpleTag(lessThanEqualTernaryParameter)}" != true ]; then exit 17; fi
+            source: `if [ "${simpleTag(equalsTernaryParameters)}" != "true" ]; then echo "equals failed: got '${simpleTag(equalsTernaryParameters)}'"; exit 12; fi
+if [ "${simpleTag(notEqualsTernaryParameter)}" != "true" ]; then echo "notEquals failed: got '${simpleTag(notEqualsTernaryParameter)}'"; exit 13; fi
+if [ "${simpleTag(greaterThanTernaryParameter)}" != "true" ]; then echo "greaterThan failed: got '${simpleTag(greaterThanTernaryParameter)}'"; exit 14; fi
+if [ "${simpleTag(lessThanTernaryParameter)}" != "true" ]; then echo "lessThan failed: got '${simpleTag(lessThanTernaryParameter)}'"; exit 15; fi
+if [ "${simpleTag(greaterThanEqualTernaryParameter)}" != "true" ]; then echo "greaterThanEqual failed: got '${simpleTag(greaterThanEqualTernaryParameter)}'"; exit 16; fi
+if [ "${simpleTag(lessThanEqualTernaryParameter)}" != "true" ]; then echo "lessThanEqual failed: got '${simpleTag(lessThanEqualTernaryParameter)}'"; exit 17; fi
+echo "All comparison tests passed"
 `,
             image: 'busybox',
         }),
@@ -133,6 +138,18 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
                                     ),
                                 ),
                             }),
+                            matchesTernaryParameter.toArgumentParameter({
+                                valueFromExpressionTag: expressionTag(
+                                    ternary(
+                                        matches(
+                                            hyphenateExpressionArgs(trueParam),
+                                            hyphenateExpressionArgs(regexParam),
+                                        ),
+                                        'true',
+                                        'false',
+                                    ),
+                                ),
+                            }),
                         ],
                     }),
                     template: comparisonTemplate,
@@ -153,7 +170,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         },
         spec: new WorkflowSpec({
             arguments: new WorkflowArguments({
-                parameters: [trueParam, falseParam, oneParam, twoParam],
+                parameters: [trueParam, falseParam, oneParam, twoParam, regexParam],
             }),
             entrypoint: entryPointTemplate,
         }),

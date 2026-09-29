@@ -291,20 +291,14 @@ export class WorkflowSpec {
                             );
                         }
                     } else if (
-                        (task.dependsExpression as TaskAndResult).task !== undefined &&
+                        (task.dependsExpression as TaskAndResult).dagTaskResult !== undefined &&
                         (task.dependsExpression as TaskAndResult).result !== undefined
                     ) {
                         const taskAndResult = task.dependsExpression as TaskAndResult;
 
-                        if ((taskAndResult.task as WorkflowStep).isWorkflowStep !== undefined) {
+                        if (!template.dag.tasks.find((x) => x.name === taskAndResult.dagTaskResult.name)) {
                             throw new Error(
-                                `Dependency on ${taskAndResult.task.name} is not valid in a dag task ${task.name} on template ${template.name}`,
-                            );
-                        }
-
-                        if (!template.dag.tasks.find((x) => x.name === taskAndResult.task.name)) {
-                            throw new Error(
-                                `Dependency ${taskAndResult.task.name} in dag task ${task.name} is not included in template ${template.name}`,
+                                `Dependency ${taskAndResult.dagTaskResult.name} in dag task ${task.name} is not included in template ${template.name}`,
                             );
                         }
                     } else if ((task.dependsExpression as WorkflowStep).isWorkflowStep) {

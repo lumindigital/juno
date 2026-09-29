@@ -15,28 +15,28 @@
     "yaml": "2"
   },
   "devDependencies": {
-    "@commitlint/cli": "20",
+    "@commitlint/cli": "21",
+    "@commitlint/config-conventional": "^21.0.1",
     "@eslint/eslintrc": "3",
-    "@eslint/js": "9",
+    "@eslint/js": "10",
     "@oclif/prettier-config": "0",
     "@oclif/test": "4",
     "@types/chai": "5",
     "@types/mocha": "10",
-    "@types/node": "25",
-    "c8": "11",
+    "@types/node": "26",
+    "c8": "12",
     "chai": "6",
     "eslint": "10",
-    "eslint-config-oclif": "6",
+    "eslint-config-oclif": "7",
     "eslint-config-oclif-typescript": "3",
     "eslint-config-prettier": "10",
     "mocha": "11",
     "oclif": "4",
     "prettier": "3",
-    "semantic-release": "25.0.3",
     "shx": "0.4.0",
     "swagger-typescript-api": "13",
     "ts-node": "10",
-    "typescript": "5",
+    "typescript": "6",
     "typescript-eslint": "8"
   },
   "engines": {
@@ -80,12 +80,17 @@
     "postpack": "shx rm -f oclif.manifest.json",
     "prepack": "oclif manifest && oclif readme",
     "pretest": "npm run build",
-    "test": "c8 --reporter=lcov --report-dir ./test-output/coverage mocha --forbid-only \"test/**/*.test.ts\"",
-    "testExample": "`# USE TEST_NAME=NAME_OF_TEST in front of this command to run a single test` mocha ./test/examples/test-harness.test.ts",
+    "test": "c8 --reporter=lcov --report-dir ./test-output/coverage mocha --forbid-only \"test/**/*.test.ts\" --reporter-option maxDiffSize=0",
+    "testExample": "`# USE TEST_NAME=NAME_OF_TEST in front of this command to run a single test USE OUTPUT_YAML=true to write the yaml to disk` mocha ./test/examples/test-harness.test.ts --reporter-option maxDiffSize=0",
     "version": "oclif readme && git add README.md",
     "interfaces": "swagger-typescript-api -p ../argo-workflows/api/openapi-spec/swagger.json -o ./src/workflow-interfaces --modular --sort-types --clean-output --no-client --patch",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "precommit": "pre-commit run --all-files"
   },
-  "types": "dist/index.d.ts"
+  "types": "dist/index.d.ts",
+  "overrides": {
+    "c8": {
+      "yargs": "^18.0.0"
+    }
+  }
 }

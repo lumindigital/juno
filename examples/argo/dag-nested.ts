@@ -9,6 +9,7 @@ import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
+import { and } from '../../src/api/expressions/logical';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const messageInputParameter = new InputParameter('message');
@@ -23,53 +24,56 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
-    const nestedDiamondTemplate = new Template('nested-diamond', {
-        dag: new DagTemplate({
-            tasks: [
-                new DagTask('A', {
-                    arguments: new Arguments({
-                        parameters: [
-                            messageInputParameter.toArgumentParameter({
-                                value: `${simpleTag(messageInputParameter)}A`,
-                            }),
-                        ],
-                    }),
-                    template: echoTemplate,
-                }),
-                new DagTask('B', {
-                    arguments: new Arguments({
-                        parameters: [
-                            messageInputParameter.toArgumentParameter({
-                                value: `${simpleTag(messageInputParameter)}B`,
-                            }),
-                        ],
-                    }),
-                    depends: 'A',
-                    template: echoTemplate,
-                }),
-                new DagTask('C', {
-                    arguments: new Arguments({
-                        parameters: [
-                            messageInputParameter.toArgumentParameter({
-                                value: `${simpleTag(messageInputParameter)}C`,
-                            }),
-                        ],
-                    }),
-                    depends: 'A',
-                    template: echoTemplate,
-                }),
-                new DagTask('D', {
-                    arguments: new Arguments({
-                        parameters: [
-                            messageInputParameter.toArgumentParameter({
-                                value: `${simpleTag(messageInputParameter)}D`,
-                            }),
-                        ],
-                    }),
-                    depends: 'B && C',
-                    template: echoTemplate,
+    const taskA = new DagTask('A', {
+        arguments: new Arguments({
+            parameters: [
+                messageInputParameter.toArgumentParameter({
+                    value: `${simpleTag(messageInputParameter)}A`,
                 }),
             ],
+        }),
+        template: echoTemplate,
+    });
+
+    const taskB = new DagTask('B', {
+        arguments: new Arguments({
+            parameters: [
+                messageInputParameter.toArgumentParameter({
+                    value: `${simpleTag(messageInputParameter)}B`,
+                }),
+            ],
+        }),
+        dependsExpression: taskA,
+        template: echoTemplate,
+    });
+
+    const taskC = new DagTask('C', {
+        arguments: new Arguments({
+            parameters: [
+                messageInputParameter.toArgumentParameter({
+                    value: `${simpleTag(messageInputParameter)}C`,
+                }),
+            ],
+        }),
+        dependsExpression: taskA,
+        template: echoTemplate,
+    });
+
+    const taskD = new DagTask('D', {
+        arguments: new Arguments({
+            parameters: [
+                messageInputParameter.toArgumentParameter({
+                    value: `${simpleTag(messageInputParameter)}D`,
+                }),
+            ],
+        }),
+        dependsExpression: and([taskB, taskC]),
+        template: echoTemplate,
+    });
+
+    const nestedDiamondTemplate = new Template('nested-diamond', {
+        dag: new DagTemplate({
+            tasks: [taskA, taskB, taskC, taskD],
         }),
         inputs: new Inputs({
             parameters: [messageInputParameter],
@@ -100,7 +104,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         arguments: new Arguments({
             parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
         }),
-        depends: 'B && C',
+        dependsExpression: and([dagTaskB, dagTaskC]),
         template: nestedDiamondTemplate,
     });
 

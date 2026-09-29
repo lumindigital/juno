@@ -1,6 +1,16 @@
 import { expect } from 'chai';
 import { DagTask } from '../../../src/api/dag-task';
-import { asFloat, asInt, asString, toJson } from '../../../src/api/expressions/cast';
+import {
+    asFloat,
+    asInt,
+    asString,
+    asType,
+    fromBase64,
+    fromJson,
+    toBase64,
+    toJson,
+    toPairs,
+} from '../../../src/api/expressions/cast';
 import { hyphenateExpressionArgs } from '../../../src/api/expressions/tag';
 import { OutputParameter } from '../../../src/api/parameter';
 
@@ -35,12 +45,12 @@ describe('cast tests', (): void => {
     describe('toJson', (): void => {
         it('returns successfully if expressionArg', (): void => {
             const result = toJson(hyphenatedExpressionArgs);
-            expect(result.toString()).to.equal(`toJson(tasks['A-1'].outputs.parameters['output-1'])`);
+            expect(result.toString()).to.equal(`toJSON(tasks['A-1'].outputs.parameters['output-1'])`);
         });
 
         it('returns successfully if string', (): void => {
             const result = toJson({ string: '{}' });
-            expect(result.toString()).to.equal(`toJson({})`);
+            expect(result.toString()).to.equal(`toJSON({})`);
         });
     });
 
@@ -53,6 +63,66 @@ describe('cast tests', (): void => {
         it('returns successfully if string', (): void => {
             const result = asString({ string: 'A' });
             expect(result.toString()).to.equal(`string(A)`);
+        });
+    });
+
+    describe('fromJson', (): void => {
+        it('returns successfully if expressionArg', (): void => {
+            const result = fromJson(hyphenatedExpressionArgs);
+            expect(result.toString()).to.equal(`fromJSON(tasks['A-1'].outputs.parameters['output-1'])`);
+        });
+
+        it('returns successfully if string', (): void => {
+            const result = fromJson({ string: '{"key": "value"}' });
+            expect(result.toString()).to.equal(`fromJSON({"key": "value"})`);
+        });
+    });
+
+    describe('asType', (): void => {
+        it('returns successfully if expressionArg', (): void => {
+            const result = asType(hyphenatedExpressionArgs);
+            expect(result.toString()).to.equal(`type(tasks['A-1'].outputs.parameters['output-1'])`);
+        });
+
+        it('returns successfully if string', (): void => {
+            const result = asType({ string: '42' });
+            expect(result.toString()).to.equal(`type(42)`);
+        });
+    });
+
+    describe('toBase64', (): void => {
+        it('returns successfully if expressionArg', (): void => {
+            const result = toBase64(hyphenatedExpressionArgs);
+            expect(result.toString()).to.equal(`toBase64(tasks['A-1'].outputs.parameters['output-1'])`);
+        });
+
+        it('returns successfully if string', (): void => {
+            const result = toBase64({ string: '"hello"' });
+            expect(result.toString()).to.equal(`toBase64("hello")`);
+        });
+    });
+
+    describe('fromBase64', (): void => {
+        it('returns successfully if expressionArg', (): void => {
+            const result = fromBase64(hyphenatedExpressionArgs);
+            expect(result.toString()).to.equal(`fromBase64(tasks['A-1'].outputs.parameters['output-1'])`);
+        });
+
+        it('returns successfully if string', (): void => {
+            const result = fromBase64({ string: '"aGVsbG8="' });
+            expect(result.toString()).to.equal(`fromBase64("aGVsbG8=")`);
+        });
+    });
+
+    describe('toPairs', (): void => {
+        it('returns successfully if expressionArg', (): void => {
+            const result = toPairs(fromJson(hyphenatedExpressionArgs));
+            expect(result.toString()).to.equal(`toPairs(fromJSON(tasks['A-1'].outputs.parameters['output-1']))`);
+        });
+
+        it('returns successfully if string', (): void => {
+            const result = toPairs({ string: 'myMap' });
+            expect(result.toString()).to.equal(`toPairs(myMap)`);
         });
     });
 });

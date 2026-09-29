@@ -9,6 +9,7 @@ import { Template } from '../../src/api/template';
 import { Workflow } from '../../src/api/workflow';
 import { WorkflowSpec } from '../../src/api/workflow-spec';
 import { IoArgoprojWorkflowV1Alpha1Workflow } from '../../src/workflow-interfaces/data-contracts';
+import { and } from '../../src/api/expressions/logical';
 
 export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Workflow> {
     const exitTemplate = new Template('exit', {
@@ -32,41 +33,44 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         }),
     });
 
+    const taskA = new DagTask('A', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'A' })],
+        }),
+        onExit: exitTemplate,
+        template: echoTemplate,
+    });
+
+    const taskB = new DagTask('B', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'B' })],
+        }),
+        dependsExpression: taskA,
+        onExit: exitTemplate,
+        template: echoTemplate,
+    });
+
+    const taskC = new DagTask('C', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
+        }),
+        dependsExpression: taskA,
+        onExit: exitTemplate,
+        template: echoTemplate,
+    });
+
+    const taskD = new DagTask('D', {
+        arguments: new Arguments({
+            parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
+        }),
+        dependsExpression: and([taskB, taskC]),
+        onExit: exitTemplate,
+        template: echoTemplate,
+    });
+
     const mainTemplate = new Template('main', {
         dag: new DagTemplate({
-            tasks: [
-                new DagTask('A', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'A' })],
-                    }),
-                    onExit: exitTemplate,
-                    template: echoTemplate,
-                }),
-                new DagTask('B', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'B' })],
-                    }),
-                    depends: 'A',
-                    onExit: exitTemplate,
-                    template: echoTemplate,
-                }),
-                new DagTask('C', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'C' })],
-                    }),
-                    depends: 'A',
-                    onExit: exitTemplate,
-                    template: echoTemplate,
-                }),
-                new DagTask('D', {
-                    arguments: new Arguments({
-                        parameters: [messageInputParameter.toArgumentParameter({ value: 'D' })],
-                    }),
-                    depends: 'B && C',
-                    onExit: exitTemplate,
-                    template: echoTemplate,
-                }),
-            ],
+            tasks: [taskA, taskB, taskC, taskD],
         }),
     });
 
