@@ -31,7 +31,7 @@
     "eslint-config-oclif-typescript": "3",
     "eslint-config-prettier": "10",
     "mocha": "11",
-    "oclif": "4",
+    "oclif": "6",
     "prettier": "3",
     "shx": "0.4.0",
     "swagger-typescript-api": "13",
