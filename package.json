@@ -20,7 +20,7 @@
     "@eslint/eslintrc": "3",
     "@eslint/js": "10",
     "@oclif/prettier-config": "0",
-    "@oclif/test": "4",
+    "@oclif/test": "5",
     "@types/chai": "5",
     "@types/mocha": "10",
     "@types/node": "26",
