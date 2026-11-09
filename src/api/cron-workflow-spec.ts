@@ -8,8 +8,7 @@ import { WorkflowSpec } from './workflow-spec.js';
 export class CronWorkflowSpec {
     concurrencyPolicy?: string;
     failedJobsHistoryLimit?: number;
-    schedule?: string;
-    schedules?: string[];
+    schedules!: string[];
     startingDeadlineSeconds?: number;
     stopStrategy?: IoArgoprojWorkflowV1Alpha1StopStrategy;
     successfulJobsHistoryLimit?: number;
@@ -27,7 +26,6 @@ export class CronWorkflowSpec {
         return {
             concurrencyPolicy: this.concurrencyPolicy,
             failedJobsHistoryLimit: this.failedJobsHistoryLimit,
-            schedule: this.schedule,
             schedules: this.schedules,
             startingDeadlineSeconds: this.startingDeadlineSeconds,
             stopStrategy: this.stopStrategy,

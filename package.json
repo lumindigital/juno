@@ -83,7 +83,7 @@
     "test": "c8 --reporter=lcov --report-dir ./test-output/coverage mocha --forbid-only \"test/**/*.test.ts\" --reporter-option maxDiffSize=0",
     "testExample": "`# USE TEST_NAME=NAME_OF_TEST in front of this command to run a single test USE OUTPUT_YAML=true to write the yaml to disk` mocha ./test/examples/test-harness.test.ts --reporter-option maxDiffSize=0",
     "version": "oclif readme && git add README.md",
-    "interfaces": "swagger-typescript-api -p ../argo-workflows/api/openapi-spec/swagger.json -o ./src/workflow-interfaces --modular --sort-types --clean-output --no-client --patch",
+    "interfaces": "swagger-typescript-api generate -p ../argo-workflows/api/openapi-spec/swagger.json -o ./src/workflow-interfaces --modular --sort-types --clean-output --no-client --patch",
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
     "precommit": "pre-commit run --all-files"
   },

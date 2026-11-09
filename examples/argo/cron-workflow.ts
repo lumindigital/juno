@@ -22,7 +22,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Cron
         spec: new CronWorkflowSpec({
             concurrencyPolicy: 'Replace',
             failedJobsHistoryLimit: 4,
-            schedule: '* * * * *',
+            schedules: ['* * * * *'],
             startingDeadlineSeconds: 0,
             successfulJobsHistoryLimit: 4,
             suspend: false,

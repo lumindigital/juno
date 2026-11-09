@@ -23,7 +23,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Cron
             name: 'sleep-when',
         },
         spec: new CronWorkflowSpec({
-            schedule: '* * * * *',
+            schedules: ['* * * * *'],
             concurrencyPolicy: 'Allow',
             when: expressionTag(
                 or([

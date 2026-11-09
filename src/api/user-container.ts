@@ -2,6 +2,7 @@ import {
     IoArgoprojWorkflowV1Alpha1UserContainer,
     IoK8SApiCoreV1ContainerPort,
     IoK8SApiCoreV1ContainerResizePolicy,
+    IoK8SApiCoreV1ContainerRestartRule,
     IoK8SApiCoreV1EnvFromSource,
     IoK8SApiCoreV1Lifecycle,
     IoK8SApiCoreV1Probe,
@@ -28,6 +29,7 @@ export class UserContainer {
     resizePolicy?: IoK8SApiCoreV1ContainerResizePolicy[];
     resources?: IoK8SApiCoreV1ResourceRequirements;
     restartPolicy?: string;
+    restartPolicyRules?: IoK8SApiCoreV1ContainerRestartRule[];
     securityContext?: IoK8SApiCoreV1SecurityContext;
     startupProbe?: IoK8SApiCoreV1Probe;
     stdin?: boolean;
@@ -61,6 +63,7 @@ export class UserContainer {
             resizePolicy: this.resizePolicy,
             resources: this.resources,
             restartPolicy: this.restartPolicy,
+            restartPolicyRules: this.restartPolicyRules,
             securityContext: this.securityContext,
             startupProbe: this.startupProbe,
             stdin: this.stdin,

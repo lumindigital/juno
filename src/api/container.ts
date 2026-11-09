@@ -2,6 +2,7 @@ import {
     IoK8SApiCoreV1Container,
     IoK8SApiCoreV1ContainerPort,
     IoK8SApiCoreV1ContainerResizePolicy,
+    IoK8SApiCoreV1ContainerRestartRule,
     IoK8SApiCoreV1EnvFromSource,
     IoK8SApiCoreV1Lifecycle,
     IoK8SApiCoreV1Probe,
@@ -27,6 +28,7 @@ export class Container {
     resizePolicy?: IoK8SApiCoreV1ContainerResizePolicy[];
     resources?: IoK8SApiCoreV1ResourceRequirements;
     restartPolicy?: string;
+    restartPolicyRules?: IoK8SApiCoreV1ContainerRestartRule[];
     securityContext?: IoK8SApiCoreV1SecurityContext;
     startupProbe?: IoK8SApiCoreV1Probe;
     stdin?: boolean;
@@ -55,8 +57,10 @@ export class Container {
             name: this.name,
             ports: this.ports,
             readinessProbe: this.readinessProbe,
+            resizePolicy: this.resizePolicy,
             resources: this.resources,
             restartPolicy: this.restartPolicy,
+            restartPolicyRules: this.restartPolicyRules,
             securityContext: this.securityContext,
             startupProbe: this.startupProbe,
             stdin: this.stdin,

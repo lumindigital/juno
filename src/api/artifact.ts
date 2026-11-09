@@ -9,6 +9,7 @@ import {
     IoArgoprojWorkflowV1Alpha1HDFSArtifact,
     IoArgoprojWorkflowV1Alpha1HTTPArtifact,
     IoArgoprojWorkflowV1Alpha1OSSArtifact,
+    IoArgoprojWorkflowV1Alpha1PluginArtifact,
     IoArgoprojWorkflowV1Alpha1RawArtifact,
     IoArgoprojWorkflowV1Alpha1S3Artifact,
 } from '../workflow-interfaces/data-contracts.js';
@@ -35,6 +36,7 @@ export class Artifact {
     optional?: boolean;
     oss?: IoArgoprojWorkflowV1Alpha1OSSArtifact;
     path?: string;
+    plugin?: IoArgoprojWorkflowV1Alpha1PluginArtifact;
     raw?: IoArgoprojWorkflowV1Alpha1RawArtifact;
     recurseMode?: boolean;
     s3?: IoArgoprojWorkflowV1Alpha1S3Artifact;
@@ -78,6 +80,7 @@ export class Artifact {
             optional: this.optional,
             oss: this.oss,
             path: this.path,
+            plugin: this.plugin,
             raw: this.raw,
             recurseMode: this.recurseMode,
             s3: this.s3,

@@ -26,7 +26,6 @@ spec:
       maxAge: "10s"
       cache:
         configMap:
-          key: 'cache-key'
           name: cache-config
     container:
       image: busybox

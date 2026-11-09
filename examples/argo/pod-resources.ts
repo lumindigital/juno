@@ -15,16 +15,19 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
 
     return new Workflow({
         metadata: {
-            generateName: 'synchronization-wf-level-',
+            generateName: 'pod-resources-',
         },
         spec: new WorkflowSpec({
             entrypoint: helloWorldTemplate,
-            synchronization: {
-                semaphore: {
-                    configMapKeyRef: {
-                        key: 'workflow',
-                        name: 'my-config',
-                    },
+            // Applies to all pods in the workflow, unless overridden at the template level.
+            podResources: {
+                limits: {
+                    cpu: '1',
+                    memory: '512Mi',
+                },
+                requests: {
+                    cpu: '100m',
+                    memory: '64Mi',
                 },
             },
         }),

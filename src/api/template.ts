@@ -14,7 +14,9 @@ import {
     IoArgoprojWorkflowV1Alpha1Template,
     IoK8SApiCoreV1Affinity,
     IoK8SApiCoreV1HostAlias,
+    IoK8SApiCoreV1PodResourceClaim,
     IoK8SApiCoreV1PodSecurityContext,
+    IoK8SApiCoreV1ResourceRequirements,
     IoK8SApiCoreV1Toleration,
     IoK8SApiCoreV1Volume,
     IoK8SApimachineryPkgUtilIntstrIntOrString,
@@ -24,6 +26,7 @@ import { Container } from './container.js';
 import { DagTemplate } from './dag-template.js';
 import { Inputs } from './inputs.js';
 import { Outputs } from './outputs.js';
+import { validatePodResources, validateResourceClaimSources } from './pod-resources.js';
 import { InputParameter, WorkflowParameter } from './parameter.js';
 import { Script } from './script.js';
 import { UserContainer } from './user-container.js';
@@ -56,10 +59,22 @@ export class BaseTemplate {
     nodeSelector?: Record<string, string>;
     outputs?: Outputs;
     parallelism?: number;
+    /** Maximum time the node may spend pending before the controller fails it. May not be applied to steps or dag templates. */
+    pendingTimeout?: string;
     plugin?: IoArgoprojWorkflowV1Alpha1Plugin;
+    /**
+     * Pod-level resource requests and limits for this template's pod. Overrides the workflow-level podResources.
+     * Only cpu, memory and hugepages-* are allowed. Requires the PodLevelResources feature gate.
+     */
+    podResources?: IoK8SApiCoreV1ResourceRequirements;
     podSpecPatch?: string;
     priorityClassName?: string;
     resource?: IoArgoprojWorkflowV1Alpha1ResourceTemplate;
+    /**
+     * Dynamic Resource Allocation claims for this template's pod. Replaces the workflow-level resourceClaims as a whole.
+     * Only supported on templates that create a pod (container, containerSet, script, resource, data).
+     */
+    resourceClaims?: IoK8SApiCoreV1PodResourceClaim[];
     retryStrategy?: IoArgoprojWorkflowV1Alpha1RetryStrategy;
     schedulerName?: string;
     script?: Script;
@@ -82,10 +97,13 @@ export class BaseTemplate {
     toTemplate(): IoArgoprojWorkflowV1Alpha1Template {
         const steps = this.steps?.map((x) => x.map((y) => y.toWorkflowStep(this.name ?? '')));
         this.validateEnvironmentVariables();
+        this.validatePodResources();
+        this.validateResourceClaims();
 
         return {
             activeDeadlineSeconds: this.activeDeadlineSeconds,
             affinity: this.affinity,
+            annotations: this.annotations,
             archiveLocation: this.archiveLocation,
             automountServiceAccountToken: this.automountServiceAccountToken,
             container: this.container?.toContainer(),
@@ -106,10 +124,13 @@ export class BaseTemplate {
             nodeSelector: this.nodeSelector,
             outputs: this.outputs?.toOutputs(`template-${this.name ?? ''}`),
             parallelism: this.parallelism,
+            pendingTimeout: this.pendingTimeout,
             plugin: this.plugin,
+            podResources: this.podResources,
             podSpecPatch: this.podSpecPatch,
             priorityClassName: this.priorityClassName,
             resource: this.resource,
+            resourceClaims: this.resourceClaims,
             retryStrategy: this.retryStrategy,
             schedulerName: this.schedulerName,
             script: this.script?.toScript(),
@@ -123,6 +144,53 @@ export class BaseTemplate {
             tolerations: this.tolerations,
             volumes: this.volumes,
         };
+    }
+
+    /**
+     * Returns the template type the same way Argo does, or undefined when no type is set (e.g. templateDefaults).
+     */
+    getTemplateType(): string | undefined {
+        if (this.container) return 'Container';
+        if (this.containerSet) return 'ContainerSet';
+        if (this.steps) return 'Steps';
+        if (this.dag) return 'DAG';
+        if (this.script) return 'Script';
+        if (this.resource) return 'Resource';
+        if (this.data) return 'Data';
+        if (this.suspend) return 'Suspend';
+        if (this.http) return 'HTTP';
+        if (this.plugin) return 'Plugin';
+        return undefined;
+    }
+
+    validatePodResources() {
+        if (!this.podResources) {
+            return;
+        }
+
+        const type = this.getTemplateType();
+        if (type === 'HTTP' || type === 'Plugin') {
+            // These run on the shared agent pod, so a per-template pod budget can never be applied.
+            throw new Error(`templates.${this.name}.podResources is not supported for ${type} templates`);
+        }
+
+        validatePodResources(`templates.${this.name}.podResources`, this.podResources);
+    }
+
+    validateResourceClaims() {
+        if (!this.resourceClaims || this.resourceClaims.length === 0) {
+            return;
+        }
+
+        const type = this.getTemplateType();
+        const podTypes = ['Container', 'ContainerSet', 'Script', 'Resource', 'Data'];
+        if (type !== undefined && !podTypes.includes(type)) {
+            throw new Error(
+                `templates.${this.name}.resourceClaims is not supported for ${type} templates, which do not create a pod`,
+            );
+        }
+
+        validateResourceClaimSources(`templates.${this.name}.resourceClaims`, this.resourceClaims);
     }
 
     validateEnvironmentVariables() {

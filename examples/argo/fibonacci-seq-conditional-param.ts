@@ -150,7 +150,6 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         memoize: {
             cache: {
                 configMap: {
-                    key: 'fibonacci-cache',
                     name: 'fibonacci-m',
                 },
             },

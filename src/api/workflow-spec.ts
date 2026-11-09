@@ -1,6 +1,7 @@
 import {
     IoArgoprojWorkflowV1Alpha1ArtifactRepositoryRef,
     IoArgoprojWorkflowV1Alpha1ExecutorConfig,
+    IoArgoprojWorkflowV1Alpha1ExecutorPlugin,
     IoArgoprojWorkflowV1Alpha1Metadata,
     IoArgoprojWorkflowV1Alpha1Metrics,
     IoArgoprojWorkflowV1Alpha1PodGC,
@@ -16,13 +17,16 @@ import {
     IoK8SApiCoreV1LocalObjectReference,
     IoK8SApiCoreV1PersistentVolumeClaim,
     IoK8SApiCoreV1PodDNSConfig,
+    IoK8SApiCoreV1PodResourceClaim,
     IoK8SApiCoreV1PodSecurityContext,
+    IoK8SApiCoreV1ResourceRequirements,
     IoK8SApiCoreV1Toleration,
     IoK8SApiCoreV1Volume,
     IoK8SApiPolicyV1PodDisruptionBudgetSpec,
 } from '../workflow-interfaces/data-contracts.js';
 import { WorkflowArguments } from './arguments.js';
 import { LifecycleHook } from './lifecycle-hook.js';
+import { validatePodResources, validateResourceClaimSources } from './pod-resources.js';
 import { Template, TemplateDefaults } from './template.js';
 import { WorkflowTemplateReference } from './workflow-template-reference.js';
 import { ArgumentParameter, InputParameter } from './parameter.js';
@@ -52,6 +56,8 @@ export class WorkflowSpec {
      */
     entrypoint?: Template;
     executor?: IoArgoprojWorkflowV1Alpha1ExecutorConfig;
+    /** Workflow-level executor plugins. Requires the ARGO_WORKFLOW_LEVEL_EXECUTOR_PLUGINS feature gate on the controller. */
+    executorPlugins?: IoArgoprojWorkflowV1Alpha1ExecutorPlugin[];
 
     /**
      * An array of lifecycle hooks.
@@ -73,7 +79,17 @@ export class WorkflowSpec {
     podGC?: IoArgoprojWorkflowV1Alpha1PodGC;
     podMetadata?: IoArgoprojWorkflowV1Alpha1Metadata;
     podPriorityClassName?: string;
+    /**
+     * Pod-level resource requests and limits applied to every workflow pod unless a template sets its own.
+     * Only cpu, memory and hugepages-* are allowed. Requires the PodLevelResources feature gate.
+     */
+    podResources?: IoK8SApiCoreV1ResourceRequirements;
     podSpecPatch?: string;
+    /**
+     * Dynamic Resource Allocation claims applied to every pod this workflow runs, unless a template sets its own.
+     * Requires the DynamicResourceAllocation feature gate.
+     */
+    resourceClaims?: IoK8SApiCoreV1PodResourceClaim[];
     retryStrategy?: IoArgoprojWorkflowV1Alpha1RetryStrategy;
     schedulerName?: string;
     securityContext?: IoK8SApiCoreV1PodSecurityContext;
@@ -140,6 +156,9 @@ export class WorkflowSpec {
     }
 
     validateWorkflow() {
+        validatePodResources('spec.podResources', this.podResources);
+        validateResourceClaimSources('spec.resourceClaims', this.resourceClaims);
+
         const templates = [...(this.additionalTemplates ?? [])];
 
         // Ignore adding entrypoint if workflowTemplateRef is set as the template does not need to be included.
@@ -457,6 +476,7 @@ export class WorkflowSpec {
             dnsPolicy: this.dnsPolicy,
             entrypoint: this.entrypoint ? this.entrypoint.name : undefined,
             executor: this.executor,
+            executorPlugins: this.executorPlugins,
             hooks: this.hooks ? LifecycleHook.convertLifecycleHooksRecord(this.hooks) : undefined,
             hostAliases: this.hostAliases,
             hostNetwork: this.hostNetwork,
@@ -469,7 +489,9 @@ export class WorkflowSpec {
             podGC: this.podGC,
             podMetadata: this.podMetadata,
             podPriorityClassName: this.podPriorityClassName,
+            podResources: this.podResources,
             podSpecPatch: this.podSpecPatch,
+            resourceClaims: this.resourceClaims,
             retryStrategy: this.retryStrategy,
             schedulerName: this.schedulerName,
             securityContext: this.securityContext,
