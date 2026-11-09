@@ -38,7 +38,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Cron
             name: 'dag-inline',
         },
         spec: new CronWorkflowSpec({
-            schedule: '*/5 * * * *',
+            schedules: ['*/5 * * * *'],
             workflowSpec: new WorkflowSpec({
                 workflowTemplateRef: new WorkflowTemplateReference({
                     workflowTemplate: workflowTemplate,

@@ -4,6 +4,7 @@ import {
     IoK8SApiCoreV1Probe,
     IoK8SApiCoreV1ContainerPort,
     IoK8SApiCoreV1ContainerResizePolicy,
+    IoK8SApiCoreV1ContainerRestartRule,
     IoK8SApiCoreV1ResourceRequirements,
     IoK8SApiCoreV1SecurityContext,
     IoK8SApiCoreV1VolumeDevice,
@@ -28,6 +29,7 @@ export class ContainerNode {
     resizePolicy?: IoK8SApiCoreV1ContainerResizePolicy[];
     resources?: IoK8SApiCoreV1ResourceRequirements;
     restartPolicy?: string;
+    restartPolicyRules?: IoK8SApiCoreV1ContainerRestartRule[];
     securityContext?: IoK8SApiCoreV1SecurityContext;
     startupProbe?: IoK8SApiCoreV1Probe;
     stdin?: boolean;
@@ -61,6 +63,7 @@ export class ContainerNode {
             resizePolicy: this.resizePolicy,
             resources: this.resources,
             restartPolicy: this.restartPolicy,
+            restartPolicyRules: this.restartPolicyRules,
             securityContext: this.securityContext,
             startupProbe: this.startupProbe,
             stdin: this.stdin,

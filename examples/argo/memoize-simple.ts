@@ -23,7 +23,6 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Work
         memoize: {
             cache: {
                 configMap: {
-                    key: 'cache-key',
                     name: 'cache-config',
                 },
             },

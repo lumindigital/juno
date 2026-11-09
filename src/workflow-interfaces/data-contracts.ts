@@ -327,7 +327,7 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ArtifactLocatio
     resource?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1K8SResource;
     /**
      * URL to fetch the artifact from
-     * URLArtifact contains information about an artifact at an http endpoint.
+     * URLArtifact contains information about an artifact at an HTTP endpoint.
      */
     url?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1URLArtifact;
 }
@@ -465,6 +465,12 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1AzureServiceBus
      * SecretKeySelector selects a key of a Secret.
      */
     connectionString?: IoK8SApiCoreV1SecretKeySelector;
+    /**
+     * DeferDelete controls when messages are removed from Azure Service Bus.
+     * If false (default), messages are received and deleted immediately before processing.
+     * If true, messages are locked and only deleted after successful processing, ensuring they are not lost if processing fails.
+     */
+    deferDelete?: boolean;
     /**
      * Filter
      * +optional
@@ -869,11 +875,7 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1CustomTrigger {
     spec?: Record<string, string>;
 }
 
-/**
- * DataFilter describes constraints and filters for event data
- * Regular Expressions are purposefully not a feature as they are overkill for our uses here
- * See Rob Pike's Post: https://commandcenter.blogspot.com/2011/08/regular-expressions-in-lexing-and.html
- */
+/** DataFilter describes constraints and filters for event data. */
 export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1DataFilter {
     /**
      * Comparator compares the event data with a user given value.
@@ -882,7 +884,7 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1DataFilter {
      */
     comparator?: string;
     /**
-     * Path is the JSONPath of the event's (JSON decoded) data key
+     * Path is the JSONPath of the event's (JSON decoded) data key.
      * Path is a series of keys separated by a dot. A key may contain wildcard characters '*' and '?'.
      * To access an array value use the index as the key. The dot and wildcard characters can be escaped with '\\'.
      * See https://github.com/tidwall/gjson#path-syntax for more information on how to use this.
@@ -898,11 +900,11 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1DataFilter {
     /** Type contains the JSON type of the data */
     type?: string;
     /**
-     * Value is the allowed string values for this key
-     * Booleans are passed using strconv.ParseBool()
-     * Numbers are parsed using as float64 using strconv.ParseFloat()
-     * Strings are taken as is
-     * Nils this value is ignored
+     * Value is the allowed string values for this key.
+     * Booleans are parsed using strconv.ParseBool(),
+     * Numbers are parsed as float64 using strconv.ParseFloat(),
+     * Strings are treated as regular expressions,
+     * Nils value is ignored.
      */
     value?: string[];
 }
@@ -1171,6 +1173,8 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceSpec
     kafka?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1KafkaEventSource>;
     /** Minio event sources */
     minio?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1S3Artifact>;
+    /** MNS event sources */
+    mns?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1MNSEventSource>;
     /** MQTT event sources */
     mqtt?: Record<string, GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1MQTTEventSource>;
     /** NATS event sources */
@@ -1314,6 +1318,11 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1GerritEventSour
     gerritBaseURL?: string;
     /** HookName is the name of the webhook */
     hookName?: string;
+    /**
+     * MaxTries is number of attempts when posting an event to the target url
+     * +optional
+     */
+    maxTries?: string;
     /**
      * Metadata holds the user defined metadata which will passed along the event payload.
      * +optional
@@ -1621,10 +1630,20 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1HTTPTrigger {
      */
     basicAuth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BasicAuth;
     /**
+     * Dynamic Headers for the request, sourced from the io.argoproj.workflow.v1alpha1. Same spec as Parameters.
+     * +optional
+     */
+    dynamicHeaders?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerParameter[];
+    /**
      * Headers for the HTTP request.
      * +optional
      */
     headers?: Record<string, string>;
+    /**
+     * Host refers to the domain name of the server (for virtual hosting).
+     * +optional
+     */
+    host?: string;
     /**
      * Method refers to the type of the HTTP request.
      * Refer https://golang.org/src/net/http/method.go for more io.argoproj.workflow.v1alpha1.
@@ -1754,6 +1773,11 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1KafkaEventSourc
      */
     sasl?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SASLConfig;
     /**
+     * Schema Registry configuration for consumer message with Avro format
+     * +optional
+     */
+    schemaRegistry?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SchemaRegistryConfig;
+    /**
      * TLS configuration for the kafka client.
      * +optional
      * TLSConfig refers to TLS configuration for a client.
@@ -1852,6 +1876,34 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1LogTrigger {
      * @format uint64
      */
     intervalSeconds?: string;
+}
+
+/** MNSEventSource refers to event-source for AlibabaCloud MNS related events */
+export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1MNSEventSource {
+    /**
+     * AccessKey refers K8s secret containing AlibabaCloud access key
+     * SecretKeySelector selects a key of a Secret.
+     */
+    accessKey?: IoK8SApiCoreV1SecretKeySelector;
+    /**
+     * Endpoint configures connection to a specific AlibabaCloud MNS endpoint
+     * +optional
+     */
+    endpoint?: string;
+    /**
+     * Filter
+     * +optional
+     */
+    filter?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1EventSourceFilter;
+    /** +optional */
+    jsonBody?: boolean;
+    /** Queue is AlibabaCloud MNS queue to listen to for messages */
+    queue?: string;
+    /**
+     * SecretKey refers K8s secret containing AlibabaCloud secret key
+     * SecretKeySelector selects a key of a Secret.
+     */
+    secretKey?: IoK8SApiCoreV1SecretKeySelector;
 }
 
 /** MQTTEventSource refers to event-source for MQTT related events */
@@ -2455,7 +2507,7 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ResourceFilter 
     /**
      * Fields provide field filters similar to K8s field selector
      * (see https://kubernetes.io/docs/concepts/overview/working-with-objects/field-selectors/).
-     * Unlike K8s field selector, it supports arbitrary fields like "spec.serviceAccountName",
+     * Unlike K8s field selector, it supports arbitrary fileds like "spec.serviceAccountName",
      * and the value could be a string or a regex.
      * Same as K8s field selector, operator "=", "==" and "!=" are supported.
      * +optional
@@ -2678,11 +2730,14 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SQSEventSource 
 /** SchemaRegistryConfig refers to configuration for a client */
 export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SchemaRegistryConfig {
     /**
-     * +optional
      * SchemaRegistry - basic authentication
+     * +optional
      */
     auth?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1BasicAuth;
-    /** Schema ID */
+    /**
+     * Schema ID
+     * +optional
+     */
     schemaId?: number;
     /** Schema Registry URL. */
     url?: string;
@@ -2977,6 +3032,12 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1StorageGridEven
      * +optional
      */
     region?: string;
+    /**
+     * TLS configuration for the service bus client
+     * +optional
+     * TLSConfig refers to TLS configuration for a client.
+     */
+    tls?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig;
     /** TopicArn */
     topicArn?: string;
     /** Webhook holds configuration for a REST endpoint */
@@ -3040,6 +3101,11 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TLSConfig {
      * SecretKeySelector selects a key of a Secret.
      */
     clientKeySecret?: IoK8SApiCoreV1SecretKeySelector;
+    /**
+     * Enabled indicates if TLS is enabled. Added for compatibility proposes for Brokers that needs TLS without key authentication
+     * +optional
+     */
+    enabled?: boolean;
     /**
      * If true, skips creation of TLSConfig with certs and creates an empty TLSConfig. (Defaults to false)
      * +optional
@@ -3148,6 +3214,13 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TimeFilter {
      * (e.g.: 22:00:00-01:00:00 means 22:00:00-25:00:00).
      */
     stop?: string;
+    /**
+     * Timezone specifies the timezone for the time window.
+     * If not specified, defaults to UTC.
+     * Format should be a valid IANA timezone name (e.g., "America/New_York", "Europe/London").
+     * +optional
+     */
+    timezone?: string;
 }
 
 /** Trigger is an action taken, output produced, an event created, a message sent */
@@ -3301,7 +3374,7 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerTemplate
      */
     conditions?: string;
     /**
-     * Criteria to reset the conditions
+     * Criteria to reset the conditons
      * +optional
      */
     conditionsReset?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1ConditionsResetCriteria[];
@@ -3359,7 +3432,7 @@ export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1TriggerTemplate
     slack?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1SlackTrigger;
 }
 
-/** URLArtifact contains information about an artifact at an http endpoint. */
+/** URLArtifact contains information about an artifact at an HTTP endpoint. */
 export interface GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1URLArtifact {
     /** Path is the complete URL */
     path?: string;
@@ -3512,13 +3585,13 @@ export interface IoArgoprojWorkflowV1Alpha1Artifact {
     gcs?: IoArgoprojWorkflowV1Alpha1GCSArtifact;
     /** Git contains git artifact location details */
     git?: IoArgoprojWorkflowV1Alpha1GitArtifact;
-    /** GlobalName exports an output artifact to the global scope, making it available as '{{io.argoproj.workflow.v1alpha1.outputs.artifacts.XXXX}} and in workflow.status.outputs.artifacts */
+    /** GlobalName exports an output artifact to the global scope, making it available as io.argoproj.workflow.v1alpha1.outputs.artifacts.XXXX and in workflow.status.outputs.artifacts */
     globalName?: string;
     /** HDFS contains HDFS artifact location details */
     hdfs?: IoArgoprojWorkflowV1Alpha1HDFSArtifact;
     /** HTTP contains HTTP artifact location details */
     http?: IoArgoprojWorkflowV1Alpha1HTTPArtifact;
-    /** mode bits to use on this file, must be a value between 0 and 0777 set when loading input artifacts. */
+    /** mode bits to use on this file, must be a value between 0 and 0777. Set when loading input artifacts. It is recommended to set the mode value to ensure the artifact has the expected permissions in your container. */
     mode?: number;
     /** name of the artifact. must be unique within a template's inputs/outputs. */
     name: string;
@@ -3528,6 +3601,8 @@ export interface IoArgoprojWorkflowV1Alpha1Artifact {
     oss?: IoArgoprojWorkflowV1Alpha1OSSArtifact;
     /** Path is the container path to the artifact */
     path?: string;
+    /** Plugin contains plugin artifact location details */
+    plugin?: IoArgoprojWorkflowV1Alpha1PluginArtifact;
     /** Raw contains raw artifact location details */
     raw?: IoArgoprojWorkflowV1Alpha1RawArtifact;
     /** If mode is set, apply the permission recursively into the artifact if it is a folder */
@@ -3566,6 +3641,8 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactLocation {
     http?: IoArgoprojWorkflowV1Alpha1HTTPArtifact;
     /** OSS contains OSS artifact location details */
     oss?: IoArgoprojWorkflowV1Alpha1OSSArtifact;
+    /** Plugin contains plugin artifact location details */
+    plugin?: IoArgoprojWorkflowV1Alpha1PluginArtifact;
     /** Raw contains raw artifact location details */
     raw?: IoArgoprojWorkflowV1Alpha1RawArtifact;
 }
@@ -3594,13 +3671,13 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactPaths {
     gcs?: IoArgoprojWorkflowV1Alpha1GCSArtifact;
     /** Git contains git artifact location details */
     git?: IoArgoprojWorkflowV1Alpha1GitArtifact;
-    /** GlobalName exports an output artifact to the global scope, making it available as '{{io.argoproj.workflow.v1alpha1.outputs.artifacts.XXXX}} and in workflow.status.outputs.artifacts */
+    /** GlobalName exports an output artifact to the global scope, making it available as io.argoproj.workflow.v1alpha1.outputs.artifacts.XXXX and in workflow.status.outputs.artifacts */
     globalName?: string;
     /** HDFS contains HDFS artifact location details */
     hdfs?: IoArgoprojWorkflowV1Alpha1HDFSArtifact;
     /** HTTP contains HTTP artifact location details */
     http?: IoArgoprojWorkflowV1Alpha1HTTPArtifact;
-    /** mode bits to use on this file, must be a value between 0 and 0777 set when loading input artifacts. */
+    /** mode bits to use on this file, must be a value between 0 and 0777. Set when loading input artifacts. It is recommended to set the mode value to ensure the artifact has the expected permissions in your container. */
     mode?: number;
     /** name of the artifact. must be unique within a template's inputs/outputs. */
     name: string;
@@ -3610,6 +3687,8 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactPaths {
     oss?: IoArgoprojWorkflowV1Alpha1OSSArtifact;
     /** Path is the container path to the artifact */
     path?: string;
+    /** Plugin contains plugin artifact location details */
+    plugin?: IoArgoprojWorkflowV1Alpha1PluginArtifact;
     /** Raw contains raw artifact location details */
     raw?: IoArgoprojWorkflowV1Alpha1RawArtifact;
     /** If mode is set, apply the permission recursively into the artifact if it is a folder */
@@ -3634,8 +3713,11 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactRepository {
     hdfs?: IoArgoprojWorkflowV1Alpha1HDFSArtifactRepository;
     /** OSS stores artifact in a OSS-compliant object store */
     oss?: IoArgoprojWorkflowV1Alpha1OSSArtifactRepository;
+    /** Plugin stores artifact in a plugin-specific artifact repository */
+    plugin?: IoArgoprojWorkflowV1Alpha1PluginArtifactRepository;
 }
 
+/** ArtifactRepositoryRef is a reference to an artifact repository config map. */
 export interface IoArgoprojWorkflowV1Alpha1ArtifactRepositoryRef {
     /** The name of the config map. Defaults to "artifact-repositories". */
     configMap?: string;
@@ -3643,6 +3725,7 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactRepositoryRef {
     key?: string;
 }
 
+/** ArtifactRepositoryRefStatus is the resolved artifact repository reference with namespace io.argoproj.workflow.v1alpha1. */
 export interface IoArgoprojWorkflowV1Alpha1ArtifactRepositoryRefStatus {
     /** The repository the workflow will use. This maybe empty before v3.1. */
     artifactRepository?: IoArgoprojWorkflowV1Alpha1ArtifactRepository;
@@ -3678,7 +3761,7 @@ export interface IoArgoprojWorkflowV1Alpha1ArtifactoryArtifactRepository {
     usernameSecret?: IoK8SApiCoreV1SecretKeySelector;
 }
 
-/** AzureArtifact is the location of a an Azure Storage artifact */
+/** AzureArtifact is the location of an Azure Storage artifact */
 export interface IoArgoprojWorkflowV1Alpha1AzureArtifact {
     /** AccountKeySecret is the secret selector to the Azure Blob Storage account access key */
     accountKeySecret?: IoK8SApiCoreV1SecretKeySelector;
@@ -3729,7 +3812,7 @@ export interface IoArgoprojWorkflowV1Alpha1BasicAuth {
 /** Cache is the configuration for the type of cache to be used */
 export interface IoArgoprojWorkflowV1Alpha1Cache {
     /** ConfigMap sets a ConfigMap-based cache */
-    configMap: IoK8SApiCoreV1ConfigMapKeySelector;
+    configMap: IoK8SApiCoreV1LocalObjectReference;
 }
 
 /** ClientCertAuth holds necessary information for client authentication via certificates */
@@ -3819,7 +3902,7 @@ export interface IoArgoprojWorkflowV1Alpha1ContainerNode {
     dependencies?: string[];
     /** List of environment variables to set in the container. Cannot be updated. */
     env?: IoK8SApiCoreV1EnvVar[];
-    /** List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated. */
+    /** List of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated. */
     envFrom?: IoK8SApiCoreV1EnvFromSource[];
     /** Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets. */
     image?: string;
@@ -3835,12 +3918,14 @@ export interface IoArgoprojWorkflowV1Alpha1ContainerNode {
     ports?: IoK8SApiCoreV1ContainerPort[];
     /** Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes */
     readinessProbe?: IoK8SApiCoreV1Probe;
-    /** Resources resize policy for the container. */
+    /** Resources resize policy for the container. This field cannot be set on ephemeral containers. */
     resizePolicy?: IoK8SApiCoreV1ContainerResizePolicy[];
     /** Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ */
     resources?: IoK8SApiCoreV1ResourceRequirements;
-    /** RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed. */
+    /** RestartPolicy defines the restart behavior of individual containers in a pod. This overrides the pod-level restart policy. When this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Additionally, setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed. */
     restartPolicy?: string;
+    /** Represents a list of rules to be checked to determine if the container should be restarted on exit. The rules are evaluated in order. Once a rule matches a container exit condition, the remaining rules are ignored. If no rule matches the container exit condition, the Container-level restart policy determines the whether the container is restarted or not. Constraints on the rules: - At most 20 rules are allowed. - Rules can have the same action. - Identical rules are not forbidden in validations. When rules are specified, container MUST set RestartPolicy explicitly even it if matches the Pod's RestartPolicy. */
+    restartPolicyRules?: IoK8SApiCoreV1ContainerRestartRule[];
     /** SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ */
     securityContext?: IoK8SApiCoreV1SecurityContext;
     /** StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes */
@@ -3942,10 +4027,8 @@ export interface IoArgoprojWorkflowV1Alpha1CronWorkflowSpec {
     concurrencyPolicy?: string;
     /** FailedJobsHistoryLimit is the number of failed jobs to be kept at a time */
     failedJobsHistoryLimit?: number;
-    /** Schedule is a schedule to run the Workflow in Cron format. Deprecated, use Schedules */
-    schedule?: string;
     /** v3.6 and after: Schedules is a list of schedules to run the Workflow in Cron format */
-    schedules?: string[];
+    schedules: string[];
     /** StartingDeadlineSeconds is the K8s-style deadline that will limit the time a CronWorkflow will be run after its original scheduled time if it is missed. */
     startingDeadlineSeconds?: number;
     /** v3.6 and after: StopStrategy defines if the CronWorkflow should stop scheduling based on a condition */
@@ -3985,7 +4068,7 @@ export interface IoArgoprojWorkflowV1Alpha1CronWorkflowSuspendRequest {
     namespace?: string;
 }
 
-/** DAGTask represents a node in the graph during DAG execution */
+/** DAGTask represents a node in the graph during DAG execution Note: CEL validation cannot check withItems (Schemaless) or inline (PreserveUnknownFields) fields. */
 export interface IoArgoprojWorkflowV1Alpha1DAGTask {
     /** Arguments are the parameter and artifact arguments to the template */
     arguments?: IoArgoprojWorkflowV1Alpha1Arguments;
@@ -4001,7 +4084,11 @@ export interface IoArgoprojWorkflowV1Alpha1DAGTask {
     inline?: IoArgoprojWorkflowV1Alpha1Template;
     /** Name is the name of the target */
     name: string;
-    /** OnExit is a template reference which is invoked at the end of the template, irrespective of the success, failure, or error of the primary template. DEPRECATED: Use Hooks[exit].Template instead. */
+    /**
+     * OnExit is a template reference which is invoked at the end of the template, irrespective of the success, failure, or error of the primary template.
+     *
+     * Deprecated: Use Hooks[exit].Template instead.
+     */
     onExit?: string;
     /** Name of template to execute */
     template?: string;
@@ -4023,7 +4110,7 @@ export interface IoArgoprojWorkflowV1Alpha1DAGTemplate {
     failFast?: boolean;
     /** Target are one or more names of targets to execute in a DAG */
     target?: string;
-    /** Tasks are a list of DAG tasks */
+    /** Tasks are a list of DAG tasks MaxItems is an artificial limit to limit CEL validation costs - see note at top of file */
     tasks: IoArgoprojWorkflowV1Alpha1DAGTask[];
 }
 
@@ -4054,6 +4141,24 @@ export interface IoArgoprojWorkflowV1Alpha1ExecutorConfig {
     serviceAccountName?: string;
 }
 
+/** ExecutorPlugin describes workflow-level executor plugin */
+export interface IoArgoprojWorkflowV1Alpha1ExecutorPlugin {
+    /** ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create. */
+    metadata: IoK8SApimachineryPkgApisMetaV1ObjectMeta;
+    spec: IoArgoprojWorkflowV1Alpha1ExecutorPluginSpec;
+}
+
+export interface IoArgoprojWorkflowV1Alpha1ExecutorPluginSidecar {
+    /** AutomountServiceAccountToken enables mounting the service account token. The service account must be named <plugin-name>-executor-plugin. */
+    automountServiceAccountToken?: boolean;
+    /** Container defines the Kubernetes container specification for the sidecar. */
+    container: IoK8SApiCoreV1Container;
+}
+
+export interface IoArgoprojWorkflowV1Alpha1ExecutorPluginSpec {
+    sidecar: IoArgoprojWorkflowV1Alpha1ExecutorPluginSidecar;
+}
+
 /** GCSArtifact is the location of a GCS artifact */
 export interface IoArgoprojWorkflowV1Alpha1GCSArtifact {
     /** Bucket is the name of the bucket */
@@ -4080,7 +4185,7 @@ export interface IoArgoprojWorkflowV1Alpha1Gauge {
     operation?: string;
     /** Realtime emits this metric in real time if applicable */
     realtime: boolean;
-    /** Value is the value to be used in the operation with the metric's current value. If no operation is set, value is the value of the metric */
+    /** Value is the value to be used in the operation with the metric's current value. If no operation is set, value is the value of the metric MaxLength is an artificial limit to limit CEL validation costs - see note at top of file */
     value: string;
 }
 
@@ -4095,7 +4200,7 @@ export interface IoArgoprojWorkflowV1Alpha1GetUserInfoResponse {
     subject?: string;
 }
 
-/** GitArtifact is the location of an git artifact */
+/** GitArtifact is the location of a git artifact */
 export interface IoArgoprojWorkflowV1Alpha1GitArtifact {
     /** Branch is the branch to fetch when `SingleBranch` is enabled */
     branch?: string;
@@ -4200,6 +4305,8 @@ export interface IoArgoprojWorkflowV1Alpha1HTTPArtifact {
     auth?: IoArgoprojWorkflowV1Alpha1HTTPAuth;
     /** Headers are an optional list of headers to send with HTTP requests for artifacts */
     headers?: IoArgoprojWorkflowV1Alpha1Header[];
+    /** SaveStreamViaFile buffers a streamed upload to a temporary file before sending it, so a 307/308 redirect (e.g. webHDFS) can be followed by re-sending the body. When false (the default) SaveStream sends the reader directly and cannot follow such a redirect, since a one-shot reader cannot be replayed. */
+    saveStreamViaFile?: boolean;
     /** URL of the artifact */
     url: string;
 }
@@ -4259,7 +4366,7 @@ export interface IoArgoprojWorkflowV1Alpha1InfoResponse {
 export interface IoArgoprojWorkflowV1Alpha1Inputs {
     /** Artifact are a list of artifacts passed as inputs */
     artifacts?: IoArgoprojWorkflowV1Alpha1Artifact[];
-    /** Parameters are a list of parameters passed as inputs */
+    /** Parameters are a list of parameters passed as inputs MaxItems is an artificial limit to limit CEL validation costs - see note at top of file */
     parameters?: IoArgoprojWorkflowV1Alpha1Parameter[];
 }
 
@@ -4275,7 +4382,7 @@ export interface IoArgoprojWorkflowV1Alpha1LabelValueFrom {
     expression: string;
 }
 
-/** Labels is list of workflow labels */
+/** LabelValues is a list of workflow labels. */
 export interface IoArgoprojWorkflowV1Alpha1LabelValues {
     items?: string[];
 }
@@ -4291,12 +4398,14 @@ export interface IoArgoprojWorkflowV1Alpha1LifecycleHook {
     templateRef?: IoArgoprojWorkflowV1Alpha1TemplateRef;
 }
 
-/** A link to another app. */
+/** Link is a link to another app. */
 export interface IoArgoprojWorkflowV1Alpha1Link {
     /** The name of the link, E.g. "Workflow Logs" or "Pod Logs" */
     name: string;
     /** "workflow", "pod", "pod-logs", "event-source-logs", "sensor-logs", "workflow-list" or "chat" */
     scope: string;
+    /** Target attribute specifies where a linked document will be opened when a user clicks on a link. E.g. "_blank", "_self". If the target is _blank, it will open in a new tab. */
+    target: string;
     /** The URL. Can contain "${metadata.namespace}", "${metadata.name}", "${status.startedAt}", "${status.finishedAt}" or any other element in workflow yaml, e.g. "${io.argoproj.workflow.v1alpha1.metadata.annotations.userDefinedKey}" */
     url: string;
 }
@@ -4327,7 +4436,7 @@ export interface IoArgoprojWorkflowV1Alpha1MemoizationStatus {
     key: string;
 }
 
-/** Memoization enables caching for the Outputs of the template */
+/** Memoize enables caching for the Outputs of the template. */
 export interface IoArgoprojWorkflowV1Alpha1Memoize {
     /** Cache sets and configures the kind of cache */
     cache: IoArgoprojWorkflowV1Alpha1Cache;
@@ -4337,7 +4446,7 @@ export interface IoArgoprojWorkflowV1Alpha1Memoize {
     maxAge: string;
 }
 
-/** Pod metdata */
+/** Metadata is pod metadata. */
 export interface IoArgoprojWorkflowV1Alpha1Metadata {
     annotations?: Record<string, string>;
     labels?: Record<string, string>;
@@ -4351,7 +4460,7 @@ export interface IoArgoprojWorkflowV1Alpha1MetricLabel {
 
 /** Metrics are a list of metrics emitted from a Workflow/Template */
 export interface IoArgoprojWorkflowV1Alpha1Metrics {
-    /** Prometheus is a list of prometheus metrics to be emitted */
+    /** Prometheus is a list of prometheus metrics to be emitted MaxItems is an artificial limit to limit CEL validation costs - see note at top of file */
     prometheus: IoArgoprojWorkflowV1Alpha1Prometheus[];
 }
 
@@ -4407,11 +4516,13 @@ export interface IoArgoprojWorkflowV1Alpha1NodeStatus {
     displayName?: string;
     /** EstimatedDuration in seconds. */
     estimatedDuration?: number;
+    /** FailedPodRestarts tracks the number of times the pod for this node was restarted due to infrastructure failures before the main container started. */
+    failedPodRestarts?: number;
     /** Time at which this node completed */
     finishedAt?: IoK8SApimachineryPkgApisMetaV1Time;
     /** HostNodeName name of the Kubernetes node on which the Pod is running, if applicable */
     hostNodeName?: string;
-    /** ID is a unique identifier of a node within the workflow. It is implemented as a hash of the node name, which makes the ID deterministic */
+    /** ID is a unique identifier of a node within the worklow It is implemented as a hash of the node name, which makes the ID deterministic */
     id: string;
     /** Inputs captures input parameter values and artifact locations supplied to this template invocation */
     inputs?: IoArgoprojWorkflowV1Alpha1Inputs;
@@ -4439,6 +4550,8 @@ export interface IoArgoprojWorkflowV1Alpha1NodeStatus {
     progress?: string;
     /** ResourcesDuration is indicative, but not accurate, resource duration. This is populated when the nodes completes. */
     resourcesDuration?: Record<string, number>;
+    /** RestartingPodUID tracks the UID of the pod that is currently being restarted. This prevents duplicate restart attempts when the controller processes the same failed pod multiple times. Cleared when the replacement pod starts running. */
+    restartingPodUID?: string;
     /** Time at which this node started */
     startedAt?: IoK8SApimachineryPkgApisMetaV1Time;
     /** SynchronizationStatus is the synchronization status of the node */
@@ -4476,7 +4589,7 @@ export interface IoArgoprojWorkflowV1Alpha1OAuth2Auth {
     tokenURLSecret?: IoK8SApiCoreV1SecretKeySelector;
 }
 
-/** EndpointParam is for requesting optional fields that should be sent in the oauth request */
+/** OAuth2EndpointParam is an optional field that should be sent in the OAuth request. */
 export interface IoArgoprojWorkflowV1Alpha1OAuth2EndpointParam {
     /** Name is the header name */
     key: string;
@@ -4558,7 +4671,7 @@ export interface IoArgoprojWorkflowV1Alpha1Parameter {
     description?: string;
     /** Enum holds a list of string values to choose from, for the actual value of the parameter */
     enum?: string[];
-    /** GlobalName exports an output parameter to the global scope, making it available as '{{io.argoproj.workflow.v1alpha1.outputs.parameters.XXXX}} and in workflow.status.outputs.parameters */
+    /** GlobalName exports an output parameter to the global scope, making it available as io.argoproj.workflow.v1alpha1.outputs.parameters.XXXX and in workflow.status.outputs.parameters */
     globalName?: string;
     /** Name is the parameter name */
     name: string;
@@ -4570,6 +4683,25 @@ export interface IoArgoprojWorkflowV1Alpha1Parameter {
 
 /** Plugin is an Object with exactly one key */
 export type IoArgoprojWorkflowV1Alpha1Plugin = object;
+
+/** PluginArtifact is the location of a plugin artifact */
+export interface IoArgoprojWorkflowV1Alpha1PluginArtifact {
+    /** Configuration is the plugin defined configuration for the artifact driver plugin */
+    configuration?: string;
+    /** ConnectionTimeoutSeconds is the timeout for the artifact driver connection, overriding the driver's timeout */
+    connectionTimeoutSeconds?: number;
+    /** Key is the path in the artifact repository where the artifact resides */
+    key: string;
+    /** Name is the name of the artifact driver plugin */
+    name?: string;
+}
+
+/** PluginArtifactRepository defines the controller configuration for a plugin artifact repository */
+export interface IoArgoprojWorkflowV1Alpha1PluginArtifactRepository {
+    configuration: string;
+    keyFormat?: string;
+    name: string;
+}
 
 /** PodGC describes how to delete completed pods as they complete */
 export interface IoArgoprojWorkflowV1Alpha1PodGC {
@@ -4673,6 +4805,12 @@ export interface IoArgoprojWorkflowV1Alpha1RetryStrategy {
 export interface IoArgoprojWorkflowV1Alpha1S3Artifact {
     /** AccessKeySecret is the secret selector to the bucket's access key */
     accessKeySecret?: IoK8SApiCoreV1SecretKeySelector;
+    /**
+     * AddressingStyle defines how buckets are addressed by the S3 client. This is required for some S3-compatible providers that only support virtual-hosted-style bucket addressing.
+     *
+     * Valid values are: - "" (default, auto-detect) - "path" - "virtual-hosted"
+     */
+    addressingStyle?: string;
     /** Bucket is the name of the bucket */
     bucket?: string;
     /** CASecret specifies the secret that contains the CA, used to verify the TLS connection */
@@ -4703,6 +4841,12 @@ export interface IoArgoprojWorkflowV1Alpha1S3Artifact {
 export interface IoArgoprojWorkflowV1Alpha1S3ArtifactRepository {
     /** AccessKeySecret is the secret selector to the bucket's access key */
     accessKeySecret?: IoK8SApiCoreV1SecretKeySelector;
+    /**
+     * AddressingStyle defines how buckets are addressed by the S3 client. This is required for some S3-compatible providers that only support virtual-hosted-style bucket addressing.
+     *
+     * Valid values are: - "" (default, auto-detect) - "path" - "virtual-hosted"
+     */
+    addressingStyle?: string;
     /** Bucket is the name of the bucket */
     bucket?: string;
     /** CASecret specifies the secret that contains the CA, used to verify the TLS connection */
@@ -4717,7 +4861,11 @@ export interface IoArgoprojWorkflowV1Alpha1S3ArtifactRepository {
     insecure?: boolean;
     /** KeyFormat defines the format of how to store keys and can reference workflow variables. */
     keyFormat?: string;
-    /** KeyPrefix is prefix used as part of the bucket key in which the controller will store artifacts. DEPRECATED. Use KeyFormat instead */
+    /**
+     * KeyPrefix is prefix used as part of the bucket key in which the controller will store artifacts.
+     *
+     * Deprecated: Use KeyFormat instead.
+     */
     keyPrefix?: string;
     /** Region contains the optional bucket region */
     region?: string;
@@ -4751,7 +4899,7 @@ export interface IoArgoprojWorkflowV1Alpha1ScriptTemplate {
     command?: string[];
     /** List of environment variables to set in the container. Cannot be updated. */
     env?: IoK8SApiCoreV1EnvVar[];
-    /** List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated. */
+    /** List of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated. */
     envFrom?: IoK8SApiCoreV1EnvFromSource[];
     /** Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets. */
     image: string;
@@ -4767,12 +4915,14 @@ export interface IoArgoprojWorkflowV1Alpha1ScriptTemplate {
     ports?: IoK8SApiCoreV1ContainerPort[];
     /** Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes */
     readinessProbe?: IoK8SApiCoreV1Probe;
-    /** Resources resize policy for the container. */
+    /** Resources resize policy for the container. This field cannot be set on ephemeral containers. */
     resizePolicy?: IoK8SApiCoreV1ContainerResizePolicy[];
     /** Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ */
     resources?: IoK8SApiCoreV1ResourceRequirements;
-    /** RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed. */
+    /** RestartPolicy defines the restart behavior of individual containers in a pod. This overrides the pod-level restart policy. When this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Additionally, setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed. */
     restartPolicy?: string;
+    /** Represents a list of rules to be checked to determine if the container should be restarted on exit. The rules are evaluated in order. Once a rule matches a container exit condition, the remaining rules are ignored. If no rule matches the container exit condition, the Container-level restart policy determines the whether the container is restarted or not. Constraints on the rules: - At most 20 rules are allowed. - Rules can have the same action. - Identical rules are not forbidden in validations. When rules are specified, container MUST set RestartPolicy explicitly even it if matches the Pod's RestartPolicy. */
+    restartPolicyRules?: IoK8SApiCoreV1ContainerRestartRule[];
     /** SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ */
     securityContext?: IoK8SApiCoreV1SecurityContext;
     /** Source contains the source code of the script to execute */
@@ -4852,6 +5002,8 @@ export interface IoArgoprojWorkflowV1Alpha1Submit {
 export interface IoArgoprojWorkflowV1Alpha1SubmitOpts {
     /** Annotations adds to metadata.labels */
     annotations?: string;
+    /** Artifacts overrides input artifact locations. Format: name=key */
+    artifacts?: string[];
     /** DryRun validates the workflow on the client-side without creating it. This option is not supported in API */
     dryRun?: boolean;
     /** Entrypoint overrides spec.entrypoint */
@@ -4891,12 +5043,8 @@ export interface IoArgoprojWorkflowV1Alpha1SyncDatabaseRef {
 
 /** Synchronization holds synchronization lock configuration */
 export interface IoArgoprojWorkflowV1Alpha1Synchronization {
-    /** Mutex holds the Mutex lock details - deprecated, use mutexes instead */
-    mutex?: IoArgoprojWorkflowV1Alpha1Mutex;
     /** v3.6 and after: Mutexes holds the list of Mutex lock details */
     mutexes?: IoArgoprojWorkflowV1Alpha1Mutex[];
-    /** Semaphore holds the Semaphore configuration - deprecated, use semaphores instead */
-    semaphore?: IoArgoprojWorkflowV1Alpha1SemaphoreRef;
     /** v3.6 and after: Semaphores holds the list of Semaphores configuration */
     semaphores?: IoArgoprojWorkflowV1Alpha1SemaphoreRef[];
 }
@@ -4961,7 +5109,7 @@ export interface IoArgoprojWorkflowV1Alpha1Template {
     inputs?: IoArgoprojWorkflowV1Alpha1Inputs;
     /** Memoize allows templates to use outputs generated from already executed templates */
     memoize?: IoArgoprojWorkflowV1Alpha1Memoize;
-    /** Metdata sets the pods's metadata, i.e. annotations and labels */
+    /** Metadata sets the pods's metadata, i.e. annotations and labels */
     metadata?: IoArgoprojWorkflowV1Alpha1Metadata;
     /** Metrics are a list of metrics emitted from this template */
     metrics?: IoArgoprojWorkflowV1Alpha1Metrics;
@@ -4973,14 +5121,20 @@ export interface IoArgoprojWorkflowV1Alpha1Template {
     outputs?: IoArgoprojWorkflowV1Alpha1Outputs;
     /** Parallelism limits the max total parallel pods that can execute at the same time within the boundaries of this template invocation. If additional steps/dag templates are invoked, the pods created by those templates will not be counted towards this total. */
     parallelism?: number;
+    /** PendingTimeout allows to set the maximum time spent in pending status counting from the node's start time. It is enforced by the controller, so a pod that starts running just as the timeout expires may still be failed. This duration may not be applied to Step or DAG templates. */
+    pendingTimeout?: string;
     /** Plugin is a plugin template Note: the structure of a plugin template is free-form, so we need to have "x-kubernetes-preserve-unknown-fields: true" in the validation schema. */
     plugin?: IoArgoprojWorkflowV1Alpha1Plugin;
+    /** PodResources defines pod-level resource requests and limits for this template's pod. Overrides the workflow-level podResources. Requires the PodLevelResources feature gate to be enabled on the cluster (beta since Kubernetes v1.34). */
+    podResources?: IoK8SApiCoreV1ResourceRequirements;
     /** PodSpecPatch holds strategic merge patch to apply against the pod spec. Allows parameterization of container fields which are not strings (e.g. resource limits). */
     podSpecPatch?: string;
     /** PriorityClassName to apply to workflow pods. */
     priorityClassName?: string;
     /** Resource template subtype which can run k8s resources */
     resource?: IoArgoprojWorkflowV1Alpha1ResourceTemplate;
+    /** ResourceClaims defines the ResourceClaims that must be allocated and reserved before this template's pod is allowed to start. Each entry names either an existing ResourceClaim or a ResourceClaimTemplate in the workflow's namespace, and containers ask for one by name through resources.claims. Replaces the workflow-level resourceClaims as a whole rather than merging with it. Not supported for a template that creates no pod: Steps, DAG and Suspend, which orchestrate other templates, and HTTP and Plugin, which run on the shared agent pod. A template reached through a templateRef keeps its own claims, and falls back to those of the workflow calling it rather than to the spec-level claims of the WorkflowTemplate it was defined in. Requires the DynamicResourceAllocation feature gate to be enabled on the cluster. */
+    resourceClaims?: IoK8SApiCoreV1PodResourceClaim[];
     /** RetryStrategy describes how to retry a template when it fails */
     retryStrategy?: IoArgoprojWorkflowV1Alpha1RetryStrategy;
     /** If specified, the pod will be dispatched by specified scheduler. Or it will be dispatched by workflow scope scheduler if specified. If neither specified, the pod will be dispatched by default scheduler. */
@@ -5038,7 +5192,7 @@ export interface IoArgoprojWorkflowV1Alpha1UserContainer {
     command?: string[];
     /** List of environment variables to set in the container. Cannot be updated. */
     env?: IoK8SApiCoreV1EnvVar[];
-    /** List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated. */
+    /** List of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated. */
     envFrom?: IoK8SApiCoreV1EnvFromSource[];
     /** Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets. */
     image?: string;
@@ -5056,12 +5210,14 @@ export interface IoArgoprojWorkflowV1Alpha1UserContainer {
     ports?: IoK8SApiCoreV1ContainerPort[];
     /** Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes */
     readinessProbe?: IoK8SApiCoreV1Probe;
-    /** Resources resize policy for the container. */
+    /** Resources resize policy for the container. This field cannot be set on ephemeral containers. */
     resizePolicy?: IoK8SApiCoreV1ContainerResizePolicy[];
     /** Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ */
     resources?: IoK8SApiCoreV1ResourceRequirements;
-    /** RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed. */
+    /** RestartPolicy defines the restart behavior of individual containers in a pod. This overrides the pod-level restart policy. When this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Additionally, setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed. */
     restartPolicy?: string;
+    /** Represents a list of rules to be checked to determine if the container should be restarted on exit. The rules are evaluated in order. Once a rule matches a container exit condition, the remaining rules are ignored. If no rule matches the container exit condition, the Container-level restart policy determines the whether the container is restarted or not. Constraints on the rules: - At most 20 rules are allowed. - Rules can have the same action. - Identical rules are not forbidden in validations. When rules are specified, container MUST set RestartPolicy explicitly even it if matches the Pod's RestartPolicy. */
+    restartPolicyRules?: IoK8SApiCoreV1ContainerRestartRule[];
     /** SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ */
     securityContext?: IoK8SApiCoreV1SecurityContext;
     /** StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes */
@@ -5098,7 +5254,7 @@ export interface IoArgoprojWorkflowV1Alpha1ValueFrom {
     jqFilter?: string;
     /** JSONPath of a resource to retrieve an output parameter value from in resource templates */
     jsonPath?: string;
-    /** Parameter reference to a step or dag task in which to retrieve an output parameter value from (e.g. '{{steps.mystep.outputs.myparam}}') */
+    /** Parameter reference to a step or dag task in which to retrieve an output parameter value from (e.g. steps.mystep.outputs.myparam) */
     parameter?: string;
     /** Path in the container to retrieve an output parameter value from in container templates */
     path?: string;
@@ -5254,7 +5410,7 @@ export interface IoArgoprojWorkflowV1Alpha1WorkflowSpec {
     affinity?: IoK8SApiCoreV1Affinity;
     /** ArchiveLogs indicates if the container logs should be archived */
     archiveLogs?: boolean;
-    /** Arguments contain the parameters and artifacts sent to the workflow entrypoint Parameters are referencable globally using the 'workflow' variable prefix. e.g. {{io.argoproj.workflow.v1alpha1.parameters.myparam}} */
+    /** Arguments contain the parameters and artifacts sent to the workflow entrypoint Parameters are referencable globally using the 'workflow' variable prefix. e.g. io.argoproj.workflow.v1alpha1.parameters.myparam */
     arguments?: IoArgoprojWorkflowV1Alpha1Arguments;
     /** ArtifactGC describes the strategy to use when deleting artifacts from completed or deleted workflows (applies to all output Artifacts unless Artifact.ArtifactGC is specified, which overrides this) */
     artifactGC?: IoArgoprojWorkflowV1Alpha1WorkflowLevelArtifactGC;
@@ -5270,6 +5426,16 @@ export interface IoArgoprojWorkflowV1Alpha1WorkflowSpec {
     entrypoint?: string;
     /** Executor holds configurations of executor containers of the io.argoproj.workflow.v1alpha1. */
     executor?: IoArgoprojWorkflowV1Alpha1ExecutorConfig;
+    /**
+     * Specifies executor plugins at the workflow level.
+     *
+     * This field is effective only when the ARGO_WORKFLOW_LEVEL_EXECUTOR_PLUGINS feature gate is enabled.
+     *
+     * If this field contains one or more executor plugins, executor plugin settings from the controller ConfigMap are ignored.
+     *
+     * If this field is empty or not set, the controller falls back to the ConfigMap configuration.
+     */
+    executorPlugins?: IoArgoprojWorkflowV1Alpha1ExecutorPlugin[];
     /** Hooks holds the lifecycle hook which is invoked at lifecycle of step, irrespective of the success, failure, or error status of the primary step */
     hooks?: Record<string, IoArgoprojWorkflowV1Alpha1LifecycleHook>;
     hostAliases?: IoK8SApiCoreV1HostAlias[];
@@ -5293,10 +5459,14 @@ export interface IoArgoprojWorkflowV1Alpha1WorkflowSpec {
     podMetadata?: IoArgoprojWorkflowV1Alpha1Metadata;
     /** PriorityClassName to apply to workflow pods. */
     podPriorityClassName?: string;
+    /** PodResources defines pod-level resource requests and limits to apply to all workflow pods. Will be overridden if a template's podResources is set. Requires the PodLevelResources feature gate to be enabled on the cluster (beta since Kubernetes v1.34). */
+    podResources?: IoK8SApiCoreV1ResourceRequirements;
     /** PodSpecPatch holds strategic merge patch to apply against the pod spec. Allows parameterization of container fields which are not strings (e.g. resource limits). */
     podSpecPatch?: string;
     /** Priority is used if controller is configured to process limited number of workflows in parallel. Workflows with higher priority are processed first. */
     priority?: number;
+    /** ResourceClaims defines the ResourceClaims that must be allocated and reserved before the pods running this workflow's templates are allowed to start. Each entry names either an existing ResourceClaim or a ResourceClaimTemplate in the workflow's namespace, and containers ask for one by name through resources.claims. The list is replaced as a whole rather than merged, so a template's resourceClaims, or a Workflow overriding a WorkflowTemplate, supersedes it entirely. Applies to the pods this workflow runs, including one whose template came through a templateRef, but not to the shared agent pod behind HTTP and Plugin templates. A referenced WorkflowTemplate's own spec-level resourceClaims do not come along with a templateRef; use workflowTemplateRef to inherit the referenced spec. Requires the DynamicResourceAllocation feature gate to be enabled on the cluster. */
+    resourceClaims?: IoK8SApiCoreV1PodResourceClaim[];
     /** RetryStrategy for all templates in the io.argoproj.workflow.v1alpha1. */
     retryStrategy?: IoArgoprojWorkflowV1Alpha1RetryStrategy;
     /** Set scheduler name for all pods. Will be overridden if container/script template's scheduler name is set. Default scheduler will be used if neither specified. */
@@ -5313,7 +5483,7 @@ export interface IoArgoprojWorkflowV1Alpha1WorkflowSpec {
     synchronization?: IoArgoprojWorkflowV1Alpha1Synchronization;
     /** TemplateDefaults holds default template values that will apply to all templates in the Workflow, unless overridden on the template-level */
     templateDefaults?: IoArgoprojWorkflowV1Alpha1Template;
-    /** Templates is a list of workflow templates used in a workflow */
+    /** Templates is a list of workflow templates used in a workflow MaxItems is an artificial limit to limit CEL validation costs - see note at top of file */
     templates?: IoArgoprojWorkflowV1Alpha1Template[];
     /** Tolerations to apply to workflow pods. */
     tolerations?: IoK8SApiCoreV1Toleration[];
@@ -5373,7 +5543,7 @@ export interface IoArgoprojWorkflowV1Alpha1WorkflowStatus {
     taskResultsCompletionStatus?: Record<string, boolean>;
 }
 
-/** WorkflowStep is a reference to a template to execute in a series of step */
+/** WorkflowStep is a reference to a template to execute in a series of step Note: CEL validation cannot check withItems (Schemaless) or inline (PreserveUnknownFields) fields. */
 export interface IoArgoprojWorkflowV1Alpha1WorkflowStep {
     /** Arguments hold arguments to the template */
     arguments?: IoArgoprojWorkflowV1Alpha1Arguments;
@@ -5385,7 +5555,11 @@ export interface IoArgoprojWorkflowV1Alpha1WorkflowStep {
     inline?: IoArgoprojWorkflowV1Alpha1Template;
     /** Name of the step */
     name?: string;
-    /** OnExit is a template reference which is invoked at the end of the template, irrespective of the success, failure, or error of the primary template. DEPRECATED: Use Hooks[exit].Template instead. */
+    /**
+     * OnExit is a template reference which is invoked at the end of the template, irrespective of the success, failure, or error of the primary template.
+     *
+     * Deprecated: Use Hooks[exit].Template instead.
+     */
     onExit?: string;
     /** Template is the name of the template to execute as the step */
     template?: string;
@@ -5685,7 +5859,7 @@ export interface IoK8SApiCoreV1Container {
     command?: string[];
     /** List of environment variables to set in the container. Cannot be updated. */
     env?: IoK8SApiCoreV1EnvVar[];
-    /** List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated. */
+    /** List of sources to populate environment variables in the container. The keys defined within a source may consist of any printable ASCII characters except '='. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated. */
     envFrom?: IoK8SApiCoreV1EnvFromSource[];
     /** Container image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets. */
     image: string;
@@ -5701,12 +5875,14 @@ export interface IoK8SApiCoreV1Container {
     ports?: IoK8SApiCoreV1ContainerPort[];
     /** Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes */
     readinessProbe?: IoK8SApiCoreV1Probe;
-    /** Resources resize policy for the container. */
+    /** Resources resize policy for the container. This field cannot be set on ephemeral containers. */
     resizePolicy?: IoK8SApiCoreV1ContainerResizePolicy[];
     /** Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ */
     resources?: IoK8SApiCoreV1ResourceRequirements;
-    /** RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed. */
+    /** RestartPolicy defines the restart behavior of individual containers in a pod. This overrides the pod-level restart policy. When this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Additionally, setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed. */
     restartPolicy?: string;
+    /** Represents a list of rules to be checked to determine if the container should be restarted on exit. The rules are evaluated in order. Once a rule matches a container exit condition, the remaining rules are ignored. If no rule matches the container exit condition, the Container-level restart policy determines the whether the container is restarted or not. Constraints on the rules: - At most 20 rules are allowed. - Rules can have the same action. - Identical rules are not forbidden in validations. When rules are specified, container MUST set RestartPolicy explicitly even it if matches the Pod's RestartPolicy. */
+    restartPolicyRules?: IoK8SApiCoreV1ContainerRestartRule[];
     /** SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ */
     securityContext?: IoK8SApiCoreV1SecurityContext;
     /** StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes */
@@ -5751,6 +5927,27 @@ export interface IoK8SApiCoreV1ContainerResizePolicy {
     restartPolicy: string;
 }
 
+/** ContainerRestartRule describes how a container exit is handled. */
+export interface IoK8SApiCoreV1ContainerRestartRule {
+    /** Specifies the action taken on a container exit if the requirements are satisfied. The only possible value is "Restart" to restart the container. */
+    action: string;
+    /** Represents the exit codes to check on container exits. */
+    exitCodes?: IoK8SApiCoreV1ContainerRestartRuleOnExitCodes;
+}
+
+/** ContainerRestartRuleOnExitCodes describes the condition for handling an exited container based on its exit codes. */
+export interface IoK8SApiCoreV1ContainerRestartRuleOnExitCodes {
+    /**
+     * Represents the relationship between the container exit code(s) and the specified values. Possible values are: - In: the requirement is satisfied if the container exit code is in the
+     *   set of specified values.
+     * - NotIn: the requirement is satisfied if the container exit code is
+     *   not in the set of specified values.
+     */
+    operator: string;
+    /** Specifies the set of values to check for container exit codes. At most 255 elements are allowed. */
+    values?: number[];
+}
+
 /** Represents downward API info for projecting into a projected volume. Note that this is identical to a downwardAPI volume source without the default mode. */
 export interface IoK8SApiCoreV1DownwardAPIProjection {
     /** Items is a list of DownwardAPIVolume file */
@@ -5789,7 +5986,7 @@ export interface IoK8SApiCoreV1EmptyDirVolumeSource {
 export interface IoK8SApiCoreV1EnvFromSource {
     /** The ConfigMap to select from */
     configMapRef?: IoK8SApiCoreV1ConfigMapEnvSource;
-    /** Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER. */
+    /** Optional text to prepend to the name of each environment variable. May consist of any printable ASCII characters except '='. */
     prefix?: string;
     /** The Secret to select from */
     secretRef?: IoK8SApiCoreV1SecretEnvSource;
@@ -5797,7 +5994,7 @@ export interface IoK8SApiCoreV1EnvFromSource {
 
 /** EnvVar represents an environment variable present in a Container. */
 export interface IoK8SApiCoreV1EnvVar {
-    /** Name of the environment variable. Must be a C_IDENTIFIER. */
+    /** Name of the environment variable. May consist of any printable ASCII characters except '='. */
     name: string;
     /** Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "". */
     value?: string;
@@ -5811,6 +6008,8 @@ export interface IoK8SApiCoreV1EnvVarSource {
     configMapKeyRef?: IoK8SApiCoreV1ConfigMapKeySelector;
     /** Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs. */
     fieldRef?: IoK8SApiCoreV1ObjectFieldSelector;
+    /** FileKeyRef selects a key of the env file. Requires the EnvFiles feature gate to be enabled. */
+    fileKeyRef?: IoK8SApiCoreV1FileKeySelector;
     /** Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported. */
     resourceFieldRef?: IoK8SApiCoreV1ResourceFieldSelector;
     /** Selects a key of a secret in the pod's namespace */
@@ -5905,6 +6104,22 @@ export interface IoK8SApiCoreV1FCVolumeSource {
     wwids?: string[];
 }
 
+/** FileKeySelector selects a key of the env file. */
+export interface IoK8SApiCoreV1FileKeySelector {
+    /** The key within the env file. An invalid key will prevent the pod from starting. The keys defined within a source may consist of any printable ASCII characters except '='. During Alpha stage of the EnvFiles feature gate, the key size is limited to 128 characters. */
+    key: string;
+    /**
+     * Specify whether the file or its key must be defined. If the file or key does not exist, then the env var is not published. If optional is set to true and the specified key does not exist, the environment variable will not be set in the Pod's containers.
+     *
+     * If optional is set to false and the specified key does not exist, an error will be returned during Pod creation.
+     */
+    optional?: boolean;
+    /** The path within the volume from which to select the file. Must be relative and may not contain the '..' path or start with '..'. */
+    path: string;
+    /** The name of the volume mount containing the env file. */
+    volumeName: string;
+}
+
 /** FlexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin. */
 export interface IoK8SApiCoreV1FlexVolumeSource {
     /** driver is the name of the driver to use for this volume. */
@@ -5971,7 +6186,7 @@ export interface IoK8SApiCoreV1GitRepoVolumeSource {
 
 /** Represents a Glusterfs mount that lasts the lifetime of a pod. Glusterfs volumes do not support ownership management or SELinux relabeling. */
 export interface IoK8SApiCoreV1GlusterfsVolumeSource {
-    /** endpoints is the endpoint name that details Glusterfs topology. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod */
+    /** endpoints is the endpoint name that details Glusterfs topology. */
     endpoints: string;
     /** path is the Glusterfs volume path. More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod */
     path: string;
@@ -6223,13 +6438,13 @@ export interface IoK8SApiCoreV1PersistentVolumeClaimSpec {
      * (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
      */
     dataSourceRef?: IoK8SApiCoreV1TypedObjectReference;
-    /** resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources */
+    /** resources represents the minimum resources the volume should have. Users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources */
     resources?: IoK8SApiCoreV1VolumeResourceRequirements;
     /** selector is a label query over volumes to consider for binding. */
     selector?: IoK8SApimachineryPkgApisMetaV1LabelSelector;
     /** storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1 */
     storageClassName?: string;
-    /** volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim. If specified, the CSI driver will create or update the volume with the attributes defined in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName, it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass will be applied to the claim but it's not allowed to reset this field to empty string once it is set. If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass will be set by the persistentvolume controller if it exists. If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource exists. More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/ (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default). */
+    /** volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim. If specified, the CSI driver will create or update the volume with the attributes defined in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName, it can be changed after the claim is created. An empty string or nil value indicates that no VolumeAttributesClass will be applied to the claim. If the claim enters an Infeasible error state, this field can be reset to its previous value (including nil) to cancel the modification. If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource exists. More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/ */
     volumeAttributesClassName?: string;
     /** volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec. */
     volumeMode?: string;
@@ -6270,8 +6485,6 @@ export interface IoK8SApiCoreV1PersistentVolumeClaimStatus {
      * When this field is not set, it means that no resize operation is in progress for the given PVC.
      *
      * A controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus should ignore the update for the purpose it was designed. For example - a controller that only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid resources associated with PVC.
-     *
-     * This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
      */
     allocatedResourceStatuses?: Record<string, string>;
     /**
@@ -6284,17 +6497,15 @@ export interface IoK8SApiCoreV1PersistentVolumeClaimStatus {
      * Capacity reported here may be larger than the actual capacity when a volume expansion operation is requested. For storage quota, the larger value from allocatedResources and PVC.spec.resources is used. If allocatedResources is not set, PVC.spec.resources alone is used for quota calculation. If a volume expansion capacity request is lowered, allocatedResources is only lowered if there are no expansion operations in progress and if the actual volume capacity is equal or lower than the requested capacity.
      *
      * A controller that receives PVC update with previously unknown resourceName should ignore the update for the purpose it was designed. For example - a controller that only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid resources associated with PVC.
-     *
-     * This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
      */
     allocatedResources?: Record<string, IoK8SApimachineryPkgApiResourceQuantity>;
     /** capacity represents the actual resources of the underlying volume. */
     capacity?: Record<string, IoK8SApimachineryPkgApiResourceQuantity>;
     /** conditions is the current Condition of persistent volume claim. If underlying persistent volume is being resized then the Condition will be set to 'Resizing'. */
     conditions?: IoK8SApiCoreV1PersistentVolumeClaimCondition[];
-    /** currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using. When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim This is a beta field and requires enabling VolumeAttributesClass feature (off by default). */
+    /** currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using. When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim */
     currentVolumeAttributesClassName?: string;
-    /** ModifyVolumeStatus represents the status object of ControllerModifyVolume operation. When this is unset, there is no ModifyVolume operation being attempted. This is a beta field and requires enabling VolumeAttributesClass feature (off by default). */
+    /** ModifyVolumeStatus represents the status object of ControllerModifyVolume operation. When this is unset, there is no ModifyVolume operation being attempted. */
     modifyVolumeStatus?: IoK8SApiCoreV1ModifyVolumeStatus;
     /** phase represents the current phase of PersistentVolumeClaim. */
     phase?: string;
@@ -6350,10 +6561,64 @@ export interface IoK8SApiCoreV1PodAffinityTerm {
 
 /** Pod anti affinity is a group of inter pod anti affinity scheduling rules. */
 export interface IoK8SApiCoreV1PodAntiAffinity {
-    /** The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred. */
+    /** The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and subtracting "weight" from the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred. */
     preferredDuringSchedulingIgnoredDuringExecution?: IoK8SApiCoreV1WeightedPodAffinityTerm[];
     /** If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied. */
     requiredDuringSchedulingIgnoredDuringExecution?: IoK8SApiCoreV1PodAffinityTerm[];
+}
+
+/** PodCertificateProjection provides a private key and X.509 certificate in the pod filesystem. */
+export interface IoK8SApiCoreV1PodCertificateProjection {
+    /**
+     * Write the certificate chain at this path in the projected volume.
+     *
+     * Most applications should use credentialBundlePath.  When using keyPath and certificateChainPath, your application needs to check that the key and leaf certificate are consistent, because it is possible to read the files mid-rotation.
+     */
+    certificateChainPath?: string;
+    /**
+     * Write the credential bundle at this path in the projected volume.
+     *
+     * The credential bundle is a single file that contains multiple PEM blocks. The first PEM block is a PRIVATE KEY block, containing a PKCS#8 private key.
+     *
+     * The remaining blocks are CERTIFICATE blocks, containing the issued certificate chain from the signer (leaf and any intermediates).
+     *
+     * Using credentialBundlePath lets your Pod's application code make a single atomic read that retrieves a consistent key and certificate chain.  If you project them to separate files, your application code will need to additionally check that the leaf certificate was issued to the key.
+     */
+    credentialBundlePath?: string;
+    /**
+     * Write the key at this path in the projected volume.
+     *
+     * Most applications should use credentialBundlePath.  When using keyPath and certificateChainPath, your application needs to check that the key and leaf certificate are consistent, because it is possible to read the files mid-rotation.
+     */
+    keyPath?: string;
+    /**
+     * The type of keypair Kubelet will generate for the pod.
+     *
+     * Valid values are "RSA3072", "RSA4096", "ECDSAP256", "ECDSAP384", "ECDSAP521", and "ED25519".
+     */
+    keyType: string;
+    /**
+     * maxExpirationSeconds is the maximum lifetime permitted for the certificate.
+     *
+     * Kubelet copies this value verbatim into the PodCertificateRequests it generates for this projection.
+     *
+     * If omitted, kube-apiserver will set it to 86400(24 hours). kube-apiserver will reject values shorter than 3600 (1 hour).  The maximum allowable value is 7862400 (91 days).
+     *
+     * The signer implementation is then free to issue a certificate with any lifetime *shorter* than MaxExpirationSeconds, but no shorter than 3600 seconds (1 hour).  This constraint is enforced by kube-apiserver. `kubernetes.io` signers will never issue certificates with a lifetime longer than 24 hours.
+     */
+    maxExpirationSeconds?: number;
+    /** Kubelet's generated CSRs will be addressed to this signer. */
+    signerName: string;
+    /**
+     * userAnnotations allow pod authors to pass additional information to the signer implementation.  Kubernetes does not restrict or validate this metadata in any way.
+     *
+     * These values are copied verbatim into the `spec.unverifiedUserAnnotations` field of the PodCertificateRequest objects that Kubelet creates.
+     *
+     * Entries are subject to the same validation as object metadata annotations, with the addition that all keys must be domain-prefixed. No restrictions are placed on values, except an overall size limitation on the entire field.
+     *
+     * Signers should document the keys and values they support. Signers should deny requests that contain keys they do not recognize.
+     */
+    userAnnotations?: Record<string, string>;
 }
 
 /** PodDNSConfig defines the DNS parameters of a pod in addition to those generated from DNSPolicy. */
@@ -6372,6 +6637,32 @@ export interface IoK8SApiCoreV1PodDNSConfigOption {
     name?: string;
     /** Value is this DNS resolver option's value. */
     value?: string;
+}
+
+/**
+ * PodResourceClaim references exactly one ResourceClaim, either directly or by naming a ResourceClaimTemplate which is then turned into a ResourceClaim for the pod.
+ *
+ * It adds a name to it that uniquely identifies the ResourceClaim inside the Pod. Containers that need access to the ResourceClaim reference it with this name.
+ */
+export interface IoK8SApiCoreV1PodResourceClaim {
+    /** Name uniquely identifies this resource claim inside the pod. This must be a DNS_LABEL. */
+    name: string;
+    /**
+     * ResourceClaimName is the name of a ResourceClaim object in the same namespace as this pod.
+     *
+     * Exactly one of ResourceClaimName and ResourceClaimTemplateName must be set.
+     */
+    resourceClaimName?: string;
+    /**
+     * ResourceClaimTemplateName is the name of a ResourceClaimTemplate object in the same namespace as this pod.
+     *
+     * The template will be used to create a new ResourceClaim, which will be bound to this pod. When this pod is deleted, the ResourceClaim will also be deleted. The pod name and resource name, along with a generated component, will be used to form a unique name for the ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.
+     *
+     * This field is immutable and no changes will be made to the corresponding ResourceClaim by the control plane after creating the ResourceClaim.
+     *
+     * Exactly one of ResourceClaimName and ResourceClaimTemplateName must be set.
+     */
+    resourceClaimTemplateName?: string;
 }
 
 /** PodSecurityContext holds pod-level security attributes and common container settings. Some fields are also present in container.securityContext.  Field values of container.securityContext take precedence over field values of PodSecurityContext. */
@@ -6531,7 +6822,7 @@ export interface IoK8SApiCoreV1ResourceRequirements {
     /**
      * Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.
      *
-     * This is an alpha field and requires enabling the DynamicResourceAllocation feature gate.
+     * This field depends on the DynamicResourceAllocation feature gate.
      *
      * This field is immutable. It can only be set for containers.
      */
@@ -6749,7 +7040,7 @@ export interface IoK8SApiCoreV1Toleration {
     effect?: string;
     /** Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys. */
     key?: string;
-    /** Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category. */
+    /** Operator represents a key's relationship to the value. Valid operators are Exists, Equal, Lt, and Gt. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category. Lt and Gt perform numeric comparisons (requires feature gate TaintTolerationComparisonOperators). */
     operator?: string;
     /** TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system. */
     tolerationSeconds?: number;
@@ -6826,7 +7117,7 @@ export interface IoK8SApiCoreV1Volume {
     gcePersistentDisk?: IoK8SApiCoreV1GCEPersistentDiskVolumeSource;
     /** gitRepo represents a git repository at a particular revision. Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container. */
     gitRepo?: IoK8SApiCoreV1GitRepoVolumeSource;
-    /** glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported. More info: https://examples.k8s.io/volumes/glusterfs/README.md */
+    /** glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime. Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported. */
     glusterfs?: IoK8SApiCoreV1GlusterfsVolumeSource;
     /** hostPath represents a pre-existing file or directory on the host machine that is directly exposed to the container. This is generally used for system agents or other privileged things that are allowed to see the host machine. Most containers will NOT need this. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath */
     hostPath?: IoK8SApiCoreV1HostPathVolumeSource;
@@ -6838,7 +7129,7 @@ export interface IoK8SApiCoreV1Volume {
      * The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation. A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message. The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field. The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images. The volume will be mounted read-only (ro) and non-executable files (noexec). Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33. The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
      */
     image?: IoK8SApiCoreV1ImageVolumeSource;
-    /** iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://examples.k8s.io/volumes/iscsi/README.md */
+    /** iscsi represents an ISCSI Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes/#iscsi */
     iscsi?: IoK8SApiCoreV1ISCSIVolumeSource;
     /** name of the volume. Must be a DNS_LABEL and unique within the pod. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names */
     name: string;
@@ -6854,7 +7145,7 @@ export interface IoK8SApiCoreV1Volume {
     projected?: IoK8SApiCoreV1ProjectedVolumeSource;
     /** quobyte represents a Quobyte mount on the host that shares a pod's lifetime. Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported. */
     quobyte?: IoK8SApiCoreV1QuobyteVolumeSource;
-    /** rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported. More info: https://examples.k8s.io/volumes/rbd/README.md */
+    /** rbd represents a Rados Block Device mount on the host that shares a pod's lifetime. Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported. */
     rbd?: IoK8SApiCoreV1RBDVolumeSource;
     /** scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes. Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported. */
     scaleIO?: IoK8SApiCoreV1ScaleIOVolumeSource;
@@ -6918,6 +7209,22 @@ export interface IoK8SApiCoreV1VolumeProjection {
     configMap?: IoK8SApiCoreV1ConfigMapProjection;
     /** downwardAPI information about the downwardAPI data to project */
     downwardAPI?: IoK8SApiCoreV1DownwardAPIProjection;
+    /**
+     * Projects an auto-rotating credential bundle (private key and certificate chain) that the pod can use either as a TLS client or server.
+     *
+     * Kubelet generates a private key and uses it to send a PodCertificateRequest to the named signer.  Once the signer approves the request and issues a certificate chain, Kubelet writes the key and certificate chain to the pod filesystem.  The pod does not start until certificates have been issued for each podCertificate projected volume source in its spec.
+     *
+     * Kubelet will begin trying to rotate the certificate at the time indicated by the signer using the PodCertificateRequest.Status.BeginRefreshAt timestamp.
+     *
+     * Kubelet can write a single file, indicated by the credentialBundlePath field, or separate files, indicated by the keyPath and certificateChainPath fields.
+     *
+     * The credential bundle is a single file in PEM format.  The first PEM entry is the private key (in PKCS#8 format), and the remaining PEM entries are the certificate chain issued by the signer (typically, signers will return their certificate chain in leaf-to-root order).
+     *
+     * Prefer using the credential bundle format, since your application code can read it atomically.  If you use keyPath and certificateChainPath, your application must make two separate file reads. If these coincide with a certificate rotation, it is possible that the private key and leaf certificate you read may not correspond to each other.  Your application will need to check for this condition, and re-read until they are consistent.
+     *
+     * The named signer controls chooses the format of the certificate it issues; consult the signer implementation's documentation to learn how to use the certificates it issues.
+     */
+    podCertificate?: IoK8SApiCoreV1PodCertificateProjection;
     /** secret information about the secret data to project */
     secret?: IoK8SApiCoreV1SecretProjection;
     /** serviceAccountToken is information about the serviceAccountToken data to project */
@@ -7261,4 +7568,36 @@ export interface SensorUpdateSensorRequest {
     name?: string;
     namespace?: string;
     sensor?: GithubComArgoprojArgoEventsPkgApisEventsV1Alpha1Sensor;
+}
+
+export interface SyncCreateSyncLimitRequest {
+    cmName?: string;
+    key?: string;
+    limit?: number;
+    namespace?: string;
+    type?: SyncSyncConfigType;
+}
+
+export type SyncDeleteSyncLimitResponse = object;
+
+/** @default "CONFIGMAP" */
+export enum SyncSyncConfigType {
+    CONFIGMAP = 'CONFIGMAP',
+    DATABASE = 'DATABASE',
+}
+
+export interface SyncSyncLimitResponse {
+    cmName?: string;
+    key?: string;
+    limit?: number;
+    namespace?: string;
+    type?: SyncSyncConfigType;
+}
+
+export interface SyncUpdateSyncLimitRequest {
+    cmName?: string;
+    key?: string;
+    limit?: number;
+    namespace?: string;
+    type?: SyncSyncConfigType;
 }

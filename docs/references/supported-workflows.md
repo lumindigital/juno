@@ -8,6 +8,18 @@ Juno supports the following workflows available in Argo Workflows
 
 Juno also supports the `Workflow` resource with one caveat. Juno does not currently support running workflows directly from code.
 
+## Argo Workflows version
+Juno's types are generated from the Argo Workflows v4.1 OpenAPI spec (`npm run interfaces`). Fields that Argo removed in v4.0 are no longer available:
+
+* `CronWorkflowSpec.schedule`: use `schedules`
+* `synchronization.mutex` and `synchronization.semaphore`: use `mutexes` and `semaphores`
+* `memoize.cache.configMap.key`: the cache ConfigMap is referenced by `name` only
+
+Juno validates the v4 pod-level fields when it generates a workflow, using the same rules as the Argo controller:
+
+* `podResources` (workflow or template) may only contain `cpu`, `memory` and `hugepages-*`, and no `claims`. It is not supported on `http` or `plugin` templates, which run on the shared agent pod.
+* `resourceClaims` on a template is only supported for templates that create a pod (`container`, `containerSet`, `script`, `resource`, `data`), and each claim must set exactly one of `resourceClaimName` or `resourceClaimTemplateName`.
+
 ## Architecture
 Juno supports a workflow per .ts file pattern. Each workflow must live in its own file. Juno requires each file to have the following method signature
 ```ts
@@ -136,7 +148,7 @@ export async function generateTemplate(): Promise<IoArgoprojWorkflowV1Alpha1Cron
             name: 'hello-world-cron',
         },
         spec: new CronWorkflowSpec({
-            schedule: '*/2 * * * *', // Run every 2 minutes
+            schedules: ['*/2 * * * *'], // Run every 2 minutes
             concurrencyPolicy: 'Allow',
             workflowSpec: new WorkflowSpec({
                 entrypoint: helloWorld,
